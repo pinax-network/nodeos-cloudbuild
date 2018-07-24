@@ -1,0 +1,15 @@
+steps:
+
+- id: docker-build
+  name: gcr.io/cloud-builders/docker
+  args: [
+    'build',
+    '-t', 'gcr.io/$PROJECT_ID/eosio-wasmsdk:$COMMIT_SHA',
+    '-t', 'gcr.io/$PROJECT_ID/eosio-wasmsdk:latest',
+    '-f', 'Dockerfile-wasmsdk',
+    '.'
+  ]
+
+images:
+- gcr.io/$PROJECT_ID/eosio-wasmsdk:latest
+- gcr.io/$PROJECT_ID/eosio-wasmsdk:$COMMIT_SHA
