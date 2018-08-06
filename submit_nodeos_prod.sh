@@ -10,7 +10,7 @@ fi
 
 export CLOUDSDK_CORE_PROJECT=eoscanada-public
 
-gcloud container builds submit . \
+gcloud builds submit . \
           --config cloudbuild-nodeos-prod.yaml \
           --timeout 8h \
           --substitutions COMMIT_SHA=${TAG} \

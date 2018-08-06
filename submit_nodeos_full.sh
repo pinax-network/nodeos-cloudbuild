@@ -12,7 +12,7 @@ export CLOUDSDK_CORE_PROJECT=eoscanada-public
 COMMIT_SHA=${TAG}
 BRANCH=${TAG}
 
-gcloud container builds submit . \
+gcloud builds submit . \
           --config cloudbuild-nodeos-full.yaml \
           --timeout 8h \
           --substitutions COMMIT_SHA=$COMMIT_SHA,_BRANCH=$BRANCH \
