@@ -13,6 +13,7 @@ RUN true \
     && git clone -b $BRANCH --depth 1 $REPOSITORY --recursive \
     && cd eos \
     && patch -p1 < /patches/history_export.patch \
+    && patch -p1 < /patches/cpu_fix.patch \
     && cmake -H. -B"/tmp/build" -GNinja \
        -DCORE_SYMBOL_NAME=EOS \
        -DWASM_ROOT=/opt/wasm \
