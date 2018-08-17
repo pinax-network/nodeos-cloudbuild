@@ -1,0 +1,138 @@
+diff --git a/libraries/chain/apply_context.cpp b/libraries/chain/apply_context.cpp
+index a3399dab0..7c7b17a4d 100644
+--- a/libraries/chain/apply_context.cpp
++++ b/libraries/chain/apply_context.cpp
+@@ -436,6 +436,19 @@ int apply_context::db_store_i64( uint64_t code, uint64_t scope, uint64_t table,
+    int64_t billable_size = (int64_t)(buffer_size + config::billable_size_v<key_value_object>);
+    update_db_usage( payer, billable_size);
+ 
++   if (eosio::chain::chain_config::deep_mind_db_enabled) {
++      auto table_obj = tab;
++      dlog("DB_OPERATION INS ${rev} ${table_code} ${scope} ${table_name} ${primkey} ${data}",
++              ("rev", db.revision()-1)
++              ("table_code", table_obj.code)
++              ("scope", table_obj.scope)
++              ("table_name", table_obj.table)
++              ("payer", table_obj.payer)
++              ("primkey", name(obj.primary_key))
++              ("data", to_hex(obj.value.data(),obj.value.size()))
++      );
++   }
++
+    keyval_cache.cache_table( tab );
+    return keyval_cache.add( obj );
+ }
+@@ -464,6 +477,18 @@ void apply_context::db_update_i64( int iterator, account_name payer, const char*
+       update_db_usage( obj.payer, new_size - old_size);
+    }
+ 
++   if (eosio::chain::chain_config::deep_mind_db_enabled) {
++      dlog("DB_OPERATION UPD ${rev} ${table_code} ${scope} ${table_name} ${primkey} ${data}",
++              ("rev", db.revision()-1)
++              ("table_code", table_obj.code)
++              ("scope", table_obj.scope)
++              ("table_name", table_obj.table)
++              ("payer", table_obj.payer)
++              ("primkey", name(obj.primary_key))
++              ("data", to_hex(obj.value.data(),obj.value.size()))
++      );
++   }
++
+    db.modify( obj, [&]( auto& o ) {
+      o.value.resize( buffer_size );
+      memcpy( o.value.data(), buffer, buffer_size );
+@@ -486,6 +511,18 @@ void apply_context::db_remove_i64( int iterator ) {
+    });
+    db.remove( obj );
+ 
++   if (eosio::chain::chain_config::deep_mind_db_enabled) {
++      dlog("DB_OPERATION REM ${rev} ${table_code} ${scope} ${table_name} ${primkey} ${data}",
++              ("rev", db.revision()-1)
++              ("table_code", table_obj.code)
++              ("scope", table_obj.scope)
++              ("table_name", table_obj.table)
++              ("payer", table_obj.payer)
++              ("primkey", name(obj.primary_key))
++              ("data", to_hex(obj.value.data(),obj.value.size()))
++      );
++   }
++
+    if (table_obj.count == 0) {
+       remove_table(table_obj);
+    }
+diff --git a/libraries/chain/chain_config.cpp b/libraries/chain/chain_config.cpp
+index 974675749..36069bed1 100644
+--- a/libraries/chain/chain_config.cpp
++++ b/libraries/chain/chain_config.cpp
+@@ -8,6 +8,9 @@
+ 
+ namespace eosio { namespace chain {
+ 
++   bool chain_config::deep_mind_enabled(false);
++   bool chain_config::deep_mind_db_enabled(false);
++
+    void chain_config::validate()const {
+       EOS_ASSERT( target_block_net_usage_pct <= config::percent_100, action_validate_exception,
+                   "target block net usage percentage cannot exceed 100%" );
+diff --git a/libraries/chain/include/eosio/chain/chain_config.hpp b/libraries/chain/include/eosio/chain/chain_config.hpp
+index 7f62ff111..960117f47 100644
+--- a/libraries/chain/include/eosio/chain/chain_config.hpp
++++ b/libraries/chain/include/eosio/chain/chain_config.hpp
+@@ -17,6 +17,9 @@ namespace eosio { namespace chain {
+  * values specified by the producers.
+  */
+ struct chain_config {
++   static bool deep_mind_enabled;
++   static bool deep_mind_db_enabled;
++
+    uint64_t   max_block_net_usage;                 ///< the maxiumum net usage in instructions for a block
+    uint32_t   target_block_net_usage_pct;          ///< the target percent (1% == 100, 100%= 10,000) of maximum net usage; exceeding this triggers congestion handling
+    uint32_t   max_transaction_net_usage;           ///< the maximum objectively measured net usage that the chain will allow regardless of account limits
+diff --git a/plugins/chain_plugin/chain_plugin.cpp b/plugins/chain_plugin/chain_plugin.cpp
+index 11b622738..c6aac3841 100644
+--- a/plugins/chain_plugin/chain_plugin.cpp
++++ b/plugins/chain_plugin/chain_plugin.cpp
+@@ -221,6 +221,10 @@ void chain_plugin::set_program_options(options_description& cli, options_descrip
+          ("reversible-blocks-db-guard-size-mb", bpo::value<uint64_t>()->default_value(config::default_reversible_guard_size / (1024  * 1024)), "Safely shut down node when free space remaining in the reverseible blocks database drops below this size (in MiB).")
+          ("contracts-console", bpo::bool_switch()->default_value(false),
+           "print contract's output to console")
++         ("deep-mind", bpo::bool_switch()->default_value(false),
++          "print tx traces and blocks to console")
++         ("deep-mind-db", bpo::bool_switch()->default_value(false),
++          "print db deltas to console")
+          ("actor-whitelist", boost::program_options::value<vector<string>>()->composing()->multitoken(),
+           "Account added to actor whitelist (may specify multiple times)")
+          ("actor-blacklist", boost::program_options::value<vector<string>>()->composing()->multitoken(),
+@@ -323,6 +327,9 @@ void chain_plugin::plugin_initialize(const variables_map& options) {
+          throw;
+       }
+ 
++      eosio::chain::chain_config::deep_mind_enabled = options.at( "deep-mind" ).as<bool>();
++      eosio::chain::chain_config::deep_mind_db_enabled = options.at( "deep-mind-db" ).as<bool>();
++
+       my->chain_config = controller::config();
+ 
+       LOAD_VALUE_SET( options, "actor-whitelist", my->chain_config->actor_whitelist );
+@@ -605,6 +612,9 @@ void chain_plugin::plugin_initialize(const variables_map& options) {
+             } );
+ 
+       my->accepted_block_connection = my->chain->accepted_block.connect( [this]( const block_state_ptr& blk ) {
++         if (eosio::chain::chain_config::deep_mind_enabled) {
++            dlog( "ACCEPTED_BLOCK ${blk}", ("blk", chain().to_variant_with_abi(blk, fc::microseconds(5000000))));
++         }   
+          my->accepted_block_channel.publish( blk );
+       } );
+ 
+@@ -619,6 +629,12 @@ void chain_plugin::plugin_initialize(const variables_map& options) {
+ 
+       my->applied_transaction_connection = my->chain->applied_transaction.connect(
+             [this]( const transaction_trace_ptr& trace ) {
++               if (eosio::chain::chain_config::deep_mind_enabled) {
++                  dlog( "HISTORY_TRACES ${block} ${traces}",
++                        ("traces", chain().to_variant_with_abi(trace, fc::microseconds(5000000)))
++                        ("block", chain().pending_block_state()->block_num)
++                  );
++               }   
+                my->applied_transaction_channel.publish( trace );
+             } );
+ 
