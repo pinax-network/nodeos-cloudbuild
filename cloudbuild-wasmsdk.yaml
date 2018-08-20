@@ -4,6 +4,7 @@ steps:
   name: gcr.io/cloud-builders/docker
   args: [
     'build',
+    '--build-arg', 'EOS_WASMSDK_VERSION=${_EOS_WASMSDK_VERSION}',
     '-t', 'gcr.io/$PROJECT_ID/eosio-wasmsdk:$COMMIT_SHA',
     '-t', 'gcr.io/$PROJECT_ID/eosio-wasmsdk:latest',
     '-f', 'Dockerfile-wasmsdk',

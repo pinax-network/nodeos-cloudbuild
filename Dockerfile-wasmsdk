@@ -1,28 +1,20 @@
 FROM ubuntu:18.04
 
-LABEL maintainer="Alexandre Bourget <alex@eoscanada.com>" version="1.0.0" \
+ARG EOS_WASMSDK_VERSION
+WORKDIR /workspace
+
+LABEL maintainer="Alexandre Bourget <alex@eoscanada.com>" version="${EOS_WASMSDK_VERSION}" \
   description="Image containing the eosio.wasmsdk"
 
 RUN echo 'APT::Install-Recommends 0;' >> /etc/apt/apt.conf.d/01norecommends \
   && echo 'APT::Install-Suggests 0;' >> /etc/apt/apt.conf.d/01norecommends \
   && apt-get update \
-  && DEBIAN_FRONTEND=noninteractive apt-get install -y wget curl net-tools ca-certificates unzip less vim gnupg sudo
-
-RUN echo "deb http://apt.llvm.org/xenial/ llvm-toolchain-xenial-4.0 main" >> /etc/apt/sources.list.d/llvm.list \
-  && wget -O - http://apt.llvm.org/llvm-snapshot.gpg.key|sudo apt-key add - \
-  && apt-get update \
-  && DEBIAN_FRONTEND=noninteractive apt-get install -y git-core automake autoconf libtool build-essential pkg-config libtool \
+  && DEBIAN_FRONTEND=noninteractive apt-get install -y wget curl net-tools ca-certificates unzip less vim gnupg sudo git-core automake autoconf autotools-dev libtool build-essential pkg-config libtool \
      mpi-default-dev libicu-dev python-dev python2.7-dev python3-dev libbz2-dev zlib1g-dev doxygen lcov graphviz libssl-dev libgmp-dev \
      clang-4.0 lldb-4.0 lld-4.0 llvm-4.0-dev libclang-4.0-dev ninja-build libgmp3-dev cmake \
   && rm -rf /var/lib/apt/lists/*
 
-RUN update-alternatives --install /usr/bin/clang clang /usr/lib/llvm-4.0/bin/clang 400 \
-  && update-alternatives --install /usr/bin/clang++ clang++ /usr/lib/llvm-4.0/bin/clang++ 400
-
-WORKDIR /workspace
-
-RUN git clone --depth 1 --recursive -b release/1.1 https://github.com/EOSIO/eosio.wasmsdk \
+RUN git clone --depth 1 --recursive -b "${EOS_WASMSDK_VERSION}" https://github.com/EOSIO/eosio.wasmsdk \
     && cd eosio.wasmsdk \
     && ./build.sh EOS \
-    && cd build \
-    && make install
+    && ./install.sh
