@@ -17,4 +17,5 @@ RUN echo 'APT::Install-Recommends 0;' >> /etc/apt/apt.conf.d/01norecommends \
 RUN git clone --depth 1 --recursive -b "${EOS_WASMSDK_VERSION}" https://github.com/EOSIO/eosio.wasmsdk \
     && cd eosio.wasmsdk \
     && ./build.sh EOS \
-    && ./install.sh
+    && ./install.sh \
+    && rm -rf /workspace/eosio.wasmsdk
