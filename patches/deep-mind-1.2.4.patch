@@ -21,7 +21,7 @@ index af540a38e..3fbbd4557 100644
               )
  
 diff --git a/libraries/chain/apply_context.cpp b/libraries/chain/apply_context.cpp
-index 0bbfb8e3a..c4eda8c52 100644
+index 0bbfb8e3a..202092887 100644
 --- a/libraries/chain/apply_context.cpp
 +++ b/libraries/chain/apply_context.cpp
 @@ -95,9 +95,12 @@ void apply_context::exec()
@@ -116,7 +116,7 @@ index 0bbfb8e3a..c4eda8c52 100644
     update_db_usage(tid.payer, - config::billable_size_v<table_id_object>);
     db.remove(tid);
  }
-@@ -438,8 +480,22 @@ int apply_context::db_store_i64( uint64_t code, uint64_t scope, uint64_t table,
+@@ -438,8 +480,23 @@ int apply_context::db_store_i64( uint64_t code, uint64_t scope, uint64_t table,
     });
  
     int64_t billable_size = (int64_t)(buffer_size + config::billable_size_v<key_value_object>);
@@ -125,9 +125,10 @@ index 0bbfb8e3a..c4eda8c52 100644
  
 +   if (eosio::chain::chain_config::deep_mind_db_enabled) {
 +      auto table_obj = tab;
-+      dmlog("DB_OPERATION INS ${rev} ${action_id} ${table_code} ${scope} ${table_name} ${primkey} ${data}",
++      dmlog("DB_OPERATION INS ${rev} ${action_id} ${payer} ${table_code} ${scope} ${table_name} ${primkey} ${data}",
 +              ("rev", db.revision()-1)
 +              ("action_id", trx_context.action_id.current())
++              ("payer", payer)
 +              ("table_code", table_obj.code)
 +              ("scope", table_obj.scope)
 +              ("table_name", table_obj.table)
@@ -139,7 +140,7 @@ index 0bbfb8e3a..c4eda8c52 100644
     keyval_cache.cache_table( tab );
     return keyval_cache.add( obj );
  }
-@@ -460,14 +516,29 @@ void apply_context::db_update_i64( int iterator, account_name payer, const char*
+@@ -460,14 +517,30 @@ void apply_context::db_update_i64( int iterator, account_name payer, const char*
  
     if( account_name(obj.payer) != payer ) {
        // refund the existing payer
@@ -155,9 +156,10 @@ index 0bbfb8e3a..c4eda8c52 100644
     }
  
 +   if (eosio::chain::chain_config::deep_mind_db_enabled) {
-+      dmlog("DB_OPERATION UPD ${rev} ${action_id} ${table_code} ${scope} ${table_name} ${primkey} ${data}",
++      dmlog("DB_OPERATION UPD ${rev} ${action_id} ${payer} ${table_code} ${scope} ${table_name} ${primkey} ${data}",
 +              ("rev", db.revision()-1)
 +              ("action_id", trx_context.action_id.current())
++              ("payer", payer)
 +              ("table_code", table_obj.code)
 +              ("scope", table_obj.scope)
 +              ("table_name", table_obj.table)
@@ -169,7 +171,7 @@ index 0bbfb8e3a..c4eda8c52 100644
     db.modify( obj, [&]( auto& o ) {
       o.value.resize( buffer_size );
       memcpy( o.value.data(), buffer, buffer_size );
-@@ -483,6 +554,7 @@ void apply_context::db_remove_i64( int iterator ) {
+@@ -483,6 +556,7 @@ void apply_context::db_remove_i64( int iterator ) {
  
  //   require_write_lock( table_obj.scope );
  
@@ -177,14 +179,15 @@ index 0bbfb8e3a..c4eda8c52 100644
     update_db_usage( obj.payer,  -(obj.value.size() + config::billable_size_v<key_value_object>) );
  
     db.modify( table_obj, [&]( auto& t ) {
-@@ -490,6 +562,18 @@ void apply_context::db_remove_i64( int iterator ) {
+@@ -490,6 +564,19 @@ void apply_context::db_remove_i64( int iterator ) {
     });
     db.remove( obj );
  
 +   if (eosio::chain::chain_config::deep_mind_db_enabled) {
-+      dmlog("DB_OPERATION REM ${rev} ${action_id} ${table_code} ${scope} ${table_name} ${primkey} ${data}",
++      dmlog("DB_OPERATION REM ${rev} ${action_id} ${payer} ${table_code} ${scope} ${table_name} ${primkey} ${data}",
 +              ("rev", db.revision()-1)
 +              ("action_id", trx_context.action_id.current())
++              ("payer", obj.payer)
 +              ("table_code", table_obj.code)
 +              ("scope", table_obj.scope)
 +              ("table_name", table_obj.table)
