@@ -214,7 +214,7 @@ index 974675749..36069bed1 100644
        EOS_ASSERT( target_block_net_usage_pct <= config::percent_100, action_validate_exception,
                    "target block net usage percentage cannot exceed 100%" );
 diff --git a/libraries/chain/controller.cpp b/libraries/chain/controller.cpp
-index 26d54d7da..dba5aeae5 100644
+index b6f461af9..8f0d259ef 100644
 --- a/libraries/chain/controller.cpp
 +++ b/libraries/chain/controller.cpp
 @@ -678,6 +678,13 @@ struct controller_impl {
@@ -457,7 +457,7 @@ index 64683ebc0..ca6b5f598 100644
        add_ram_usage( cgto.payer, (config::billable_size_v<generated_transaction_object> + trx_size) );
     }
  
-Submodule libraries/fc 62a19a758..a55e7351b:
+Submodule libraries/fc 62a19a758..f777c19c5:
 diff --git a/libraries/fc/CMakeLists.txt b/libraries/fc/CMakeLists.txt
 index 9fa0de2..8e8a24d 100644
 --- a/libraries/fc/CMakeLists.txt
@@ -510,7 +510,7 @@ index 0000000..a766851
 +} // namespace fc
 +
 diff --git a/libraries/fc/include/fc/log/logger.hpp b/libraries/fc/include/fc/log/logger.hpp
-index 9005d75..3822285 100644
+index 9005d75..84f7289 100644
 --- a/libraries/fc/include/fc/log/logger.hpp
 +++ b/libraries/fc/include/fc/log/logger.hpp
 @@ -4,7 +4,7 @@
@@ -544,9 +544,9 @@ index 9005d75..3822285 100644
  
 +#define dmlog( FORMAT, ... ) \
 +  FC_MULTILINE_MACRO_BEGIN \
++   if( (fc::logger::get("deep-mind")).is_enabled( fc::log_level::debug ) ) \
 +      (fc::logger::get("deep-mind")).log( FC_LOG_MESSAGE( debug, FORMAT, __VA_ARGS__ ) ); \
 +  FC_MULTILINE_MACRO_END
-+
  /**
   * Sends the log message to a special 'user' log stream designed for messages that
   * the end user may like to see.
@@ -585,7 +585,7 @@ index 9005d75..3822285 100644
  #endif
 \ No newline at end of file
 diff --git a/libraries/fc/src/log/appender.cpp b/libraries/fc/src/log/appender.cpp
-index d504cfc..f247306 100644
+index d504cfc..9b0ab7b 100644
 --- a/libraries/fc/src/log/appender.cpp
 +++ b/libraries/fc/src/log/appender.cpp
 @@ -3,6 +3,7 @@
@@ -600,13 +600,13 @@ index d504cfc..f247306 100644
     }
  
     static bool reg_console_appender = appender::register_appender<console_appender>( "console" );
-+   static bool reg_deep_mind_appender = appender::register_appender<console_appender>( "deep-mind" );
++   static bool reg_deep_mind_appender = appender::register_appender<deep_mind_appender>( "deep-mind" );
     //static bool reg_file_appender = appender::register_appender<file_appender>( "file" );
     static bool reg_gelf_appender = appender::register_appender<gelf_appender>( "gelf" );
  
 diff --git a/libraries/fc/src/log/deep_mind_appender.cpp b/libraries/fc/src/log/deep_mind_appender.cpp
 new file mode 100644
-index 0000000..cc88a9d
+index 0000000..8bf79a9
 --- /dev/null
 +++ b/libraries/fc/src/log/deep_mind_appender.cpp
 @@ -0,0 +1,43 @@
@@ -654,7 +654,7 @@ index 0000000..cc88a9d
 +   }
 +}
 diff --git a/libraries/fc/src/log/logger_config.cpp b/libraries/fc/src/log/logger_config.cpp
-index 5643f57..6b997f9 100644
+index 5643f57..0fc986d 100644
 --- a/libraries/fc/src/log/logger_config.cpp
 +++ b/libraries/fc/src/log/logger_config.cpp
 @@ -5,6 +5,7 @@
@@ -682,7 +682,7 @@ index 5643f57..6b997f9 100644
        } catch ( exception& e )
        {
           std::cerr<<e.to_detail_string()<<"\n";
-@@ -77,11 +79,22 @@ namespace fc {
+@@ -77,11 +79,23 @@ namespace fc {
                       ( "level_colors", c )
                   ) );
  
@@ -698,6 +698,7 @@ index 5643f57..6b997f9 100644
 +      logger_config dmlc;
 +      dmlc.name = "deep-mind";
 +      dmlc.level = log_level::debug;
++      dmlc.enabled = true;
 +      dmlc.appenders.push_back("deep-mind");
 +
        cfg.loggers.push_back( dlc );

@@ -12,7 +12,7 @@ COPY patches /patches
 RUN true \
     && git clone -b $BRANCH --depth 1 $REPOSITORY --recursive \
     && cd eos \
-    && patch -p1 < /patches/deep-mind-1.2.4.patch \
+    && patch -p1 < /patches/deep-mind-1.2.x.patch \
     && cmake -H. -B"/tmp/build" -GNinja \
        -DCORE_SYMBOL_NAME=EOS \
        -DWASM_ROOT=/opt/wasm \
