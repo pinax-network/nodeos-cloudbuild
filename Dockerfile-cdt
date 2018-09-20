@@ -1,10 +1,12 @@
 FROM ubuntu:18.04
 
-ARG EOS_WASMSDK_VERSION
+ARG EOSIO_CDT_VERSION
 WORKDIR /workspace
 
-LABEL maintainer="Alexandre Bourget <alex@eoscanada.com>" version="${EOS_WASMSDK_VERSION}" \
-  description="Image containing the eosio.wasmsdk"
+LABEL description="Image containing the eosio.cdt" version="${EOSIO_CDT_VERSION}"
+LABEL maintainer="Alexandre Bourget <alex@eoscanada.com>" \
+      maintainer="Francois Proulx <francois@eoscanada.com>" \
+      maintainer="Matthieu Vachon <matt@eoscanada.com>"
 
 RUN echo 'APT::Install-Recommends 0;' >> /etc/apt/apt.conf.d/01norecommends \
   && echo 'APT::Install-Suggests 0;' >> /etc/apt/apt.conf.d/01norecommends \
@@ -14,8 +16,8 @@ RUN echo 'APT::Install-Recommends 0;' >> /etc/apt/apt.conf.d/01norecommends \
      clang-4.0 lldb-4.0 lld-4.0 llvm-4.0-dev libclang-4.0-dev ninja-build libgmp3-dev cmake \
   && rm -rf /var/lib/apt/lists/*
 
-RUN git clone --depth 1 --recursive -b "${EOS_WASMSDK_VERSION}" https://github.com/EOSIO/eosio.wasmsdk \
-    && cd eosio.wasmsdk \
+RUN git clone --depth 1 --recursive -b "${EOSIO_CDT_VERSION}" https://github.com/EOSIO/eosio.cdt \
+    && cd eosio.cdt \
     && ./build.sh EOS \
     && ./install.sh \
-    && rm -rf /workspace/eosio.wasmsdk
+    && rm -rf /workspace/eosio.cdt
