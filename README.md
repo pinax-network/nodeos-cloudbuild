@@ -33,5 +33,5 @@ git clone --recursive git@github.com:eoscanada/eosio-eos-private.git
 git checkout eoscanada/deep-mind
 git submodule update --recursive
 
-git diff --submodule=diff --no-color origin/release/1.2.x-dev eoscanada/deep-mind > ./deep-mind-1.2.x.patch
+git diff --submodule=diff --no-color origin/release/1.3.x-dev eoscanada/deep-mind > ./deep-mind-1.3.x.patch
 ```
