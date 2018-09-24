@@ -1,0 +1,16 @@
+steps:
+
+- id: docker-build
+  name: gcr.io/cloud-builders/docker
+  args: [
+    'build',
+    '--build-arg', 'EOSIO_CDT_VERSION=${_EOSIO_CDT_VERSION}',
+    '-t', 'gcr.io/$PROJECT_ID/eosio-cdt:${_TAG}',
+    '-t', 'gcr.io/$PROJECT_ID/eosio-cdt:latest',
+    '-f', 'Dockerfile-cdt',
+    '.'
+  ]
+
+images:
+- gcr.io/$PROJECT_ID/eosio-cdt:latest
+- gcr.io/$PROJECT_ID/eosio-cdt:${_TAG}
