@@ -1,0 +1,22 @@
+ARG EOSIO_CDT_VERSION
+
+FROM gcr.io/eoscanada-public/eosio-cdt:${EOSIO_CDT_VERSION} AS builder
+
+FROM ubuntu:18.04 AS runtime
+
+WORKDIR /workspace
+
+LABEL description="Slimmed-down image of eosio.cdt" version="${EOSIO_CDT_VERSION}"
+LABEL maintainer="Alexandre Bourget <alex@eoscanada.com>" \
+      maintainer="Francois Proulx <francois@eoscanada.com>" \
+      maintainer="Matthieu Vachon <matt@eoscanada.com>"
+
+RUN echo 'APT::Install-Recommends 0;' >> /etc/apt/apt.conf.d/01norecommends \
+  && echo 'APT::Install-Suggests 0;' >> /etc/apt/apt.conf.d/01norecommends \
+  && apt-get update \
+  && DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y automake autoconf autotools-dev libtool build-essential pkg-config libtool \
+     clang-4.0 lldb-4.0 lld-4.0 cmake \
+  && rm -rf /var/lib/apt/lists/*
+
+COPY --from=builder /usr/local/bin/ /usr/local/bin/
+COPY --from=builder /usr/local/eosio.cdt/ /usr/local/eosio.cdt/
