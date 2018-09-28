@@ -3,16 +3,17 @@ ARG BUILD_ENV=v7
 # FROM gcr.io/eoscanada-public/eosio-build-env:$BUILD_ENV as builder
 FROM eosio/builder:v1.1.0 as builder
 
-ARG BRANCH
+ARG SRCTAG
+ARG PATCHES
 ARG REPOSITORY=https://github.com/eosio/eos.git
 # Alternate repo: https://github.com/EOS-Mainnet/eos.git
 
 COPY patches /patches
 
 RUN true \
-    && git clone -b $BRANCH --depth 1 $REPOSITORY --recursive \
+    && git clone -b $SRCTAG --depth 1 $REPOSITORY --recursive \
     && cd eos \
-    && patch -p1 < /patches/deep-mind-1.3.x.patch \
+    && for patch in $_PATCHES; do patch -p1 < /patches/$patch; done \
     && cmake -H. -B"/tmp/build" -GNinja \
        -DCORE_SYMBOL_NAME=EOS \
        -DWASM_ROOT=/opt/wasm \
@@ -25,7 +26,7 @@ RUN true \
     && cp --remove-destination `readlink /usr/lib/x86_64-linux-gnu/libz.so` /usr/lib/x86_64-linux-gnu/libz.so \
     && cp --remove-destination `readlink /usr/lib/x86_64-linux-gnu/libbz2.so` /usr/lib/x86_64-linux-gnu/libbz2.so \
     && cmake --build /tmp/build --target install \
-    && echo $REPOSITORY ref $BRANCH revision `git describe --always --long` > /opt/eos/bin/eosio_revision
+    && echo $REPOSITORY ref $SRCTAG revision `git describe --always --long` > /opt/eos/bin/eosio_revision
 
 ENV LD_LIBRARY_PATH /usr/local/lib
 ENV BOOST /usr/local/include

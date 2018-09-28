@@ -1,4 +1,4 @@
-#!/bin/bash -x
+#!/bin/bash -xe
 
 # This step builds `nodeos-prod` keeping only artifacts required for production.
 
