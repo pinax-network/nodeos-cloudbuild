@@ -13,7 +13,7 @@ COPY patches /patches
 RUN true \
     && git clone -b $SRCTAG --depth 1 $REPOSITORY --recursive \
     && cd eos \
-    && for patch in $_PATCHES; do patch -p1 < /patches/$patch; done \
+    && echo PATCHING... && for patch in $PATCHES; do echo APPLYING PATCH $patch; patch -p1 < /patches/$patch; done && echo PATCHED \
     && cmake -H. -B"/tmp/build" -GNinja \
        -DCORE_SYMBOL_NAME=EOS \
        -DWASM_ROOT=/opt/wasm \
