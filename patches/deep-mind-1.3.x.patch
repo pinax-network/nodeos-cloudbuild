@@ -128,7 +128,7 @@ index f7513debf..32144a221 100644
  
 +   if (eosio::chain::chain_config::deep_mind_db_enabled) {
 +      auto table_obj = tab;
-+      dmlog("DB_OPERATION INS ${rev} ${action_id} ${payer} ${table_code} ${scope} ${table_name} ${primkey} ${data}",
++      dmlog("DB_OPERATION INS ${rev} ${action_id} ${payer} ${table_code} ${scope} ${table_name} ${primkey} ${ndata}",
 +              ("rev", db.revision()-1)
 +              ("action_id", trx_context.action_id.current())
 +              ("payer", payer)
@@ -136,14 +136,14 @@ index f7513debf..32144a221 100644
 +              ("scope", table_obj.scope)
 +              ("table_name", table_obj.table)
 +              ("primkey", name(obj.primary_key))
-+              ("data", to_hex(obj.value.data(),obj.value.size()))
++              ("ndata", to_hex(buffer, buffer_size))
 +      );
 +   }
 +
     keyval_cache.cache_table( tab );
     return keyval_cache.add( obj );
  }
-@@ -466,14 +523,30 @@ void apply_context::db_update_i64( int iterator, account_name payer, const char*
+@@ -466,10 +523,13 @@ void apply_context::db_update_i64( int iterator, account_name payer, const char*
  
     if( account_name(obj.payer) != payer ) {
        // refund the existing payer
@@ -159,7 +159,7 @@ index f7513debf..32144a221 100644
     }
  
 +   if (eosio::chain::chain_config::deep_mind_db_enabled) {
-+      dmlog("DB_OPERATION UPD ${rev} ${action_id} ${payer} ${table_code} ${scope} ${table_name} ${primkey} ${data}",
++      dmlog("DB_OPERATION UPD ${rev} ${action_id} ${payer} ${table_code} ${scope} ${table_name} ${primkey} ${odata} ${ndata}",
 +              ("rev", db.revision()-1)
 +              ("action_id", trx_context.action_id.current())
 +              ("payer", payer)
@@ -167,7 +167,8 @@ index f7513debf..32144a221 100644
 +              ("scope", table_obj.scope)
 +              ("table_name", table_obj.table)
 +              ("primkey", name(obj.primary_key))
-+              ("data", to_hex(obj.value.data(),obj.value.size()))
++              ("odata", to_hex(obj.value.data(),obj.value.size()))
++              ("ndata", to_hex(buffer, buffer_size))
 +      );
 +   }
 +
@@ -187,7 +188,7 @@ index f7513debf..32144a221 100644
     db.remove( obj );
  
 +   if (eosio::chain::chain_config::deep_mind_db_enabled) {
-+      dmlog("DB_OPERATION REM ${rev} ${action_id} ${payer} ${table_code} ${scope} ${table_name} ${primkey} ${data}",
++      dmlog("DB_OPERATION REM ${rev} ${action_id} ${payer} ${table_code} ${scope} ${table_name} ${primkey} ${odata}",
 +              ("rev", db.revision()-1)
 +              ("action_id", trx_context.action_id.current())
 +              ("payer", obj.payer)
@@ -195,7 +196,7 @@ index f7513debf..32144a221 100644
 +              ("scope", table_obj.scope)
 +              ("table_name", table_obj.table)
 +              ("primkey", name(obj.primary_key))
-+              ("data", to_hex(obj.value.data(),obj.value.size()))
++              ("odata", to_hex(obj.value.data(),obj.value.size()))
 +      );
 +   }
 +
