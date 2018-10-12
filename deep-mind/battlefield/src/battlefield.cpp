@@ -1,6 +1,5 @@
 #include "battlefield.hpp"
 
-//EOSIO_ABI(battlefield, (dbins)(dbupd)(dbrem)(dtrxcreate)(dtrxmodify)(dtrxcancel))
 EOSIO_ABI(battlefield, (dbins)(dbupd)(dbrem))
 
 // @abi
