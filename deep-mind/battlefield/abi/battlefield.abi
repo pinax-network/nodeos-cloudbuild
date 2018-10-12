@@ -1,0 +1,73 @@
+{
+  "version": "eosio::abi/1.0",
+  "types": [
+     { "type": "name", "new_type_name": "account_name" }
+  ],
+  "structs": [
+    {
+      "name": "dbins",
+      "base": "",
+      "fields": [
+        { "name": "account", "type": "account_name" }
+      ]
+    },
+    {
+      "name": "reg",
+      "base": "",
+      "fields": [
+        { "name": "account", "type": "account_name" },
+        { "name": "amount", "type": "asset" },
+        { "name": "memo", "type": "string" },
+        { "name": "expires_at", "type": "time_point_sec" }
+      ]
+    },
+    {
+      "name": "unreg",
+      "base": "",
+      "fields": [
+        { "name": "account", "type": "account_name" }
+      ]
+    },
+
+    {
+      "name": "member_row",
+      "base": "",
+      "fields": [
+        { "name": "id", "type": "uint64" },
+        { "name": "account", "type": "account_name" },
+        { "name": "amount", "type": "asset" },
+        { "name": "memo", "type": "string" },
+        { "name": "created_at", "type": "time_point_sec" },
+        { "name": "expires_at", "type": "time_point_sec" }
+      ]
+    }
+  ],
+  "actions": [
+    {
+      "name": "dbins",
+      "type": "dbins",
+      "ricardian_contract": ""
+    },
+    {
+      "name": "reg",
+      "type": "reg",
+      "ricardian_contract": ""
+    },
+    {
+      "name": "unreg",
+      "type": "unreg",
+      "ricardian_contract": ""
+    }
+  ],
+  "tables": [
+    {
+      "name": "member",
+      "type": "member_row",
+      "index_type": "i64",
+      "key_names" : ["id", "by_account"],
+      "key_types" : ["i64", "name"]
+    }
+  ],
+  "clauses": [],
+  "ricardian_clauses": []
+}

@@ -1,0 +1,67 @@
+#pragma once
+
+#include <algorithm>
+#include <string>
+
+#include <eosiolib/eosio.hpp>
+#include <eosiolib/asset.hpp>
+#include <eosiolib/time.hpp>
+#include <eosiolib/transaction.hpp>
+
+using eosio::asset;
+using eosio::const_mem_fun;
+using eosio::indexed_by;
+using eosio::name;
+using eosio::time_point_sec;
+using std::function;
+using std::string;
+
+class battlefield : public eosio::contract {
+    public:
+        battlefield(account_name self)
+        :eosio::contract(self)
+        {}
+
+
+        // @abi
+        void dbins(account_name self);
+
+        // @abi
+        void reg(
+            const account_name account,
+            const asset amount,
+            const string& memo,
+            const time_point_sec expires_at
+        );
+
+        // @abi
+        void unreg(const account_name account);
+
+    private:
+        // 6 months in seconds (Computation: 6 months * average days per month * 24 hours * 60 minutes * 60 seconds)
+        constexpr static uint32_t SIX_MONTHS_IN_SECONDS = (uint32_t) (6 * (365.25 / 12) * 24 * 60 * 60);
+
+        struct member_row {
+            uint64_t              id;
+            account_name          account;
+            asset                 amount;
+            string                memo;
+            time_point_sec        created_at;
+            time_point_sec        expires_at;
+
+            auto primary_key()const { return id; }
+            uint64_t by_account() const { return account; }
+
+            bool is_expired() const { return time_point_sec(now()) >= expires_at; }
+        };
+        typedef eosio::multi_index<
+            N(member), member_row,
+            indexed_by<N(byaccount), const_mem_fun<member_row, account_name, &member_row::by_account>>
+        > members;
+
+        void update_member(
+            members& member_table,
+            const account_name account,
+            const function<void(member_row&)> updater
+        );
+};
