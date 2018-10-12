@@ -5,10 +5,18 @@
   ],
   "structs": [
     {
-      "name": "dbops",
+      "name": "acct",
       "base": "",
       "fields": [
         { "name": "account", "type": "account_name" }
+      ]
+    },
+    {
+      "name": "dtrx",
+      "base": "",
+      "fields": [
+        { "name": "account", "type": "account_name" },
+        { "name": "fail", "type": "bool" }
       ]
     },
 
@@ -27,18 +35,33 @@
   ],
   "actions": [
     {
+      "name": "dtrx",
+      "type": "dtrx",
+      "ricardian_contract": ""
+    },
+    {
+      "name": "dtrxcancel",
+      "type": "acct",
+      "ricardian_contract": ""
+    },
+    {
+      "name": "dtrxexec",
+      "type": "acct",
+      "ricardian_contract": ""
+    },
+    {
       "name": "dbins",
-      "type": "dbops",
+      "type": "acct",
       "ricardian_contract": ""
     },
     {
       "name": "dbupd",
-      "type": "dbops",
+      "type": "acct",
       "ricardian_contract": ""
     },
     {
       "name": "dbrem",
-      "type": "dbops",
+      "type": "acct",
       "ricardian_contract": ""
     }
   ],

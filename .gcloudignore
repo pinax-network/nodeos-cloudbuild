@@ -1,1 +1,4 @@
-deep-mind/boot/state
+deep-mind/boot/state/
+deep-mind/boot/blocks/reversible/
+deep-mind/compare/state/
+deep-mind/compare/blocks/

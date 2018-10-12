@@ -1,18 +1,17 @@
 steps:
 
 - id: deep-mind-tests
-  name: gcr.io/cloud-builders/docker
+  name: gcr.io/eoscanada-public/eosio-nodeos-prod:$_DSTTAG # Change to `-full`, and move after the build.
+  dir: /workspace/deep-mind/compare
   args: [
-    'run', '-ti', '--rm', '-v', '`pwd`:/workspace',
-    'gcr.io/$PROJECT_ID/eosio-nodeos-full:$_DSTTAG',
-    '/workspace/deep-mind/run_tests.sh'
+    './run.sh', '/opt/eosio/bin/nodeos'
   ]
 
 - id: docker-build
   name: gcr.io/cloud-builders/docker
   args: [
     'build',
-    '-t', 'gcr.io/$PROJECT_ID/eosio-nodeos-full:$_DSTTAG',
+    '-t', 'gcr.io/eoscanada-public/eosio-nodeos-full:$_DSTTAG',
     '-f', 'Dockerfile-nodeos-full',
     '--build-arg', 'SRCTAG=$_SRCTAG',
     '--build-arg', 'BUILD_ENV=v7',
@@ -24,5 +23,5 @@ steps:
   name: gcr.io/cloud-builders/gsutil
   args: ['cp', 'Dockerfile-nodeos-full', 'gs://artifacts.eoscanada-public.appspot.com/metadata/eosio-nodeos-full/$_DSTTAG/Dockerfile']
 
-images:
-- gcr.io/$PROJECT_ID/eosio-nodeos-full:$_DSTTAG
+#images:
+#- gcr.io/eoscanada-public/eosio-nodeos-full:$_DSTTAG

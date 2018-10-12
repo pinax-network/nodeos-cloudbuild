@@ -27,6 +27,9 @@ class battlefield : public eosio::contract {
         void dbins(account_name account);
         void dbupd(account_name account);
         void dbrem(account_name account);
+        void dtrx(account_name account, bool fail);
+        void dtrxcancel(account_name account);
+        void dtrxexec(account_name account);
 
 
     private:

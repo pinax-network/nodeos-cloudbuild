@@ -4,6 +4,12 @@ rm -rf blocks/ state/
 
 EOS_CODEBASE=~/build/eos
 $EOS_CODEBASE/build/programs/nodeos/nodeos --data-dir=`pwd`  --config-dir=`pwd` --genesis-json=`pwd`/genesis.json &
+PID=$!
+
+function shutdown {
+    kill $PID
+}
+trap shutdown EXIT
 
 sleep 1
 
@@ -26,4 +32,15 @@ eosc tx create battlefield1 dbrem '{"account": "battlefield1"}' -p battlefield1@
 
 sleep 0.6
 
-killall nodeos
+eosc tx create battlefield1 dtrx '{"account": "battlefield1", "fail": false}' -p battlefield1@active
+eosc tx create battlefield1 dtrxcancel '{"account": "battlefield1"}' -p battlefield1@active
+
+sleep 0.6
+
+eosc tx create battlefield1 dtrx '{"account": "battlefield1", "fail": true}' -p battlefield1@active || true
+
+sleep 0.6
+
+
+echo "Exiting in 1 sec"
+sleep 1
