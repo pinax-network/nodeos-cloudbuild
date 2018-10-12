@@ -12,13 +12,13 @@ steps:
     '.'
   ]
 
-- id: deep-mind-tests
-  name: gcr.io/cloud-builders/docker
-  args: [
-    'run', '-ti', '--rm', '-v', '`pwd`:/workspace',
-    'gcr.io/$PROJECT_ID/eosio-nodeos-full:$_DSTTAG',
-    '/workspace/deep-mind/run_tests.sh'
-  ]
+#- id: deep-mind-tests
+#  name: gcr.io/cloud-builders/docker
+#  args: [
+#    'run', '-ti', '--rm', '-v', '`pwd`:/workspace',
+#    'gcr.io/$PROJECT_ID/eosio-nodeos-full:$_DSTTAG',
+#    '/workspace/deep-mind/run_tests.sh'
+#  ]
 
 - id: push-dockerfile
   name: gcr.io/cloud-builders/gsutil

@@ -4,15 +4,15 @@ steps:
   name: gcr.io/cloud-builders/docker
   args: [
     'build',
-    '-t', 'gcr.io/$PROJECT_ID/eosio-nodeos-prod:$COMMIT_SHA',
+    '-t', 'gcr.io/$PROJECT_ID/eosio-nodeos-prod:$_NODEOS_FULL_TAG',
     '-f', 'Dockerfile-nodeos-prod',
-    '--build-arg', 'BRANCH=$COMMIT_SHA',
+    '--build-arg', 'NODEOS_FULL_TAG=$_NODEOS_FULL_TAG',
     '.'
   ]
 
 - id: push-dockerfile
   name: gcr.io/cloud-builders/gsutil
-  args: ['cp', 'Dockerfile-nodeos-prod', 'gs://artifacts.eoscanada-public.appspot.com/metadata/eosio-nodeos-prod/$COMMIT_SHA/Dockerfile']
+  args: ['cp', 'Dockerfile-nodeos-prod', 'gs://artifacts.eoscanada-public.appspot.com/metadata/eosio-nodeos-prod/$_NODEOS_FULL_TAG/Dockerfile']
 
 images:
-- gcr.io/$PROJECT_ID/eosio-nodeos-prod:$COMMIT_SHA
+- gcr.io/$PROJECT_ID/eosio-nodeos-prod:$_NODEOS_FULL_TAG

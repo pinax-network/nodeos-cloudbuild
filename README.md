@@ -15,4 +15,3 @@ Each time there's a new tag
 ```
 ./submit_nodeos_full.sh
 ```
-

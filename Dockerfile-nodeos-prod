@@ -1,6 +1,6 @@
-ARG BRANCH
+ARG NODEOS_FULL_TAG
 
-FROM gcr.io/eoscanada-public/eosio-nodeos-full:$BRANCH as builder
+FROM gcr.io/eoscanada-public/eosio-nodeos-full:$NODEOS_FULL_TAG as builder
 
 FROM ubuntu:18.04
 

@@ -1,16 +1,3 @@
-diff --git a/.gitmodules b/.gitmodules
-index 7d0f8a37f..60b7c51a1 100644
---- a/.gitmodules
-+++ b/.gitmodules
-@@ -26,7 +26,7 @@
- 	url = https://github.com/EOSIO/magic_get
- [submodule "libraries/fc"]
- 	path = libraries/fc
--	url = https://github.com/EOSIO/fc
-+	url = git@github.com:eoscanada/eosio-fc-private
- [submodule "libraries/wabt"]
- 	path = libraries/wabt
- 	url = http://github.com/EOSIO/wabt
 diff --git a/libraries/chain/CMakeLists.txt b/libraries/chain/CMakeLists.txt
 index cf4c1be18..e59b1a10b 100644
 --- a/libraries/chain/CMakeLists.txt
@@ -24,7 +11,7 @@ index cf4c1be18..e59b1a10b 100644
               )
  
 diff --git a/libraries/chain/apply_context.cpp b/libraries/chain/apply_context.cpp
-index f7513debf..32144a221 100644
+index f7513debf..923af9009 100644
 --- a/libraries/chain/apply_context.cpp
 +++ b/libraries/chain/apply_context.cpp
 @@ -101,9 +101,12 @@ void apply_context::exec()
@@ -143,7 +130,7 @@ index f7513debf..32144a221 100644
     keyval_cache.cache_table( tab );
     return keyval_cache.add( obj );
  }
-@@ -466,10 +523,13 @@ void apply_context::db_update_i64( int iterator, account_name payer, const char*
+@@ -466,14 +523,31 @@ void apply_context::db_update_i64( int iterator, account_name payer, const char*
  
     if( account_name(obj.payer) != payer ) {
        // refund the existing payer
@@ -175,7 +162,7 @@ index f7513debf..32144a221 100644
     db.modify( obj, [&]( auto& o ) {
       o.value.resize( buffer_size );
       memcpy( o.value.data(), buffer, buffer_size );
-@@ -489,6 +562,7 @@ void apply_context::db_remove_i64( int iterator ) {
+@@ -489,6 +563,7 @@ void apply_context::db_remove_i64( int iterator ) {
  
  //   require_write_lock( table_obj.scope );
  
@@ -183,7 +170,7 @@ index f7513debf..32144a221 100644
     update_db_usage( obj.payer,  -(obj.value.size() + config::billable_size_v<key_value_object>) );
  
     db.modify( table_obj, [&]( auto& t ) {
-@@ -496,6 +570,19 @@ void apply_context::db_remove_i64( int iterator ) {
+@@ -496,6 +571,19 @@ void apply_context::db_remove_i64( int iterator ) {
     });
     db.remove( obj );
  
@@ -196,7 +183,7 @@ index f7513debf..32144a221 100644
 +              ("scope", table_obj.scope)
 +              ("table_name", table_obj.table)
 +              ("primkey", name(obj.primary_key))
-+              ("odata", to_hex(obj.value.data(),obj.value.size()))
++              ("odata", to_hex(obj.value.data(), obj.value.size()))
 +      );
 +   }
 +
@@ -218,10 +205,10 @@ index 974675749..36069bed1 100644
        EOS_ASSERT( target_block_net_usage_pct <= config::percent_100, action_validate_exception,
                    "target block net usage percentage cannot exceed 100%" );
 diff --git a/libraries/chain/controller.cpp b/libraries/chain/controller.cpp
-index 0cf0627fd..9450a0f87 100644
+index 8c7e00ec7..6c0f7a546 100644
 --- a/libraries/chain/controller.cpp
 +++ b/libraries/chain/controller.cpp
-@@ -684,6 +684,13 @@ struct controller_impl {
+@@ -685,6 +685,13 @@ struct controller_impl {
           trace->except = e;
           trace->except_ptr = std::current_exception();
           trace->elapsed = fc::time_point::now() - trx_context.start;
@@ -464,7 +451,7 @@ index dd58f0364..e4eca0547 100644
        add_ram_usage( cgto.payer, (config::billable_size_v<generated_transaction_object> + trx_size) );
     }
  
-Submodule libraries/fc 4dc8375d7..e23e56b7b:
+Submodule libraries/fc f085773d2..af4807ce9:
 diff --git a/libraries/fc/CMakeLists.txt b/libraries/fc/CMakeLists.txt
 index 883fbbc..4db9ae9 100644
 --- a/libraries/fc/CMakeLists.txt
@@ -714,10 +701,10 @@ index 5643f57..0fc986d 100644
     }
  
 diff --git a/plugins/chain_plugin/chain_plugin.cpp b/plugins/chain_plugin/chain_plugin.cpp
-index 183e7a48e..423cb4920 100644
+index 12c5f3137..603f148aa 100644
 --- a/plugins/chain_plugin/chain_plugin.cpp
 +++ b/plugins/chain_plugin/chain_plugin.cpp
-@@ -221,6 +221,10 @@ void chain_plugin::set_program_options(options_description& cli, options_descrip
+@@ -222,6 +222,10 @@ void chain_plugin::set_program_options(options_description& cli, options_descrip
           ("reversible-blocks-db-guard-size-mb", bpo::value<uint64_t>()->default_value(config::default_reversible_guard_size / (1024  * 1024)), "Safely shut down node when free space remaining in the reverseible blocks database drops below this size (in MiB).")
           ("contracts-console", bpo::bool_switch()->default_value(false),
            "print contract's output to console")
@@ -728,7 +715,7 @@ index 183e7a48e..423cb4920 100644
           ("actor-whitelist", boost::program_options::value<vector<string>>()->composing()->multitoken(),
            "Account added to actor whitelist (may specify multiple times)")
           ("actor-blacklist", boost::program_options::value<vector<string>>()->composing()->multitoken(),
-@@ -337,6 +341,9 @@ void chain_plugin::plugin_initialize(const variables_map& options) {
+@@ -338,6 +342,9 @@ void chain_plugin::plugin_initialize(const variables_map& options) {
           throw;
        }
  
@@ -738,7 +725,7 @@ index 183e7a48e..423cb4920 100644
        my->chain_config = controller::config();
  
        LOAD_VALUE_SET( options, "actor-whitelist", my->chain_config->actor_whitelist );
-@@ -622,6 +629,12 @@ void chain_plugin::plugin_initialize(const variables_map& options) {
+@@ -623,6 +630,12 @@ void chain_plugin::plugin_initialize(const variables_map& options) {
              } );
  
        my->accepted_block_connection = my->chain->accepted_block.connect( [this]( const block_state_ptr& blk ) {
@@ -751,7 +738,7 @@ index 183e7a48e..423cb4920 100644
           my->accepted_block_channel.publish( blk );
        } );
  
-@@ -636,6 +649,12 @@ void chain_plugin::plugin_initialize(const variables_map& options) {
+@@ -637,6 +650,12 @@ void chain_plugin::plugin_initialize(const variables_map& options) {
  
        my->applied_transaction_connection = my->chain->applied_transaction.connect(
              [this]( const transaction_trace_ptr& trace ) {
