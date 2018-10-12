@@ -12,10 +12,16 @@ Clone our private fork of EOS, checkout the right branch with submodules and per
 ```
 cd /tmp
 git clone --recursive git@github.com:eoscanada/eosio-eos-private.git
+cd eosio-eos-private
 git checkout eoscanada/deep-mind
 git submodule update --recursive
 
-git diff --submodule=diff --no-color origin/release/1.3.x-dev eoscanada/deep-mind > ./deep-mind-1.3.x.patch
+git diff \
+    --no-color \
+    --submodule=diff \
+    origin/release/1.3.x-dev eoscanada/deep-mind \
+    . ':(exclude).gitmodules' \
+    > ./deep-mind-1.3.x.patch
 ```
 
 Testing setup
@@ -29,7 +35,7 @@ Testing setup
 * Assertion script & blockchain configs to enable and test deep-mind.
   * bash script qui run nodeos et qui pipe le log dans un fichier
   * un p'tit programme ou bash script qui fait des assertions sur le contenu de ce fichier (deep-mind output)
-  * config.ini 
+  * config.ini
 * Packageable avec le blocklog, dans un container
 
 
