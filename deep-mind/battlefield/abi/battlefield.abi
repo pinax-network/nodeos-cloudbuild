@@ -5,24 +5,7 @@
   ],
   "structs": [
     {
-      "name": "dbins",
-      "base": "",
-      "fields": [
-        { "name": "account", "type": "account_name" }
-      ]
-    },
-    {
-      "name": "reg",
-      "base": "",
-      "fields": [
-        { "name": "account", "type": "account_name" },
-        { "name": "amount", "type": "asset" },
-        { "name": "memo", "type": "string" },
-        { "name": "expires_at", "type": "time_point_sec" }
-      ]
-    },
-    {
-      "name": "unreg",
+      "name": "dbops",
       "base": "",
       "fields": [
         { "name": "account", "type": "account_name" }
@@ -45,17 +28,17 @@
   "actions": [
     {
       "name": "dbins",
-      "type": "dbins",
+      "type": "dbops",
       "ricardian_contract": ""
     },
     {
-      "name": "reg",
-      "type": "reg",
+      "name": "dbupd",
+      "type": "dbops",
       "ricardian_contract": ""
     },
     {
-      "name": "unreg",
-      "type": "unreg",
+      "name": "dbrem",
+      "type": "dbops",
       "ricardian_contract": ""
     }
   ],

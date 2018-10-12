@@ -24,18 +24,10 @@ class battlefield : public eosio::contract {
 
 
         // @abi
-        void dbins(account_name self);
+        void dbins(account_name account);
+        void dbupd(account_name account);
+        void dbrem(account_name account);
 
-        // @abi
-        void reg(
-            const account_name account,
-            const asset amount,
-            const string& memo,
-            const time_point_sec expires_at
-        );
-
-        // @abi
-        void unreg(const account_name account);
 
     private:
         // 6 months in seconds (Computation: 6 months * average days per month * 24 hours * 60 minutes * 60 seconds)
@@ -58,10 +50,4 @@ class battlefield : public eosio::contract {
             N(member), member_row,
             indexed_by<N(byaccount), const_mem_fun<member_row, account_name, &member_row::by_account>>
         > members;
-
-        void update_member(
-            members& member_table,
-            const account_name account,
-            const function<void(member_row&)> updater
-        );
 };

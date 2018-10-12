@@ -18,7 +18,11 @@ eosc tx create battlefield1 dbins '{"account": "battlefield1"}' -p battlefield1@
 
 sleep 0.6
 
-eosc tx create battlefield1 dbins '{"account": "battlefield1"}' -p battlefield1@active
+eosc tx create battlefield1 dbupd '{"account": "battlefield1"}' -p battlefield1@active
+
+sleep 0.6
+
+eosc tx create battlefield1 dbrem '{"account": "battlefield1"}' -p battlefield1@active
 
 sleep 0.6
 
