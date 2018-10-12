@@ -41,6 +41,9 @@ eosc tx create battlefield1 dtrx '{"account": "battlefield1", "fail": true}' -p 
 
 sleep 0.6
 
+# TODO: provoke a `hard_fail` transaction.
+# TODO: provode a `soft_fail` transaction
+# TODO: provoke an `expired` transaction.
 
 echo "Exiting in 1 sec"
 sleep 1
