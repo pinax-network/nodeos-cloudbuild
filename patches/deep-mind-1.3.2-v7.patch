@@ -433,20 +433,6 @@ index 3175994de..fb149b035 100644
        private:
           bool                          is_initialized = false;
  
-diff --git a/libraries/chain/trace.cpp b/libraries/chain/trace.cpp
-new file mode 100644
-index 000000000..3dadcdad6
---- /dev/null
-+++ b/libraries/chain/trace.cpp
-@@ -0,0 +1,7 @@
-+#include <eosio/chain/trace.hpp>
-+
-+namespace eosio { namespace chain {
-+
-+const char* ram_trace::operation = NULL;
-+
-+}}
-\ No newline at end of file
 diff --git a/libraries/chain/transaction_context.cpp b/libraries/chain/transaction_context.cpp
 index dd58f0364..dcd6e68a1 100644
 --- a/libraries/chain/transaction_context.cpp
@@ -517,37 +503,6 @@ index 883fbbc..4db9ae9 100644
  IF(APPLE)
    # As of 10.10 yosemite, the OpenSSL static libraries shipped with os x have a dependency
    # on zlib, so any time you link in openssl you also need to link zlib.  .  We really want to detect whether openssl was configured with the --no-zlib
-diff --git a/libraries/fc/include/fc/log/deep_mind_appender.hpp b/libraries/fc/include/fc/log/deep_mind_appender.hpp
-new file mode 100644
-index 0000000..a766851
---- /dev/null
-+++ b/libraries/fc/include/fc/log/deep_mind_appender.hpp
-@@ -0,0 +1,24 @@
-+#pragma once
-+#include <fc/log/appender.hpp>
-+#include <fc/log/logger.hpp>
-+#include <vector>
-+
-+namespace fc
-+{
-+   class deep_mind_appender : public appender
-+   {
-+       public:
-+            deep_mind_appender( const variant& args );
-+            deep_mind_appender();
-+
-+            ~deep_mind_appender();
-+            void initialize( boost::asio::io_service& io_service ) {}
-+
-+            virtual void log( const log_message& m );
-+
-+       private:
-+            class impl;
-+            std::unique_ptr<impl> my;
-+   };
-+} // namespace fc
-+
-
 diff --git a/libraries/fc/include/fc/log/logger.hpp b/libraries/fc/include/fc/log/logger.hpp
 index 9005d75..84f7289 100644
 --- a/libraries/fc/include/fc/log/logger.hpp
@@ -643,55 +598,6 @@ index d504cfc..9b0ab7b 100644
     //static bool reg_file_appender = appender::register_appender<file_appender>( "file" );
     static bool reg_gelf_appender = appender::register_appender<gelf_appender>( "gelf" );
  
-diff --git a/libraries/fc/src/log/deep_mind_appender.cpp b/libraries/fc/src/log/deep_mind_appender.cpp
-new file mode 100644
-index 0000000..8bf79a9
---- /dev/null
-+++ b/libraries/fc/src/log/deep_mind_appender.cpp
-@@ -0,0 +1,43 @@
-+#include <fc/log/deep_mind_appender.hpp>
-+#include <fc/log/log_message.hpp>
-+#include <fc/string.hpp>
-+#include <fc/variant.hpp>
-+#include <fc/reflect/variant.hpp>
-+#ifndef WIN32
-+#include <unistd.h>
-+#endif
-+#include <boost/thread/mutex.hpp>
-+#include <fc/exception/exception.hpp>
-+#include <iomanip>
-+#include <mutex>
-+#include <sstream>
-+
-+
-+namespace fc {
-+
-+   class deep_mind_appender::impl {
-+   public:
-+     boost::mutex                log_mutex;
-+   };
-+
-+   deep_mind_appender::deep_mind_appender( const variant& args )
-+   :my(new impl){}
-+
-+   deep_mind_appender::deep_mind_appender()
-+   :my(new impl){}
-+
-+   deep_mind_appender::~deep_mind_appender() {}
-+
-+   void deep_mind_appender::log( const log_message& m ) {
-+      FILE* out = stdout;
-+
-+      std::stringstream line;
-+      fc::string message = fc::format_string( m.get_format(), m.get_data() );
-+      if (message.empty()) return;
-+
-+      std::unique_lock<boost::mutex> lock(my->log_mutex);
-+
-+      fprintf( out, "%s\n", message.c_str() );
-+      fflush( out );
-+   }
-+}
 diff --git a/libraries/fc/src/log/logger_config.cpp b/libraries/fc/src/log/logger_config.cpp
 index 5643f57..0fc986d 100644
 --- a/libraries/fc/src/log/logger_config.cpp
