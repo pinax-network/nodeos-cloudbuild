@@ -32,14 +32,18 @@ eosc tx create battlefield1 dbrem '{"account": "battlefield1"}' -p battlefield1@
 
 sleep 0.6
 
-eosc tx create battlefield1 dtrx '{"account": "battlefield1", "fail": false}' -p battlefield1@active
+eosc tx create battlefield1 dtrx '{"account": "battlefield1", "fail": false, "nonce": "1"}' -p battlefield1@active
 eosc tx create battlefield1 dtrxcancel '{"account": "battlefield1"}' -p battlefield1@active
 
 sleep 0.6
 
-eosc tx create battlefield1 dtrx '{"account": "battlefield1", "fail": true}' -p battlefield1@active || true
+eosc tx create battlefield1 dtrx '{"account": "battlefield1", "fail": true, "nonce": "1"}' -p battlefield1@active || true
 
 sleep 0.6
+
+# `send_deferred` with `replace_existing` enabled, to test `MODIFY` clauses.
+eosc tx create battlefield1 dtrx '{"account": "battlefield1", "fail": false, "nonce": "1"}' -p battlefield1@active
+eosc tx create battlefield1 dtrx '{"account": "battlefield1", "fail": false, "nonce": "2"}' -p battlefield1@active
 
 # TODO: provoke a `hard_fail` transaction.
 # TODO: provode a `soft_fail` transaction

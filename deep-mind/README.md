@@ -33,18 +33,18 @@ git submodule update --recursive
 
 From this directory, run:
 ```
-./apply.sh ~/build/eos ../patches/deep-mind-v1.3.x.patch
+./apply.sh ~/build/eos ../patches/deep-mind-v1.3.x.patch ../patches-deep-mind-logging.patch
 ```
 
-Inspect the output, test it against `compare`, extract a new patch with:
+Inspect the output, test `nodeos` against `compare`, extract a new
+patches with:
 
 ```
-git diff \
-    --no-color \
-    --submodule=diff \
-    origin/release/1.3.x-dev eoscanada/deep-mind \
-    . \
-    > ./new-deep-mind-vX.Y.Z.patch
+git diff --cached --ignore-submodules=all > deep-mind.patch
+
+pushd libraries/fc
+  git diff --cached --src-prefix=a/libraries/fc/ --dst-prefix=b/libraries/fc/ > ../../deep-mind-logging.patch
+popd
 ```
 
 Inspect the patch, make sure nothing extraneous crept in (whitespace

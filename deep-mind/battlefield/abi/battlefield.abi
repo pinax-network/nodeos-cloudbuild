@@ -16,7 +16,8 @@
       "base": "",
       "fields": [
         { "name": "account", "type": "account_name" },
-        { "name": "fail", "type": "bool" }
+        { "name": "fail", "type": "bool" },
+        { "name": "nonce", "type": "string" }
       ]
     },
 

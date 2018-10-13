@@ -55,7 +55,7 @@ void battlefield::dbrem(account_name account) {
 }
 
 // @abi
-void battlefield::dtrx(account_name account, bool fail) {
+void battlefield::dtrx(account_name account, bool fail, std::string nonce) {
     require_auth(account);
 
     eosio::transaction deferred;

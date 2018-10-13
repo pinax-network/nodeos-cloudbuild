@@ -13,8 +13,8 @@ if [[ ${_DSTTAG} == "" ]]; then
   _DSTTAG=${1}
 fi
 
-_PATCHES=${3}
-# deep-mind-1.3.x.patch for pusher... 
+_PATCHES="deep-mind-v1.3.2-v8.patch deep-mind-logging-v1.3.2-v8.patch"
+#_PATCHES=${3}
 
 export CLOUDSDK_CORE_PROJECT=eoscanada-public
 
