@@ -13,7 +13,7 @@ if [ -f $1 ]; then
     $1 --data-dir=`pwd` --config-dir=`pwd` --replay-blockchain > output.log &
     PID=$!
 
-    sleep 4
+    sleep 6
 
     kill $PID
 else
@@ -22,7 +22,7 @@ else
     docker kill deep-mind-compare || true
     docker run --name deep-mind-compare --rm -v `pwd`:/data -w /data $1 /bin/bash -c "/opt/eosio/bin/nodeos --data-dir=/data --config-dir=/data --replay-blockchain > output.log" &
 
-    sleep 4
+    sleep 6
 
     docker kill deep-mind-compare
 fi
