@@ -28,7 +28,7 @@ else
 fi
 
 sed -i 's/,"elapsed":[0-9]*,"/,"elapsed":0,"/g' output.log
-sed 's/"thread_name":"thread-[0-9]*","timestamp":"[^"]*"}/"thread_name":"thread-0","timestamp":"9999-99-99T99:99:99.999"}/g' output.log
+sed -i 's/"thread_name":"thread-[0-9]*","timestamp":"[^"]*"}/"thread_name":"thread-0","timestamp":"9999-99-99T99:99:99.999"}/g' output.log
 
 diff -u reference.log output.log | tee diff.log
 
