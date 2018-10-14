@@ -16,12 +16,12 @@ steps:
   name: gcr.io/eoscanada-public/eosio-nodeos-full:$_DSTTAG
   dir: /workspace/deep-mind/compare
   args: [
-    './run.sh', '/opt/eosio/bin/nodeos'
+    './run.sh', '/opt/eos/bin/nodeos'
   ]
 
 - id: push-dockerfile
   name: gcr.io/cloud-builders/gsutil
   args: ['cp', 'Dockerfile-nodeos-full', 'gs://artifacts.eoscanada-public.appspot.com/metadata/eosio-nodeos-full/$_DSTTAG/Dockerfile']
 
-#images:
-#- gcr.io/eoscanada-public/eosio-nodeos-full:$_DSTTAG
+images:
+- gcr.io/eoscanada-public/eosio-nodeos-full:$_DSTTAG

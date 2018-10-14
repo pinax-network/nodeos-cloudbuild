@@ -28,12 +28,9 @@ else
 fi
 
 sed -i 's/,"elapsed":[0-9]*,"/,"elapsed":0,"/g' output.log
+sed 's/"thread_name":"thread-[0-9]*","timestamp":"[^"]*"}/"thread_name":"thread-0","timestamp":"9999-99-99T99:99:99.999"}/g' output.log
 
-if [ ! -f reference.log ]; then
-    cat reference.log.gz | gunzip > reference.log
-fi
-
-diff reference.log output.log | tee diff.log
+diff -u reference.log output.log | tee diff.log
 
 if [ "$(cat diff.log | wc -l)" != "0" ]; then
     echo Some differences found between deep-mind reference log and logs produced by this build

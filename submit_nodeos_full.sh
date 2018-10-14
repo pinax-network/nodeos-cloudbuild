@@ -21,5 +21,5 @@ export CLOUDSDK_CORE_PROJECT=eoscanada-public
 gcloud builds submit . \
           --config cloudbuild-nodeos-full.yaml \
           --timeout 8h \
-          --substitutions _SRCTAG=$_SRCTAG,_DSTTAG=$_DSTTAG,_PATCHES=$_PATCHES \
+          --substitutions "_SRCTAG=$_SRCTAG,_DSTTAG=$_DSTTAG,_PATCHES=$_PATCHES" \
           --machine-type=n1-highcpu-32
