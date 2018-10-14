@@ -2,8 +2,7 @@
 
 rm -rf blocks/ state/
 
-EOS_CODEBASE=~/build/eos
-$EOS_CODEBASE/build/programs/nodeos/nodeos --data-dir=`pwd`  --config-dir=`pwd` --genesis-json=`pwd`/genesis.json &
+$1 --data-dir=`pwd`  --config-dir=`pwd` --genesis-json=`pwd`/genesis.json &
 PID=$!
 
 function shutdown {
@@ -20,6 +19,10 @@ export EOSC_GLOBAL_API_URL=http://localhost:9898
 
 eosc transfer eosio battlefield1 100000 --memo "go habs go"
 
+eosc system newaccount battlefield1 battlefield2 --auth-key EOS5MHPYyhjBjnQZejzZHqHewPWhGTfQWSVTWYEhDmJu4SXkzgweP --stake-cpu 1 --stake-net 1 --transfer
+
+sleep 0.6
+
 eosc tx create battlefield1 dbins '{"account": "battlefield1"}' -p battlefield1@active
 
 sleep 0.6
@@ -32,22 +35,43 @@ eosc tx create battlefield1 dbrem '{"account": "battlefield1"}' -p battlefield1@
 
 sleep 0.6
 
-eosc tx create battlefield1 dtrx '{"account": "battlefield1", "fail": false, "nonce": "1"}' -p battlefield1@active
+eosc tx create battlefield1 dtrx '{"account": "battlefield1", "fail_now": false, "fail_later": false, "delay_sec": 1, "nonce": "1"}' -p battlefield1@active
 eosc tx create battlefield1 dtrxcancel '{"account": "battlefield1"}' -p battlefield1@active
 
 sleep 0.6
 
-eosc tx create battlefield1 dtrx '{"account": "battlefield1", "fail": true, "nonce": "1"}' -p battlefield1@active || true
+eosc tx create battlefield1 dtrx '{"account": "battlefield1", "fail_now": true, "fail_later": false, "delay_sec": 1, "nonce": "1"}' -p battlefield1@active || true
 
 sleep 0.6
 
 # `send_deferred` with `replace_existing` enabled, to test `MODIFY` clauses.
-eosc tx create battlefield1 dtrx '{"account": "battlefield1", "fail": false, "nonce": "1"}' -p battlefield1@active
-eosc tx create battlefield1 dtrx '{"account": "battlefield1", "fail": false, "nonce": "2"}' -p battlefield1@active
+eosc tx create battlefield1 dtrx '{"account": "battlefield1", "fail_now": false, "fail_later": false, "delay_sec": 1, "nonce": "1"}' -p battlefield1@active
+eosc tx create battlefield1 dtrx '{"account": "battlefield1", "fail_now": false, "fail_later": false, "delay_sec": 1, "nonce": "2"}' -p battlefield1@active
 
-# TODO: provoke a `hard_fail` transaction.
+sleep 0.6
+
+eosc tx create battlefield1 dtrx '{"account": "battlefield1", "fail_now": false, "fail_later": true, "delay_sec": 1, "nonce": "1"}' -p battlefield1@active
+
+echo Waiting for the transaction to fail...
+
+sleep 1.1
+
+eosc tx create battlefield1 dbinstwo '{"account": "battlefield1", "first": 100, "second": 101}' -p battlefield1@active
+# This TX will do one DB_OPERATION for writing, and the second will fail. We want our instrumentation NOT to keep that DB_OPERATION.
+eosc tx create --delay-sec=1 battlefield1 dbinstwo '{"account": "battlefield1", "first": 102, "second": 100}' -p battlefield1@active
+
+echo Waiting for the transaction to fail, yet attempt to write to storage
+sleep 1.1
+
+# This is to see how the RAM_USAGE behaves, when a deferred hard_fails. Does it refund the deferred_trx_remove ? What about the other RAM tweaks? Any one them saved?
+eosc tx create battlefield1 dbinstwo '{"account": "battlefield1", "first": 200, "second": 201}' -p battlefield1@active
+
+sleep 0.6
+
 # TODO: provode a `soft_fail` transaction
-# TODO: provoke an `expired` transaction.
+# TODO: provoke an `expired` transaction. How to do that? Too loaded and can't push it through?
+# TODO: fail a deferred that wrote things to storage... we need to make sure this does NOT go
+#       into fluxdb, yet the RAM for `deferred_trx_removed` should be applied.. hmm...
 
 echo "Exiting in 1 sec"
 sleep 1

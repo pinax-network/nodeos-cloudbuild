@@ -25,11 +25,12 @@ class battlefield : public eosio::contract {
 
         // @abi
         void dbins(account_name account);
+        void dbinstwo(account_name account, uint64_t first, uint64_t second);
         void dbupd(account_name account);
         void dbrem(account_name account);
-        void dtrx(account_name account, bool fail, std::string nonce);
+        void dtrx(account_name account, bool fail_now, bool fail_later, uint32_t delay_sec, std::string nonce);
         void dtrxcancel(account_name account);
-        void dtrxexec(account_name account);
+        void dtrxexec(account_name account, bool fail, std::string nonce);
 
 
     private:

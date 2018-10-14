@@ -11,7 +11,7 @@ index cf4c1be18..e59b1a10b 100644
               )
  
 diff --git a/libraries/chain/apply_context.cpp b/libraries/chain/apply_context.cpp
-index f7513debf..3bb7967fe 100644
+index f7513debf..d433f66ac 100644
 --- a/libraries/chain/apply_context.cpp
 +++ b/libraries/chain/apply_context.cpp
 @@ -101,9 +101,12 @@ void apply_context::exec()
@@ -27,7 +27,7 @@ index f7513debf..3bb7967fe 100644
     }
  
     if( _cfa_inline_actions.size() > 0 || _inline_actions.size() > 0 ) {
-@@ -276,14 +279,37 @@ void apply_context::schedule_deferred_transaction( const uint128_t& sender_id, a
+@@ -276,14 +279,38 @@ void apply_context::schedule_deferred_transaction( const uint128_t& sender_id, a
     if ( auto ptr = d.find<generated_transaction_object,by_sender_id>(boost::make_tuple(receiver, sender_id)) ) {
        EOS_ASSERT( replace_existing, deferred_tx_duplicate, "deferred transaction with the same sender_id and payer already exists" );
  
@@ -40,6 +40,7 @@ index f7513debf..3bb7967fe 100644
 +      }
  
        // TODO: The logic of the next line needs to be incorporated into the next hard fork.
++      // ram_trace::operation = "deferred_trx_cancel";
        // add_ram_usage( ptr->payer, -(config::billable_size_v<generated_transaction_object> + ptr->packed_trx.size()) );
  
        d.modify<generated_transaction_object>( *ptr, [&]( auto& gtx ) {
@@ -65,7 +66,7 @@ index f7513debf..3bb7967fe 100644
              gtx.sender      = receiver;
              gtx.sender_id   = sender_id;
              gtx.payer       = payer;
-@@ -292,6 +318,20 @@ void apply_context::schedule_deferred_transaction( const uint128_t& sender_id, a
+@@ -292,6 +319,20 @@ void apply_context::schedule_deferred_transaction( const uint128_t& sender_id, a
              gtx.expiration  = gtx.delay_until + fc::seconds(control.get_global_properties().configuration.deferred_trx_expiration_window);
  
              trx_size = gtx.set( trx );
@@ -86,7 +87,7 @@ index f7513debf..3bb7967fe 100644
           });
     } else {
        d.create<generated_transaction_object>( [&]( auto& gtx ) {
-@@ -304,11 +344,27 @@ void apply_context::schedule_deferred_transaction( const uint128_t& sender_id, a
+@@ -304,11 +345,27 @@ void apply_context::schedule_deferred_transaction( const uint128_t& sender_id, a
              gtx.expiration  = gtx.delay_until + fc::seconds(control.get_global_properties().configuration.deferred_trx_expiration_window);
  
              trx_size = gtx.set( trx );
@@ -114,7 +115,7 @@ index f7513debf..3bb7967fe 100644
     add_ram_usage( payer, (config::billable_size_v<generated_transaction_object> + trx_size) );
  }
  
-@@ -316,6 +372,27 @@ bool apply_context::cancel_deferred_transaction( const uint128_t& sender_id, acc
+@@ -316,6 +373,27 @@ bool apply_context::cancel_deferred_transaction( const uint128_t& sender_id, acc
     auto& generated_transaction_idx = db.get_mutable_index<generated_transaction_multi_index>();
     const auto* gto = db.find<generated_transaction_object,by_sender_id>(boost::make_tuple(sender, sender_id));
     if ( gto ) {
@@ -142,7 +143,7 @@ index f7513debf..3bb7967fe 100644
        add_ram_usage( gto->payer, -(config::billable_size_v<generated_transaction_object> + gto->packed_trx.size()) );
        generated_transaction_idx.remove(*gto);
     }
-@@ -332,6 +409,7 @@ const table_id_object& apply_context::find_or_create_table( name code, name scop
+@@ -332,6 +410,7 @@ const table_id_object& apply_context::find_or_create_table( name code, name scop
        return *existing_tid;
     }
  
@@ -150,7 +151,7 @@ index f7513debf..3bb7967fe 100644
     update_db_usage(payer, config::billable_size_v<table_id_object>);
  
     return db.create<table_id_object>([&](table_id_object &t_id){
-@@ -343,6 +421,7 @@ const table_id_object& apply_context::find_or_create_table( name code, name scop
+@@ -343,6 +422,7 @@ const table_id_object& apply_context::find_or_create_table( name code, name scop
  }
  
  void apply_context::remove_table( const table_id_object& tid ) {
@@ -158,7 +159,7 @@ index f7513debf..3bb7967fe 100644
     update_db_usage(tid.payer, - config::billable_size_v<table_id_object>);
     db.remove(tid);
  }
-@@ -444,8 +523,23 @@ int apply_context::db_store_i64( uint64_t code, uint64_t scope, uint64_t table,
+@@ -444,8 +524,23 @@ int apply_context::db_store_i64( uint64_t code, uint64_t scope, uint64_t table,
     });
  
     int64_t billable_size = (int64_t)(buffer_size + config::billable_size_v<key_value_object>);
@@ -182,7 +183,7 @@ index f7513debf..3bb7967fe 100644
     keyval_cache.cache_table( tab );
     return keyval_cache.add( obj );
  }
-@@ -466,14 +560,32 @@ void apply_context::db_update_i64( int iterator, account_name payer, const char*
+@@ -466,14 +561,32 @@ void apply_context::db_update_i64( int iterator, account_name payer, const char*
  
     if( account_name(obj.payer) != payer ) {
        // refund the existing payer
@@ -215,7 +216,7 @@ index f7513debf..3bb7967fe 100644
     db.modify( obj, [&]( auto& o ) {
       o.value.resize( buffer_size );
       memcpy( o.value.data(), buffer, buffer_size );
-@@ -489,6 +601,7 @@ void apply_context::db_remove_i64( int iterator ) {
+@@ -489,6 +602,7 @@ void apply_context::db_remove_i64( int iterator ) {
  
  //   require_write_lock( table_obj.scope );
  
@@ -223,7 +224,7 @@ index f7513debf..3bb7967fe 100644
     update_db_usage( obj.payer,  -(obj.value.size() + config::billable_size_v<key_value_object>) );
  
     db.modify( table_obj, [&]( auto& t ) {
-@@ -496,6 +609,19 @@ void apply_context::db_remove_i64( int iterator ) {
+@@ -496,6 +610,19 @@ void apply_context::db_remove_i64( int iterator ) {
     });
     db.remove( obj );
  
@@ -259,10 +260,33 @@ index 974675749..766f8b251 100644
        EOS_ASSERT( target_block_net_usage_pct <= config::percent_100, action_validate_exception,
                    "target block net usage percentage cannot exceed 100%" );
 diff --git a/libraries/chain/controller.cpp b/libraries/chain/controller.cpp
-index 8c7e00ec7..6c0f7a546 100644
+index 8c7e00ec7..2c05ea7b7 100644
 --- a/libraries/chain/controller.cpp
 +++ b/libraries/chain/controller.cpp
-@@ -685,6 +685,13 @@ struct controller_impl {
+@@ -419,7 +419,8 @@ struct controller_impl {
+       ram_delta += owner_permission.auth.get_billable_size();
+       ram_delta += active_permission.auth.get_billable_size();
+ 
+-      resource_limits.add_pending_ram_usage(name, ram_delta);
++      ram_trace::operation = "newaccount";
++      resource_limits.add_pending_ram_usage(name, ram_delta, 0);
+       resource_limits.verify_account_ram_usage(name);
+    }
+ 
+@@ -563,9 +564,11 @@ struct controller_impl {
+    }
+ 
+    void remove_scheduled_transaction( const generated_transaction_object& gto ) {
++      ram_trace::operation = "deferred_trx_removed";
+       resource_limits.add_pending_ram_usage(
+          gto.payer,
+-         -(config::billable_size_v<generated_transaction_object> + gto.packed_trx.size())
++         -(config::billable_size_v<generated_transaction_object> + gto.packed_trx.size()),
++         0
+       );
+       // No need to verify_account_ram_usage since we are only reducing memory
+ 
+@@ -685,6 +688,13 @@ struct controller_impl {
           trace->except = e;
           trace->except_ptr = std::current_exception();
           trace->elapsed = fc::time_point::now() - trx_context.start;
@@ -400,6 +424,25 @@ index 7f62ff111..872bd6e9b 100644
     uint64_t   max_block_net_usage;                 ///< the maxiumum net usage in instructions for a block
     uint32_t   target_block_net_usage_pct;          ///< the target percent (1% == 100, 100%= 10,000) of maximum net usage; exceeding this triggers congestion handling
     uint32_t   max_transaction_net_usage;           ///< the maximum objectively measured net usage that the chain will allow regardless of account limits
+diff --git a/libraries/chain/include/eosio/chain/resource_limits.hpp b/libraries/chain/include/eosio/chain/resource_limits.hpp
+index 121c46087..bc93a4b0b 100644
+--- a/libraries/chain/include/eosio/chain/resource_limits.hpp
++++ b/libraries/chain/include/eosio/chain/resource_limits.hpp
+@@ -1,4 +1,5 @@
+ #pragma once
++#include <eosio/chain/chain_config.hpp>
+ #include <eosio/chain/exceptions.hpp>
+ #include <eosio/chain/types.hpp>
+ #include <chainbase/chainbase.hpp>
+@@ -49,7 +50,7 @@ namespace eosio { namespace chain { namespace resource_limits {
+          void update_account_usage( const flat_set<account_name>& accounts, uint32_t ordinal );
+          void add_transaction_usage( const flat_set<account_name>& accounts, uint64_t cpu_usage, uint64_t net_usage, uint32_t ordinal );
+ 
+-         void add_pending_ram_usage( const account_name account, int64_t ram_delta );
++         void add_pending_ram_usage( const account_name account, int64_t ram_delta, uint32_t action_id );
+          void verify_account_ram_usage( const account_name accunt )const;
+ 
+          /// set_account_limits returns true if new ram_bytes limit is more restrictive than the previously set one
 diff --git a/libraries/chain/include/eosio/chain/trace.hpp b/libraries/chain/include/eosio/chain/trace.hpp
 index ad02baf5b..8863ee0e4 100644
 --- a/libraries/chain/include/eosio/chain/trace.hpp
@@ -446,6 +489,39 @@ index 3175994de..fb149b035 100644
        private:
           bool                          is_initialized = false;
  
+diff --git a/libraries/chain/resource_limits.cpp b/libraries/chain/resource_limits.cpp
+index 6d3176c7f..33c30ebe6 100644
+--- a/libraries/chain/resource_limits.cpp
++++ b/libraries/chain/resource_limits.cpp
+@@ -157,7 +157,7 @@ void resource_limits_manager::add_transaction_usage(const flat_set<account_name>
+    EOS_ASSERT( state.pending_net_usage <= config.net_limit_parameters.max, block_resource_exhausted, "Block has insufficient net resources" );
+ }
+ 
+-void resource_limits_manager::add_pending_ram_usage( const account_name account, int64_t ram_delta ) {
++void resource_limits_manager::add_pending_ram_usage( const account_name account, int64_t ram_delta, uint32_t action_id ) {
+    if (ram_delta == 0) {
+       return;
+    }
+@@ -171,6 +171,19 @@ void resource_limits_manager::add_pending_ram_usage( const account_name account,
+ 
+    _db.modify( usage, [&]( auto& u ) {
+      u.ram_usage += ram_delta;
++
++     if (eosio::chain::chain_config::deep_mind_enabled) {
++        dmlog("RAM_CONSUMED ${rev} ${action_id} ${operation} ${payer} ${new_usage} ${delta}",
++            ("rev", _db.revision()-1)
++            ("action_id", action_id)
++            ("operation", ram_trace::operation == NULL ? "n/a" : ram_trace::operation)
++            ("payer", account)
++            ("new_usage", u.ram_usage)
++            ("delta", ram_delta)
++        );
++
++        ram_trace::operation = NULL;
++     }
+    });
+ }
+ 
 diff --git a/libraries/chain/trace.cpp b/libraries/chain/trace.cpp
 new file mode 100644
 index 000000000..3dadcdad6
@@ -461,29 +537,19 @@ index 000000000..3dadcdad6
 +}}
 \ No newline at end of file
 diff --git a/libraries/chain/transaction_context.cpp b/libraries/chain/transaction_context.cpp
-index dd58f0364..dcd6e68a1 100644
+index dd58f0364..88dbd85b7 100644
 --- a/libraries/chain/transaction_context.cpp
 +++ b/libraries/chain/transaction_context.cpp
-@@ -386,6 +386,18 @@ namespace eosio { namespace chain {
+@@ -382,7 +382,7 @@ namespace eosio { namespace chain {
+ 
+    void transaction_context::add_ram_usage( account_name account, int64_t ram_delta ) {
+       auto& rl = control.get_mutable_resource_limits_manager();
+-      rl.add_pending_ram_usage( account, ram_delta );
++      rl.add_pending_ram_usage( account, ram_delta, action_id.current() );
        if( ram_delta > 0 ) {
           validate_ram_usage.insert( account );
        }
-+
-+      if (eosio::chain::chain_config::deep_mind_enabled) {
-+        dmlog("RAM_CONSUMED ${rev} ${action_id} ${operation} ${payer} ${delta}",
-+                ("rev", control.db().revision()-1)
-+                ("action_id", action_id.current())
-+                ("operation", ram_trace::operation == NULL ? "n/a" : ram_trace::operation)
-+                ("payer", account)
-+                ("delta", ram_delta)
-+        );
-+
-+        ram_trace::operation = NULL;
-+      }
-    }
- 
-    uint32_t transaction_context::update_billed_cpu_time( fc::time_point now ) {
-@@ -460,8 +472,23 @@ namespace eosio { namespace chain {
+@@ -460,8 +460,23 @@ namespace eosio { namespace chain {
          gto.delay_until = gto.published + delay;
          gto.expiration  = gto.delay_until + fc::seconds(control.get_global_properties().configuration.deferred_trx_expiration_window);
          trx_size = gto.set( trx );
@@ -503,12 +569,12 @@ index dd58f0364..dcd6e68a1 100644
 +        }
        });
  
-+      ram_trace::operation = "scheduled_trx_add";
++      ram_trace::operation = "deferred_trx_pushed";
        add_ram_usage( cgto.payer, (config::billable_size_v<generated_transaction_object> + trx_size) );
     }
  
 diff --git a/plugins/chain_plugin/chain_plugin.cpp b/plugins/chain_plugin/chain_plugin.cpp
-index 2b48d979f..c5d55a961 100644
+index 2b48d979f..f44a1b7f7 100644
 --- a/plugins/chain_plugin/chain_plugin.cpp
 +++ b/plugins/chain_plugin/chain_plugin.cpp
 @@ -221,6 +221,12 @@ void chain_plugin::set_program_options(options_description& cli, options_descrip
@@ -553,7 +619,7 @@ index 2b48d979f..c5d55a961 100644
        my->applied_transaction_connection = my->chain->applied_transaction.connect(
              [this]( const transaction_trace_ptr& trace ) {
 +               if (eosio::chain::chain_config::deep_mind_enabled) {
-+                  dmlog( "HISTORY_TRACES ${block} ${traces}",
++                  dmlog( "APPLIED_TRANSACTION ${block} ${traces}",
 +                        ("traces", chain().to_variant_with_abi(trace, fc::microseconds(5000000)))
 +                        ("block", chain().pending_block_state()->block_num)
 +                  );
@@ -561,3 +627,54 @@ index 2b48d979f..c5d55a961 100644
                 my->applied_transaction_channel.publish( trace );
              } );
  
+diff --git a/unittests/resource_limits_test.cpp b/unittests/resource_limits_test.cpp
+index 76c0d5416..9421f2a26 100644
+--- a/unittests/resource_limits_test.cpp
++++ b/unittests/resource_limits_test.cpp
+@@ -250,11 +250,11 @@ BOOST_AUTO_TEST_SUITE(resource_limits_test)
+       process_account_limit_updates();
+ 
+       for (int idx = 0; idx < expected_iterations - 1; idx++) {
+-         add_pending_ram_usage(account, increment);
++         add_pending_ram_usage(account, increment, 0);
+          verify_account_ram_usage(account);
+       }
+ 
+-      add_pending_ram_usage(account, increment);
++      add_pending_ram_usage(account, increment, 0);
+       BOOST_REQUIRE_THROW(verify_account_ram_usage(account), ram_usage_exceeded);
+    } FC_LOG_AND_RETHROW();
+ 
+@@ -264,7 +264,7 @@ BOOST_AUTO_TEST_SUITE(resource_limits_test)
+       set_account_limits(account, 100, -1, -1 );
+       verify_account_ram_usage(account);
+       process_account_limit_updates();
+-      BOOST_REQUIRE_THROW(add_pending_ram_usage(account, -101), transaction_exception);
++      BOOST_REQUIRE_THROW(add_pending_ram_usage(account, -101, 0), transaction_exception);
+ 
+    } FC_LOG_AND_RETHROW();
+ 
+@@ -274,11 +274,11 @@ BOOST_AUTO_TEST_SUITE(resource_limits_test)
+       set_account_limits(account, UINT64_MAX, -1, -1 );
+       verify_account_ram_usage(account);
+       process_account_limit_updates();
+-      add_pending_ram_usage(account, UINT64_MAX/2);
++      add_pending_ram_usage(account, UINT64_MAX/2, 0);
+       verify_account_ram_usage(account);
+-      add_pending_ram_usage(account, UINT64_MAX/2);
++      add_pending_ram_usage(account, UINT64_MAX/2, 0);
+       verify_account_ram_usage(account);
+-      BOOST_REQUIRE_THROW(add_pending_ram_usage(account, 2), transaction_exception);
++      BOOST_REQUIRE_THROW(add_pending_ram_usage(account, 2, 0), transaction_exception);
+ 
+    } FC_LOG_AND_RETHROW();
+ 
+@@ -293,7 +293,7 @@ BOOST_AUTO_TEST_SUITE(resource_limits_test)
+       initialize_account(account);
+       set_account_limits(account, limit, -1, -1 );
+       process_account_limit_updates();
+-      add_pending_ram_usage(account, commit);
++      add_pending_ram_usage(account, commit, 0);
+       verify_account_ram_usage(account);
+ 
+       for (int idx = 0; idx < expected_iterations - 1; idx++) {

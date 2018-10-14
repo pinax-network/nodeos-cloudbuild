@@ -2,3 +2,4 @@ blocks/
 state/
 diff.log
 output.log
+output.jsonl

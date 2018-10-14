@@ -12,11 +12,32 @@
       ]
     },
     {
+      "name": "dbinstwo",
+      "base": "",
+      "fields": [
+        { "name": "account", "type": "account_name" },
+        { "name": "first", "type": "uint64" },
+        { "name": "second", "type": "uint64" }
+      ]
+    },
+    {
       "name": "dtrx",
       "base": "",
       "fields": [
         { "name": "account", "type": "account_name" },
-        { "name": "fail", "type": "bool" },
+        { "name": "fail_now", "type": "bool" },
+        { "name": "fail_later", "type": "bool" },
+        { "name": "delay_sec", "type": "uint32" },
+        { "name": "nonce", "type": "string" }
+      ]
+    },
+
+    {
+      "name": "dtrxexec",
+      "base": "",
+      "fields": [
+        { "name": "account", "type": "account_name" },
+        { "name": "fail_later", "type": "bool" },
         { "name": "nonce", "type": "string" }
       ]
     },
@@ -47,12 +68,17 @@
     },
     {
       "name": "dtrxexec",
-      "type": "acct",
+      "type": "dtrxexec",
       "ricardian_contract": ""
     },
     {
       "name": "dbins",
       "type": "acct",
+      "ricardian_contract": ""
+    },
+    {
+      "name": "dbinstwo",
+      "type": "dbinstwo",
       "ricardian_contract": ""
     },
     {
