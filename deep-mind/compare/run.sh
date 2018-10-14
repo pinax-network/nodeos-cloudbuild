@@ -7,13 +7,14 @@ fi
 
 rm -rf blocks/ state/
 cp -arv ../boot/blocks/ .
+rm -rf blocks/reversible
 
 if [ -f $1 ]; then
     # Execute a local instance
     $1 --data-dir=`pwd` --config-dir=`pwd` --replay-blockchain > output.log &
     PID=$!
 
-    sleep 6
+    sleep 4
 
     kill $PID
 else
@@ -22,7 +23,7 @@ else
     docker kill deep-mind-compare || true
     docker run --name deep-mind-compare --rm -v `pwd`:/data -w /data $1 /bin/bash -c "/opt/eosio/bin/nodeos --data-dir=/data --config-dir=/data --replay-blockchain > output.log" &
 
-    sleep 6
+    sleep 4
 
     docker kill deep-mind-compare
 fi
