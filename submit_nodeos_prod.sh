@@ -2,12 +2,7 @@
 
 # This step builds `nodeos-prod` keeping only artifacts required for production.
 
-NODEOS_FULL_TAG=${1}
-if [[ ${NODEOS_FULL_TAG} == "" ]]; then
-  echo "Missing nodeos-full tag to use!"
-  exit 1
-fi
-
+NODEOS_FULL_TAG=v1.4.1-deep-mind-v8.2
 export CLOUDSDK_CORE_PROJECT=eoscanada-public
 
 gcloud builds submit . \

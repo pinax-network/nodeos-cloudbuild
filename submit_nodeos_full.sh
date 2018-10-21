@@ -2,19 +2,9 @@
 
 # This step builds `nodeos` and keeps all artifacts.
 
-_SRCTAG=${1}
-if [[ ${_SRCTAG} == "" ]]; then
-  echo "Missing source branch to get nodeos from!"
-  exit 1
-fi
-
-_DSTTAG=${2}
-if [[ ${_DSTTAG} == "" ]]; then
-  _DSTTAG=${1}
-fi
-
-_PATCHES="deep-mind-v1.3.2-v8.patch deep-mind-logging-v1.3.2-v8.patch"
-#_PATCHES=${3}
+_SRCTAG="v1.4.1"
+_DSTTAG="v1.4.1-deep-mind-v8.2"
+_PATCHES="deep-mind-v1.4.1-v8.2.patch deep-mind-logging-v1.4.1-v8.patch"
 
 export CLOUDSDK_CORE_PROJECT=eoscanada-public
 
