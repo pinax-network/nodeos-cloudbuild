@@ -11,7 +11,7 @@ index cf4c1be18..e59b1a10b 100644
               )
  
 diff --git a/libraries/chain/apply_context.cpp b/libraries/chain/apply_context.cpp
-index f7513debf..d433f66ac 100644
+index f7513debf..50d355438 100644
 --- a/libraries/chain/apply_context.cpp
 +++ b/libraries/chain/apply_context.cpp
 @@ -101,9 +101,12 @@ void apply_context::exec()
@@ -216,17 +216,12 @@ index f7513debf..d433f66ac 100644
     db.modify( obj, [&]( auto& o ) {
       o.value.resize( buffer_size );
       memcpy( o.value.data(), buffer, buffer_size );
-@@ -489,6 +602,7 @@ void apply_context::db_remove_i64( int iterator ) {
+@@ -489,8 +602,22 @@ void apply_context::db_remove_i64( int iterator ) {
  
  //   require_write_lock( table_obj.scope );
  
 +   ram_trace::operation = "primary_index_remove";
     update_db_usage( obj.payer,  -(obj.value.size() + config::billable_size_v<key_value_object>) );
- 
-    db.modify( table_obj, [&]( auto& t ) {
-@@ -496,6 +610,19 @@ void apply_context::db_remove_i64( int iterator ) {
-    });
-    db.remove( obj );
  
 +   if (eosio::chain::chain_config::deep_mind_db_enabled) {
 +      dmlog("DB_OPERATION REM ${rev} ${action_id} ${payer} ${table_code} ${scope} ${table_name} ${primkey} ${odata}",
@@ -241,9 +236,9 @@ index f7513debf..d433f66ac 100644
 +      );
 +   }
 +
-    if (table_obj.count == 0) {
-       remove_table(table_obj);
-    }
+    db.modify( table_obj, [&]( auto& t ) {
+       --t.count;
+    });
 diff --git a/libraries/chain/chain_config.cpp b/libraries/chain/chain_config.cpp
 index 974675749..766f8b251 100644
 --- a/libraries/chain/chain_config.cpp
