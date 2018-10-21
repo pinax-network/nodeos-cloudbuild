@@ -39,5 +39,5 @@ func TestReferenceAnalysis(t *testing.T) {
 	out, err := ioutil.ReadFile("output.jsonl")
 	require.NoError(t, err)
 
-	assert.True(t, bytes.Compare(ref, out) == 0, "reference.jsonl and output.jsonl differ, run 'diff -u output.jsonl reference.jsonl")
+	assert.True(t, bytes.Compare(ref, out) == 0, "reference.jsonl and output.jsonl differ, run 'diff -u reference.jsonl output.jsonl'")
 }

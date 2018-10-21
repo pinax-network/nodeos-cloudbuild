@@ -124,14 +124,13 @@
      },
      "context_free": false,
      "elapsed": 0,
-     "cpu_usage": 0,
      "console": "",
-     "total_cpu_usage": 0,
      "trx_id": "8cf5d0c5d388d12e114cf648ac0b8fcc5063cc6630eb8812ec6aa16ec8217bff",
      "block_num": 2,
      "block_time": "2018-10-15T15:04:21.500",
      "producer_block_id": "0000000222c4e840d95dbb3afdc2e055c66baa5f8fbb9dc24221129fee289874",
      "account_ram_deltas": [],
+     "except": null,
      "inline_traces": []
     }
    ],
@@ -290,14 +289,13 @@
      },
      "context_free": false,
      "elapsed": 0,
-     "cpu_usage": 0,
      "console": "",
-     "total_cpu_usage": 0,
      "trx_id": "bc4036adf3ab09520762b40a5e1f23c5b6205ce91f687c53ba8e3cfcdcdd7745",
      "block_num": 3,
      "block_time": "2018-10-15T15:04:22.000",
      "producer_block_id": "0000000384784eb8d831644efe6217848959146ddc5d4b44f966e691b4d4e9b0",
      "account_ram_deltas": [],
+     "except": null,
      "inline_traces": []
     }
    ],
@@ -754,14 +752,13 @@
      },
      "context_free": false,
      "elapsed": 0,
-     "cpu_usage": 0,
      "console": "",
-     "total_cpu_usage": 0,
      "trx_id": "b17154fcb0ef23cfbfd151c917d10484c70e156a0d67315d7c997fc8444b7c38",
      "block_num": 4,
      "block_time": "2018-10-15T15:04:22.500",
      "producer_block_id": "0000000414705ccb622c5dba83fd1f6d27407121718c75a5e134b40fbaba1e5c",
      "account_ram_deltas": [],
+     "except": null,
      "inline_traces": []
     }
    ],
@@ -815,9 +812,7 @@
      },
      "context_free": false,
      "elapsed": 0,
-     "cpu_usage": 0,
      "console": "",
-     "total_cpu_usage": 0,
      "trx_id": "66847be84ee64781abaab843c9580243fd9519328f6248d77555beb5c9e59da9",
      "block_num": 4,
      "block_time": "2018-10-15T15:04:22.500",
@@ -828,6 +823,7 @@
        "delta": 59900
       }
      ],
+     "except": null,
      "inline_traces": []
     },
     {
@@ -862,9 +858,7 @@
      },
      "context_free": false,
      "elapsed": 0,
-     "cpu_usage": 0,
      "console": "",
-     "total_cpu_usage": 0,
      "trx_id": "66847be84ee64781abaab843c9580243fd9519328f6248d77555beb5c9e59da9",
      "block_num": 4,
      "block_time": "2018-10-15T15:04:22.500",
@@ -875,6 +869,7 @@
        "delta": -419
       }
      ],
+     "except": null,
      "inline_traces": []
     }
    ],
@@ -948,9 +943,7 @@
      },
      "context_free": false,
      "elapsed": 0,
-     "cpu_usage": 0,
      "console": "",
-     "total_cpu_usage": 0,
      "trx_id": "8e4a216286f1fe5b09ad305f881550b6d64335b5ad2b4f11b6dfa6fb014ca1f7",
      "block_num": 4,
      "block_time": "2018-10-15T15:04:22.500",
@@ -961,6 +954,7 @@
        "delta": 2724
       }
      ],
+     "except": null,
      "inline_traces": []
     }
    ],
@@ -1034,9 +1028,7 @@
      },
      "context_free": false,
      "elapsed": 0,
-     "cpu_usage": 0,
      "console": "",
-     "total_cpu_usage": 0,
      "trx_id": "bc8668541affd15a446d2519a2103eb9c97af5c089c2ca6896b56f3538218ddd",
      "block_num": 4,
      "block_time": "2018-10-15T15:04:22.500",
@@ -1047,6 +1039,7 @@
        "delta": 2724
       }
      ],
+     "except": null,
      "inline_traces": []
     }
    ],
@@ -1120,9 +1113,7 @@
      },
      "context_free": false,
      "elapsed": 0,
-     "cpu_usage": 0,
      "console": "",
-     "total_cpu_usage": 0,
      "trx_id": "0ee2040859b5e9dad55de52ee1ed6b82f8713de2c0e8715116b90d36295bc1e1",
      "block_num": 4,
      "block_time": "2018-10-15T15:04:22.500",
@@ -1133,6 +1124,7 @@
        "delta": 2724
       }
      ],
+     "except": null,
      "inline_traces": []
     }
    ],
@@ -1206,9 +1198,7 @@
      },
      "context_free": false,
      "elapsed": 0,
-     "cpu_usage": 0,
      "console": "",
-     "total_cpu_usage": 0,
      "trx_id": "6075cf8f2ef4cba8d5ffbfa0cf55557c4c6e9c4c761b99e111aa131f53af52ce",
      "block_num": 4,
      "block_time": "2018-10-15T15:04:22.500",
@@ -1219,6 +1209,7 @@
        "delta": 2724
       }
      ],
+     "except": null,
      "inline_traces": []
     }
    ],
@@ -1292,9 +1283,7 @@
      },
      "context_free": false,
      "elapsed": 0,
-     "cpu_usage": 0,
      "console": "",
-     "total_cpu_usage": 0,
      "trx_id": "d4450af981dd6768cce8ff9aae819a92b6f25887db857da69b8b45ec7fae050e",
      "block_num": 4,
      "block_time": "2018-10-15T15:04:22.500",
@@ -1305,6 +1294,7 @@
        "delta": 2724
       }
      ],
+     "except": null,
      "inline_traces": []
     }
    ],
@@ -1378,9 +1368,7 @@
      },
      "context_free": false,
      "elapsed": 0,
-     "cpu_usage": 0,
      "console": "",
-     "total_cpu_usage": 0,
      "trx_id": "4896e803fd99d7bcabb6839ff94a4cbb42d64abe29f4db8a30e500c4f72ff60c",
      "block_num": 4,
      "block_time": "2018-10-15T15:04:22.500",
@@ -1391,6 +1379,7 @@
        "delta": 2724
       }
      ],
+     "except": null,
      "inline_traces": []
     }
    ],
@@ -1464,9 +1453,7 @@
      },
      "context_free": false,
      "elapsed": 0,
-     "cpu_usage": 0,
      "console": "",
-     "total_cpu_usage": 0,
      "trx_id": "c9b367ed0aa58470c10bbf8d26819eb0f91909a67a1c33326d3fceb38caaae78",
      "block_num": 4,
      "block_time": "2018-10-15T15:04:22.500",
@@ -1477,6 +1464,7 @@
        "delta": 2724
       }
      ],
+     "except": null,
      "inline_traces": []
     }
    ],
@@ -1550,9 +1538,7 @@
      },
      "context_free": false,
      "elapsed": 0,
-     "cpu_usage": 0,
      "console": "",
-     "total_cpu_usage": 0,
      "trx_id": "9be5052efcba40644357257b9599bdc1749bcf6878efaeb5dc11921573b8f740",
      "block_num": 4,
      "block_time": "2018-10-15T15:04:22.500",
@@ -1563,6 +1549,7 @@
        "delta": 2724
       }
      ],
+     "except": null,
      "inline_traces": []
     }
    ],
@@ -1636,9 +1623,7 @@
      },
      "context_free": false,
      "elapsed": 0,
-     "cpu_usage": 0,
      "console": "",
-     "total_cpu_usage": 0,
      "trx_id": "743f74e83f9c547215e84baa85754b920debcde3ca4487588478025a0324daf1",
      "block_num": 4,
      "block_time": "2018-10-15T15:04:22.500",
@@ -1649,6 +1634,7 @@
        "delta": 2724
       }
      ],
+     "except": null,
      "inline_traces": []
     }
    ],
@@ -1700,14 +1686,13 @@
      },
      "context_free": false,
      "elapsed": 0,
-     "cpu_usage": 0,
      "console": "",
-     "total_cpu_usage": 0,
      "trx_id": "25731ef2219ba9bd1350e0b3dd01fa5b891f59f444eed2d8856a44d468dbe9b1",
      "block_num": 4,
      "block_time": "2018-10-15T15:04:22.500",
      "producer_block_id": "0000000414705ccb622c5dba83fd1f6d27407121718c75a5e134b40fbaba1e5c",
      "account_ram_deltas": [],
+     "except": null,
      "inline_traces": []
     }
    ],
@@ -1761,9 +1746,7 @@
      },
      "context_free": false,
      "elapsed": 0,
-     "cpu_usage": 0,
      "console": "",
-     "total_cpu_usage": 0,
      "trx_id": "125612d4eab980961ec1640518902fedbc7bc44e6151040db7b0eaeb7ca97ea7",
      "block_num": 4,
      "block_time": "2018-10-15T15:04:22.500",
@@ -1774,6 +1757,7 @@
        "delta": 217360
       }
      ],
+     "except": null,
      "inline_traces": []
     },
     {
@@ -1808,9 +1792,7 @@
      },
      "context_free": false,
      "elapsed": 0,
-     "cpu_usage": 0,
      "console": "",
-     "total_cpu_usage": 0,
      "trx_id": "125612d4eab980961ec1640518902fedbc7bc44e6151040db7b0eaeb7ca97ea7",
      "block_num": 4,
      "block_time": "2018-10-15T15:04:22.500",
@@ -1821,6 +1803,7 @@
        "delta": 1277
       }
      ],
+     "except": null,
      "inline_traces": []
     }
    ],
@@ -1874,9 +1857,7 @@
      },
      "context_free": false,
      "elapsed": 0,
-     "cpu_usage": 0,
      "console": "",
-     "total_cpu_usage": 0,
      "trx_id": "20e0cbc8174231d92f8d24b12dcf800d1a07af5a1641374da7582529b1ff9037",
      "block_num": 4,
      "block_time": "2018-10-15T15:04:22.500",
@@ -1887,6 +1868,7 @@
        "delta": 189650
       }
      ],
+     "except": null,
      "inline_traces": []
     },
     {
@@ -1921,9 +1903,7 @@
      },
      "context_free": false,
      "elapsed": 0,
-     "cpu_usage": 0,
      "console": "",
-     "total_cpu_usage": 0,
      "trx_id": "20e0cbc8174231d92f8d24b12dcf800d1a07af5a1641374da7582529b1ff9037",
      "block_num": 4,
      "block_time": "2018-10-15T15:04:22.500",
@@ -1934,6 +1914,7 @@
        "delta": 1180
       }
      ],
+     "except": null,
      "inline_traces": []
     }
    ],
@@ -1985,9 +1966,7 @@
      },
      "context_free": false,
      "elapsed": 0,
-     "cpu_usage": 0,
      "console": "",
-     "total_cpu_usage": 0,
      "trx_id": "a390da45d8cdbec9696d9f71881b4950a1b332bb02780db8d57eb0c8cd321da3",
      "block_num": 4,
      "block_time": "2018-10-15T15:04:22.500",
@@ -1998,6 +1977,7 @@
        "delta": 264
       }
      ],
+     "except": null,
      "inline_traces": []
     }
    ],
@@ -2050,9 +2030,7 @@
      },
      "context_free": false,
      "elapsed": 0,
-     "cpu_usage": 0,
      "console": "",
-     "total_cpu_usage": 0,
      "trx_id": "87c306d4cbcb35f202e210358e4034d87858d5b4adf376bf300c56e530c6f15a",
      "block_num": 4,
      "block_time": "2018-10-15T15:04:22.500",
@@ -2063,6 +2041,7 @@
        "delta": 240
       }
      ],
+     "except": null,
      "inline_traces": []
     }
    ],
@@ -2136,9 +2115,7 @@
      },
      "context_free": false,
      "elapsed": 0,
-     "cpu_usage": 0,
      "console": "",
-     "total_cpu_usage": 0,
      "trx_id": "3cab1966d6d6dce7b51f44fe73821c40ce1e778e8b9ca49651315e33b19ea07e",
      "block_num": 4,
      "block_time": "2018-10-15T15:04:22.500",
@@ -2149,6 +2126,7 @@
        "delta": 2724
       }
      ],
+     "except": null,
      "inline_traces": []
     }
    ],
@@ -2202,9 +2180,7 @@
      },
      "context_free": false,
      "elapsed": 0,
-     "cpu_usage": 0,
      "console": "",
-     "total_cpu_usage": 0,
      "trx_id": "5a4fe7afae7ac89f087ffd884aa5a65cac06505912444cd3e902a41bb8410170",
      "block_num": 4,
      "block_time": "2018-10-15T15:04:22.500",
@@ -2215,6 +2191,7 @@
        "delta": 221960
       }
      ],
+     "except": null,
      "inline_traces": []
     },
     {
@@ -2249,9 +2226,7 @@
      },
      "context_free": false,
      "elapsed": 0,
-     "cpu_usage": 0,
      "console": "",
-     "total_cpu_usage": 0,
      "trx_id": "5a4fe7afae7ac89f087ffd884aa5a65cac06505912444cd3e902a41bb8410170",
      "block_num": 4,
      "block_time": "2018-10-15T15:04:22.500",
@@ -2262,6 +2237,7 @@
        "delta": 551
       }
      ],
+     "except": null,
      "inline_traces": []
     }
    ],
@@ -2335,9 +2311,7 @@
      },
      "context_free": false,
      "elapsed": 0,
-     "cpu_usage": 0,
      "console": "",
-     "total_cpu_usage": 0,
      "trx_id": "d8042929f89a361eb2f80dce9e6eaaa386b8b8569753ab5ac9236c7e162c0e4f",
      "block_num": 4,
      "block_time": "2018-10-15T15:04:22.500",
@@ -2348,6 +2322,7 @@
        "delta": 2724
       }
      ],
+     "except": null,
      "inline_traces": []
     }
    ],
@@ -2401,9 +2376,7 @@
      },
      "context_free": false,
      "elapsed": 0,
-     "cpu_usage": 0,
      "console": "",
-     "total_cpu_usage": 0,
      "trx_id": "03a3ed64f4557ff06f38115c4a5e39654491dde11ed71556aa17b7795f809c30",
      "block_num": 4,
      "block_time": "2018-10-15T15:04:22.500",
@@ -2414,6 +2387,7 @@
        "delta": 1096950
       }
      ],
+     "except": null,
      "inline_traces": []
     },
     {
@@ -2448,9 +2422,7 @@
      },
      "context_free": false,
      "elapsed": 0,
-     "cpu_usage": 0,
      "console": "",
-     "total_cpu_usage": 0,
      "trx_id": "03a3ed64f4557ff06f38115c4a5e39654491dde11ed71556aa17b7795f809c30",
      "block_num": 4,
      "block_time": "2018-10-15T15:04:22.500",
@@ -2461,6 +2433,7 @@
        "delta": 21565
       }
      ],
+     "except": null,
      "inline_traces": []
     }
    ],
@@ -2527,9 +2500,7 @@
      },
      "context_free": false,
      "elapsed": 0,
-     "cpu_usage": 0,
      "console": "",
-     "total_cpu_usage": 0,
      "trx_id": "05cecf92930bcdf45c8c2d739dc94dd52b20143bc092ea015805207e67e9a186",
      "block_num": 4,
      "block_time": "2018-10-15T15:04:22.500",
@@ -2540,6 +2511,7 @@
        "delta": -18
       }
      ],
+     "except": null,
      "inline_traces": []
     },
     {
@@ -2589,9 +2561,7 @@
      },
      "context_free": false,
      "elapsed": 0,
-     "cpu_usage": 0,
      "console": "",
-     "total_cpu_usage": 0,
      "trx_id": "05cecf92930bcdf45c8c2d739dc94dd52b20143bc092ea015805207e67e9a186",
      "block_num": 4,
      "block_time": "2018-10-15T15:04:22.500",
@@ -2602,6 +2572,7 @@
        "delta": -18
       }
      ],
+     "except": null,
      "inline_traces": []
     },
     {
@@ -2651,9 +2622,7 @@
      },
      "context_free": false,
      "elapsed": 0,
-     "cpu_usage": 0,
      "console": "",
-     "total_cpu_usage": 0,
      "trx_id": "05cecf92930bcdf45c8c2d739dc94dd52b20143bc092ea015805207e67e9a186",
      "block_num": 4,
      "block_time": "2018-10-15T15:04:22.500",
@@ -2664,6 +2633,7 @@
        "delta": -18
       }
      ],
+     "except": null,
      "inline_traces": []
     },
     {
@@ -2713,9 +2683,7 @@
      },
      "context_free": false,
      "elapsed": 0,
-     "cpu_usage": 0,
      "console": "",
-     "total_cpu_usage": 0,
      "trx_id": "05cecf92930bcdf45c8c2d739dc94dd52b20143bc092ea015805207e67e9a186",
      "block_num": 4,
      "block_time": "2018-10-15T15:04:22.500",
@@ -2726,6 +2694,7 @@
        "delta": -18
       }
      ],
+     "except": null,
      "inline_traces": []
     },
     {
@@ -2775,9 +2744,7 @@
      },
      "context_free": false,
      "elapsed": 0,
-     "cpu_usage": 0,
      "console": "",
-     "total_cpu_usage": 0,
      "trx_id": "05cecf92930bcdf45c8c2d739dc94dd52b20143bc092ea015805207e67e9a186",
      "block_num": 4,
      "block_time": "2018-10-15T15:04:22.500",
@@ -2788,6 +2755,7 @@
        "delta": -18
       }
      ],
+     "except": null,
      "inline_traces": []
     },
     {
@@ -2837,9 +2805,7 @@
      },
      "context_free": false,
      "elapsed": 0,
-     "cpu_usage": 0,
      "console": "",
-     "total_cpu_usage": 0,
      "trx_id": "05cecf92930bcdf45c8c2d739dc94dd52b20143bc092ea015805207e67e9a186",
      "block_num": 4,
      "block_time": "2018-10-15T15:04:22.500",
@@ -2850,6 +2816,7 @@
        "delta": -18
       }
      ],
+     "except": null,
      "inline_traces": []
     },
     {
@@ -2899,9 +2866,7 @@
      },
      "context_free": false,
      "elapsed": 0,
-     "cpu_usage": 0,
      "console": "",
-     "total_cpu_usage": 0,
      "trx_id": "05cecf92930bcdf45c8c2d739dc94dd52b20143bc092ea015805207e67e9a186",
      "block_num": 4,
      "block_time": "2018-10-15T15:04:22.500",
@@ -2912,6 +2877,7 @@
        "delta": -18
       }
      ],
+     "except": null,
      "inline_traces": []
     },
     {
@@ -2961,9 +2927,7 @@
      },
      "context_free": false,
      "elapsed": 0,
-     "cpu_usage": 0,
      "console": "",
-     "total_cpu_usage": 0,
      "trx_id": "05cecf92930bcdf45c8c2d739dc94dd52b20143bc092ea015805207e67e9a186",
      "block_num": 4,
      "block_time": "2018-10-15T15:04:22.500",
@@ -2974,6 +2938,7 @@
        "delta": -18
       }
      ],
+     "except": null,
      "inline_traces": []
     },
     {
@@ -3023,9 +2988,7 @@
      },
      "context_free": false,
      "elapsed": 0,
-     "cpu_usage": 0,
      "console": "",
-     "total_cpu_usage": 0,
      "trx_id": "05cecf92930bcdf45c8c2d739dc94dd52b20143bc092ea015805207e67e9a186",
      "block_num": 4,
      "block_time": "2018-10-15T15:04:22.500",
@@ -3036,6 +2999,7 @@
        "delta": -18
       }
      ],
+     "except": null,
      "inline_traces": []
     },
     {
@@ -3085,9 +3049,7 @@
      },
      "context_free": false,
      "elapsed": 0,
-     "cpu_usage": 0,
      "console": "",
-     "total_cpu_usage": 0,
      "trx_id": "05cecf92930bcdf45c8c2d739dc94dd52b20143bc092ea015805207e67e9a186",
      "block_num": 4,
      "block_time": "2018-10-15T15:04:22.500",
@@ -3098,6 +3060,7 @@
        "delta": -18
       }
      ],
+     "except": null,
      "inline_traces": []
     },
     {
@@ -3147,9 +3110,7 @@
      },
      "context_free": false,
      "elapsed": 0,
-     "cpu_usage": 0,
      "console": "",
-     "total_cpu_usage": 0,
      "trx_id": "05cecf92930bcdf45c8c2d739dc94dd52b20143bc092ea015805207e67e9a186",
      "block_num": 4,
      "block_time": "2018-10-15T15:04:22.500",
@@ -3160,6 +3121,7 @@
        "delta": -18
       }
      ],
+     "except": null,
      "inline_traces": []
     },
     {
@@ -3209,9 +3171,7 @@
      },
      "context_free": false,
      "elapsed": 0,
-     "cpu_usage": 0,
      "console": "",
-     "total_cpu_usage": 0,
      "trx_id": "05cecf92930bcdf45c8c2d739dc94dd52b20143bc092ea015805207e67e9a186",
      "block_num": 4,
      "block_time": "2018-10-15T15:04:22.500",
@@ -3222,6 +3182,7 @@
        "delta": -18
       }
      ],
+     "except": null,
      "inline_traces": []
     },
     {
@@ -3271,9 +3232,7 @@
      },
      "context_free": false,
      "elapsed": 0,
-     "cpu_usage": 0,
      "console": "",
-     "total_cpu_usage": 0,
      "trx_id": "05cecf92930bcdf45c8c2d739dc94dd52b20143bc092ea015805207e67e9a186",
      "block_num": 4,
      "block_time": "2018-10-15T15:04:22.500",
@@ -3284,6 +3243,7 @@
        "delta": -18
       }
      ],
+     "except": null,
      "inline_traces": []
     },
     {
@@ -3333,9 +3293,7 @@
      },
      "context_free": false,
      "elapsed": 0,
-     "cpu_usage": 0,
      "console": "",
-     "total_cpu_usage": 0,
      "trx_id": "05cecf92930bcdf45c8c2d739dc94dd52b20143bc092ea015805207e67e9a186",
      "block_num": 4,
      "block_time": "2018-10-15T15:04:22.500",
@@ -3346,6 +3304,7 @@
        "delta": -18
       }
      ],
+     "except": null,
      "inline_traces": []
     },
     {
@@ -3395,9 +3354,7 @@
      },
      "context_free": false,
      "elapsed": 0,
-     "cpu_usage": 0,
      "console": "",
-     "total_cpu_usage": 0,
      "trx_id": "05cecf92930bcdf45c8c2d739dc94dd52b20143bc092ea015805207e67e9a186",
      "block_num": 4,
      "block_time": "2018-10-15T15:04:22.500",
@@ -3408,6 +3365,7 @@
        "delta": -18
       }
      ],
+     "except": null,
      "inline_traces": []
     },
     {
@@ -3457,9 +3415,7 @@
      },
      "context_free": false,
      "elapsed": 0,
-     "cpu_usage": 0,
      "console": "",
-     "total_cpu_usage": 0,
      "trx_id": "05cecf92930bcdf45c8c2d739dc94dd52b20143bc092ea015805207e67e9a186",
      "block_num": 4,
      "block_time": "2018-10-15T15:04:22.500",
@@ -3470,6 +3426,7 @@
        "delta": -18
       }
      ],
+     "except": null,
      "inline_traces": []
     },
     {
@@ -3519,9 +3476,7 @@
      },
      "context_free": false,
      "elapsed": 0,
-     "cpu_usage": 0,
      "console": "",
-     "total_cpu_usage": 0,
      "trx_id": "05cecf92930bcdf45c8c2d739dc94dd52b20143bc092ea015805207e67e9a186",
      "block_num": 4,
      "block_time": "2018-10-15T15:04:22.500",
@@ -3532,6 +3487,7 @@
        "delta": -18
       }
      ],
+     "except": null,
      "inline_traces": []
     },
     {
@@ -3581,9 +3537,7 @@
      },
      "context_free": false,
      "elapsed": 0,
-     "cpu_usage": 0,
      "console": "",
-     "total_cpu_usage": 0,
      "trx_id": "05cecf92930bcdf45c8c2d739dc94dd52b20143bc092ea015805207e67e9a186",
      "block_num": 4,
      "block_time": "2018-10-15T15:04:22.500",
@@ -3594,6 +3548,7 @@
        "delta": -18
       }
      ],
+     "except": null,
      "inline_traces": []
     }
    ],
@@ -4292,14 +4247,13 @@
      },
      "context_free": false,
      "elapsed": 0,
-     "cpu_usage": 0,
      "console": "",
-     "total_cpu_usage": 0,
      "trx_id": "16dbbbb251471b03cd95006634b2dca68f150b6c3ae21ab6e007d09785d2850d",
      "block_num": 5,
      "block_time": "2018-10-15T15:04:23.000",
      "producer_block_id": "00000005586ab341a0ef6e5458eb1a9f353bd9959a0438aa3248a37e0f0a172a",
      "account_ram_deltas": [],
+     "except": null,
      "inline_traces": []
     }
    ],
@@ -4435,14 +4389,13 @@
      },
      "context_free": false,
      "elapsed": 0,
-     "cpu_usage": 0,
      "console": "",
-     "total_cpu_usage": 0,
      "trx_id": "1f857b2a37b13c764e8e152c7abd8039c9209f56fab0a389041cf57d866c5295",
      "block_num": 6,
      "block_time": "2018-10-15T15:04:23.500",
      "producer_block_id": "000000062e02b2550988cc08e846c12b88678b8a9ae2451dd8070f14af08d652",
      "account_ram_deltas": [],
+     "except": null,
      "inline_traces": []
     }
    ],
@@ -4578,14 +4531,13 @@
      },
      "context_free": false,
      "elapsed": 0,
-     "cpu_usage": 0,
      "console": "",
-     "total_cpu_usage": 0,
      "trx_id": "79c044ab7ff5ee466bb98a97055fe05e3166511fa40c18bd727125d5bd44f90c",
      "block_num": 7,
      "block_time": "2018-10-15T15:04:24.000",
      "producer_block_id": "000000075aadaa945b8a912962c4413976e63acb69394ea8dcb663e84fe2d128",
      "account_ram_deltas": [],
+     "except": null,
      "inline_traces": []
     }
    ],
@@ -4722,14 +4674,13 @@
      },
      "context_free": false,
      "elapsed": 0,
-     "cpu_usage": 0,
      "console": "",
-     "total_cpu_usage": 0,
      "trx_id": "9b7b4241aa77514a188f49599355a3021afa0756ded255e6fc783a990a984ae0",
      "block_num": 8,
      "block_time": "2018-10-15T15:04:24.500",
      "producer_block_id": "0000000834b60cc5eef4dbf31f2f7b8d85d0a7dfcf57e5f6439380a8cb91b2e8",
      "account_ram_deltas": [],
+     "except": null,
      "inline_traces": []
     }
    ],
@@ -4896,14 +4847,13 @@
      },
      "context_free": false,
      "elapsed": 0,
-     "cpu_usage": 0,
      "console": "",
-     "total_cpu_usage": 0,
      "trx_id": "542390e67454a2ebfb08013069823bae071ccb64f02d6c05a59d91cd3e81ab38",
      "block_num": 9,
      "block_time": "2018-10-15T15:04:25.000",
      "producer_block_id": "00000009cdc4819741f1e7564c625cb2e2c26049a2a6c0e9ad21aa5acbf72582",
      "account_ram_deltas": [],
+     "except": null,
      "inline_traces": []
     }
    ],
@@ -4957,9 +4907,7 @@
      },
      "context_free": false,
      "elapsed": 0,
-     "cpu_usage": 0,
      "console": "",
-     "total_cpu_usage": 0,
      "trx_id": "758cdf6fab2832378b111914f53ec38831d0e0f9cf544fc424a0892c0e1438aa",
      "block_num": 9,
      "block_time": "2018-10-15T15:04:25.000",
@@ -4970,6 +4918,7 @@
        "delta": 240
       }
      ],
+     "except": null,
      "inline_traces": [
       {
        "receipt": {
@@ -5005,14 +4954,13 @@
        },
        "context_free": false,
        "elapsed": 0,
-       "cpu_usage": 0,
        "console": "",
-       "total_cpu_usage": 0,
        "trx_id": "758cdf6fab2832378b111914f53ec38831d0e0f9cf544fc424a0892c0e1438aa",
        "block_num": 9,
        "block_time": "2018-10-15T15:04:25.000",
        "producer_block_id": "00000009cdc4819741f1e7564c625cb2e2c26049a2a6c0e9ad21aa5acbf72582",
        "account_ram_deltas": [],
+       "except": null,
        "inline_traces": []
       },
       {
@@ -5049,14 +4997,13 @@
        },
        "context_free": false,
        "elapsed": 0,
-       "cpu_usage": 0,
        "console": "",
-       "total_cpu_usage": 0,
        "trx_id": "758cdf6fab2832378b111914f53ec38831d0e0f9cf544fc424a0892c0e1438aa",
        "block_num": 9,
        "block_time": "2018-10-15T15:04:25.000",
        "producer_block_id": "00000009cdc4819741f1e7564c625cb2e2c26049a2a6c0e9ad21aa5acbf72582",
        "account_ram_deltas": [],
+       "except": null,
        "inline_traces": []
       }
      ]
@@ -5132,9 +5079,7 @@
      },
      "context_free": false,
      "elapsed": 0,
-     "cpu_usage": 0,
      "console": "",
-     "total_cpu_usage": 0,
      "trx_id": "5e6d709cf441babbaef28df8cf6676a3d4fdccb141109351d3bc343070b33c05",
      "block_num": 9,
      "block_time": "2018-10-15T15:04:25.000",
@@ -5145,6 +5090,7 @@
        "delta": 2996
       }
      ],
+     "except": null,
      "inline_traces": []
     },
     {
@@ -5182,9 +5128,7 @@
      },
      "context_free": false,
      "elapsed": 0,
-     "cpu_usage": 0,
      "console": "",
-     "total_cpu_usage": 0,
      "trx_id": "5e6d709cf441babbaef28df8cf6676a3d4fdccb141109351d3bc343070b33c05",
      "block_num": 9,
      "block_time": "2018-10-15T15:04:25.000",
@@ -5195,6 +5139,7 @@
        "delta": 562
       }
      ],
+     "except": null,
      "inline_traces": [
       {
        "receipt": {
@@ -5230,9 +5175,7 @@
        },
        "context_free": false,
        "elapsed": 0,
-       "cpu_usage": 0,
        "console": "",
-       "total_cpu_usage": 0,
        "trx_id": "5e6d709cf441babbaef28df8cf6676a3d4fdccb141109351d3bc343070b33c05",
        "block_num": 9,
        "block_time": "2018-10-15T15:04:25.000",
@@ -5247,6 +5190,7 @@
          "delta": -128
         }
        ],
+       "except": null,
        "inline_traces": [
         {
          "receipt": {
@@ -5282,14 +5226,13 @@
          },
          "context_free": false,
          "elapsed": 0,
-         "cpu_usage": 0,
          "console": "",
-         "total_cpu_usage": 0,
          "trx_id": "5e6d709cf441babbaef28df8cf6676a3d4fdccb141109351d3bc343070b33c05",
          "block_num": 9,
          "block_time": "2018-10-15T15:04:25.000",
          "producer_block_id": "00000009cdc4819741f1e7564c625cb2e2c26049a2a6c0e9ad21aa5acbf72582",
          "account_ram_deltas": [],
+         "except": null,
          "inline_traces": []
         },
         {
@@ -5326,14 +5269,13 @@
          },
          "context_free": false,
          "elapsed": 0,
-         "cpu_usage": 0,
          "console": "",
-         "total_cpu_usage": 0,
          "trx_id": "5e6d709cf441babbaef28df8cf6676a3d4fdccb141109351d3bc343070b33c05",
          "block_num": 9,
          "block_time": "2018-10-15T15:04:25.000",
          "producer_block_id": "00000009cdc4819741f1e7564c625cb2e2c26049a2a6c0e9ad21aa5acbf72582",
          "account_ram_deltas": [],
+         "except": null,
          "inline_traces": []
         }
        ]
@@ -5373,14 +5315,13 @@
      },
      "context_free": false,
      "elapsed": 0,
-     "cpu_usage": 0,
      "console": "",
-     "total_cpu_usage": 0,
      "trx_id": "5e6d709cf441babbaef28df8cf6676a3d4fdccb141109351d3bc343070b33c05",
      "block_num": 9,
      "block_time": "2018-10-15T15:04:25.000",
      "producer_block_id": "00000009cdc4819741f1e7564c625cb2e2c26049a2a6c0e9ad21aa5acbf72582",
      "account_ram_deltas": [],
+     "except": null,
      "inline_traces": [
       {
        "receipt": {
@@ -5416,9 +5357,7 @@
        },
        "context_free": false,
        "elapsed": 0,
-       "cpu_usage": 0,
        "console": "",
-       "total_cpu_usage": 0,
        "trx_id": "5e6d709cf441babbaef28df8cf6676a3d4fdccb141109351d3bc343070b33c05",
        "block_num": 9,
        "block_time": "2018-10-15T15:04:25.000",
@@ -5429,6 +5368,7 @@
          "delta": 240
         }
        ],
+       "except": null,
        "inline_traces": [
         {
          "receipt": {
@@ -5464,14 +5404,13 @@
          },
          "context_free": false,
          "elapsed": 0,
-         "cpu_usage": 0,
          "console": "",
-         "total_cpu_usage": 0,
          "trx_id": "5e6d709cf441babbaef28df8cf6676a3d4fdccb141109351d3bc343070b33c05",
          "block_num": 9,
          "block_time": "2018-10-15T15:04:25.000",
          "producer_block_id": "00000009cdc4819741f1e7564c625cb2e2c26049a2a6c0e9ad21aa5acbf72582",
          "account_ram_deltas": [],
+         "except": null,
          "inline_traces": []
         },
         {
@@ -5508,14 +5447,13 @@
          },
          "context_free": false,
          "elapsed": 0,
-         "cpu_usage": 0,
          "console": "",
-         "total_cpu_usage": 0,
          "trx_id": "5e6d709cf441babbaef28df8cf6676a3d4fdccb141109351d3bc343070b33c05",
          "block_num": 9,
          "block_time": "2018-10-15T15:04:25.000",
          "producer_block_id": "00000009cdc4819741f1e7564c625cb2e2c26049a2a6c0e9ad21aa5acbf72582",
          "account_ram_deltas": [],
+         "except": null,
          "inline_traces": []
         }
        ]
@@ -5554,9 +5492,7 @@
        },
        "context_free": false,
        "elapsed": 0,
-       "cpu_usage": 0,
        "console": "",
-       "total_cpu_usage": 0,
        "trx_id": "5e6d709cf441babbaef28df8cf6676a3d4fdccb141109351d3bc343070b33c05",
        "block_num": 9,
        "block_time": "2018-10-15T15:04:25.000",
@@ -5567,6 +5503,7 @@
          "delta": 240
         }
        ],
+       "except": null,
        "inline_traces": [
         {
          "receipt": {
@@ -5602,14 +5539,13 @@
          },
          "context_free": false,
          "elapsed": 0,
-         "cpu_usage": 0,
          "console": "",
-         "total_cpu_usage": 0,
          "trx_id": "5e6d709cf441babbaef28df8cf6676a3d4fdccb141109351d3bc343070b33c05",
          "block_num": 9,
          "block_time": "2018-10-15T15:04:25.000",
          "producer_block_id": "00000009cdc4819741f1e7564c625cb2e2c26049a2a6c0e9ad21aa5acbf72582",
          "account_ram_deltas": [],
+         "except": null,
          "inline_traces": []
         },
         {
@@ -5646,14 +5582,13 @@
          },
          "context_free": false,
          "elapsed": 0,
-         "cpu_usage": 0,
          "console": "",
-         "total_cpu_usage": 0,
          "trx_id": "5e6d709cf441babbaef28df8cf6676a3d4fdccb141109351d3bc343070b33c05",
          "block_num": 9,
          "block_time": "2018-10-15T15:04:25.000",
          "producer_block_id": "00000009cdc4819741f1e7564c625cb2e2c26049a2a6c0e9ad21aa5acbf72582",
          "account_ram_deltas": [],
+         "except": null,
          "inline_traces": []
         }
        ]
@@ -6078,14 +6013,13 @@
      },
      "context_free": false,
      "elapsed": 0,
-     "cpu_usage": 0,
      "console": "",
-     "total_cpu_usage": 0,
      "trx_id": "724b26f4f2a8bdd762ca8c75d7bbca01c1c525e09967a85517f9ad4fcbe7ae68",
      "block_num": 10,
      "block_time": "2018-10-15T15:04:25.500",
      "producer_block_id": "0000000af029a7c1e11f8a11861455a03d382943021a4e3b97a931d0840ff81c",
      "account_ram_deltas": [],
+     "except": null,
      "inline_traces": []
     }
    ],
@@ -6136,9 +6070,7 @@
      },
      "context_free": false,
      "elapsed": 0,
-     "cpu_usage": 0,
      "console": "",
-     "total_cpu_usage": 0,
      "trx_id": "42de5911a0ef3edc19c7f53f067f9b70135d8d4c05f14bffec6511476a1a71f0",
      "block_num": 10,
      "block_time": "2018-10-15T15:04:25.500",
@@ -6149,6 +6081,7 @@
        "delta": 731
       }
      ],
+     "except": null,
      "inline_traces": []
     }
    ],
@@ -6339,14 +6272,13 @@
      },
      "context_free": false,
      "elapsed": 0,
-     "cpu_usage": 0,
      "console": "",
-     "total_cpu_usage": 0,
      "trx_id": "0d09746b6adfd4ee0c331f09ae0b04c1ce79ac949199de1418ac145f9f7ec03a",
      "block_num": 11,
      "block_time": "2018-10-15T15:04:26.000",
      "producer_block_id": "0000000b6aa195caedbfc1e715f0889e5a423949fd9fdb3cf862d1c2b5d8fb04",
      "account_ram_deltas": [],
+     "except": null,
      "inline_traces": []
     }
    ],
@@ -6500,14 +6432,13 @@
      },
      "context_free": false,
      "elapsed": 0,
-     "cpu_usage": 0,
      "console": "",
-     "total_cpu_usage": 0,
      "trx_id": "21fb44a2c6c6aca5adfb1bbb98e1fc95764e079753e84d75f3a3f0132e655b19",
      "block_num": 12,
      "block_time": "2018-10-15T15:04:26.500",
      "producer_block_id": "0000000c346942e309e65beaccaa197145b967831e28754a9d5210aab6c955f8",
      "account_ram_deltas": [],
+     "except": null,
      "inline_traces": []
     }
    ],
@@ -6558,9 +6489,7 @@
      },
      "context_free": false,
      "elapsed": 0,
-     "cpu_usage": 0,
      "console": "",
-     "total_cpu_usage": 0,
      "trx_id": "fe48ecfce53edc62950febf2a494e79f6500977c509af2b87df0eea33cbc5b76",
      "block_num": 12,
      "block_time": "2018-10-15T15:04:26.500",
@@ -6571,6 +6500,7 @@
        "delta": -31
       }
      ],
+     "except": null,
      "inline_traces": []
     }
    ],
@@ -6761,14 +6691,13 @@
      },
      "context_free": false,
      "elapsed": 0,
-     "cpu_usage": 0,
      "console": "",
-     "total_cpu_usage": 0,
      "trx_id": "034a3b84e5b6dce1bb8c1448dfeace3ffdc782b11eac37e467267817a6b2caee",
      "block_num": 13,
      "block_time": "2018-10-15T15:04:27.000",
      "producer_block_id": "0000000de89a99c57db459cc9af6e6ba487ab18a7754d645e93653c4d2d8c5df",
      "account_ram_deltas": [],
+     "except": null,
      "inline_traces": []
     }
    ],
@@ -6819,9 +6748,7 @@
      },
      "context_free": false,
      "elapsed": 0,
-     "cpu_usage": 0,
      "console": "",
-     "total_cpu_usage": 0,
      "trx_id": "052f575bc773c4ef14502fa85ce1aa8e067476829e5a1aa7ad10848943c1a536",
      "block_num": 13,
      "block_time": "2018-10-15T15:04:27.000",
@@ -6832,6 +6759,7 @@
        "delta": -700
       }
      ],
+     "except": null,
      "inline_traces": []
     }
    ],
@@ -6856,14 +6784,14 @@
     "action_idx": 0,
     "opayer": "battlefield1",
     "path": "battlefield1/battlefield1/member/............1",
-    "old": "00780000000000000100000000000000010000000000000004454f53000000000d7570646174656420726f77203179acc45b00000000"
+    "old": "010000000000000000000000045ce949000000000000000004454f53000000000d7570646174656420726f77203179acc45b00000000"
    },
    {
     "op": "REM",
     "action_idx": 0,
     "opayer": "battlefield1",
     "path": "battlefield1/battlefield1/member/............2",
-    "old": "70760000000000000100000000000000010000000000000004454f53000000000d7570646174656420726f77203279acc45b00000000"
+    "old": "020000000000000000000000085ce949000000000000000004454f53000000000d7570646174656420726f77203279acc45b00000000"
    }
   ]
  },
@@ -7023,14 +6951,13 @@
      },
      "context_free": false,
      "elapsed": 0,
-     "cpu_usage": 0,
      "console": "",
-     "total_cpu_usage": 0,
      "trx_id": "b8eaa16fd56665dca85a538e55b6d64bbd96ad03ad74c9eadc38f7c53bb85e97",
      "block_num": 14,
      "block_time": "2018-10-15T15:04:27.500",
      "producer_block_id": "0000000e07a3adf343c300244b0a5e90ce58c61027e79b06c23e581937a188f5",
      "account_ram_deltas": [],
+     "except": null,
      "inline_traces": []
     }
    ],
@@ -7200,14 +7127,13 @@
      },
      "context_free": false,
      "elapsed": 0,
-     "cpu_usage": 0,
      "console": "",
-     "total_cpu_usage": 0,
      "trx_id": "e5e5e2838d285f7afbcd5cd09ea9db1dc1e8ede9d359f2df707ede1cc5182dd4",
      "block_num": 15,
      "block_time": "2018-10-15T15:04:28.000",
      "producer_block_id": "0000000f8b826fb25030b526690a996b8def25088a57d81e35d5dc7a50fe169a",
      "account_ram_deltas": [],
+     "except": null,
      "inline_traces": []
     }
    ],
@@ -7262,9 +7188,7 @@
      },
      "context_free": false,
      "elapsed": 0,
-     "cpu_usage": 0,
      "console": "",
-     "total_cpu_usage": 0,
      "trx_id": "61da264c60962ef646de9a0ad26c6e0c258611c23faec5ac98338d52e9f1bd75",
      "block_num": 15,
      "block_time": "2018-10-15T15:04:28.000",
@@ -7275,6 +7199,7 @@
        "delta": 333
       }
      ],
+     "except": null,
      "inline_traces": []
     }
    ],
@@ -7325,9 +7250,7 @@
      },
      "context_free": false,
      "elapsed": 0,
-     "cpu_usage": 0,
      "console": "",
-     "total_cpu_usage": 0,
      "trx_id": "368e1255292a7874db5ef4efe0730c0f017620214d031d2d4419b4e486598207",
      "block_num": 15,
      "block_time": "2018-10-15T15:04:28.000",
@@ -7338,6 +7261,7 @@
        "delta": -333
       }
      ],
+     "except": null,
      "inline_traces": []
     }
    ],
@@ -7579,14 +7503,13 @@
      },
      "context_free": false,
      "elapsed": 0,
-     "cpu_usage": 0,
      "console": "",
-     "total_cpu_usage": 0,
      "trx_id": "3546ab93af8daf8b1f164bfed3362118924f9485097e0045390228d542c7f1d2",
      "block_num": 16,
      "block_time": "2018-10-15T15:04:28.500",
      "producer_block_id": "00000010adf3ea0a9121306d83fc481c32511ac0918244556bc5764becc80c23",
      "account_ram_deltas": [],
+     "except": null,
      "inline_traces": []
     }
    ],
@@ -7720,14 +7643,13 @@
      },
      "context_free": false,
      "elapsed": 0,
-     "cpu_usage": 0,
      "console": "",
-     "total_cpu_usage": 0,
      "trx_id": "0905aafc887c21479438ad78df14d6b34bf7e62fe7ec50976f2134dc2e8e7c13",
      "block_num": 17,
      "block_time": "2018-10-15T15:04:29.000",
      "producer_block_id": "0000001159fd4af76684444c5a8ff7106add2877d964c52a4bda308a076a3e17",
      "account_ram_deltas": [],
+     "except": null,
      "inline_traces": []
     }
    ],
@@ -7896,14 +7818,13 @@
      },
      "context_free": false,
      "elapsed": 0,
-     "cpu_usage": 0,
      "console": "",
-     "total_cpu_usage": 0,
      "trx_id": "2d4d6e02ebae814cd44b1bfa2204893f28c9552d810287ee3e9a2599071c9ca2",
      "block_num": 18,
      "block_time": "2018-10-15T15:04:29.500",
      "producer_block_id": "000000123e1a9db398fbb53f3703f99371dc11880d8b709541fa4484165e4e96",
      "account_ram_deltas": [],
+     "except": null,
      "inline_traces": []
     }
    ],
@@ -7958,9 +7879,7 @@
      },
      "context_free": false,
      "elapsed": 0,
-     "cpu_usage": 0,
      "console": "",
-     "total_cpu_usage": 0,
      "trx_id": "f4b2f327da99bf3ad6c875beaae237616bb40759d015565219266f2180ca4148",
      "block_num": 18,
      "block_time": "2018-10-15T15:04:29.500",
@@ -7971,6 +7890,7 @@
        "delta": 333
       }
      ],
+     "except": null,
      "inline_traces": []
     }
    ],
@@ -8025,9 +7945,7 @@
      },
      "context_free": false,
      "elapsed": 0,
-     "cpu_usage": 0,
      "console": "",
-     "total_cpu_usage": 0,
      "trx_id": "ccae26685c054c7c95323dee3b788a36fd11906195cef55e5ef0f4f15a4070e8",
      "block_num": 18,
      "block_time": "2018-10-15T15:04:29.500",
@@ -8038,6 +7956,7 @@
        "delta": 333
       }
      ],
+     "except": null,
      "inline_traces": []
     }
    ],
@@ -8316,14 +8235,13 @@
      },
      "context_free": false,
      "elapsed": 0,
-     "cpu_usage": 0,
      "console": "",
-     "total_cpu_usage": 0,
      "trx_id": "38d19502370f84d1f8a82bbd28e9c3b9ae482ce14bcdbc1834194074a48f36b6",
      "block_num": 19,
      "block_time": "2018-10-15T15:04:30.000",
      "producer_block_id": "0000001335d040a97a1beeed8afac5ae4ee0e896acc9894b3132db0791339bbb",
      "account_ram_deltas": [],
+     "except": null,
      "inline_traces": []
     }
    ],
@@ -8486,14 +8404,13 @@
      },
      "context_free": false,
      "elapsed": 0,
-     "cpu_usage": 0,
      "console": "",
-     "total_cpu_usage": 0,
      "trx_id": "34b5e9f8377d46a7e51626272451a48d6e6e0b254b0e0df5f6b17adc0e9fe291",
      "block_num": 20,
      "block_time": "2018-10-15T15:04:30.500",
      "producer_block_id": "00000014622948d696eafc95c8e57f4580ed899930b89dbda37a0c519b6783a8",
      "account_ram_deltas": [],
+     "except": null,
      "inline_traces": []
     }
    ],
@@ -8546,14 +8463,13 @@
      },
      "context_free": false,
      "elapsed": 0,
-     "cpu_usage": 0,
      "console": "",
-     "total_cpu_usage": 0,
      "trx_id": "1948e75e5afc313422cf794e26811da11186123653b4501e09d9ac307ef97fb1",
      "block_num": 20,
      "block_time": "2018-10-15T15:04:30.500",
      "producer_block_id": "00000014622948d696eafc95c8e57f4580ed899930b89dbda37a0c519b6783a8",
      "account_ram_deltas": [],
+     "except": null,
      "inline_traces": []
     }
    ],
@@ -8608,9 +8524,7 @@
      },
      "context_free": false,
      "elapsed": 0,
-     "cpu_usage": 0,
      "console": "",
-     "total_cpu_usage": 0,
      "trx_id": "3658be8bb25dad0e1712c6613cda59c0b48459149a047df77fede0d43ed4738d",
      "block_num": 20,
      "block_time": "2018-10-15T15:04:30.500",
@@ -8621,6 +8535,7 @@
        "delta": 333
       }
      ],
+     "except": null,
      "inline_traces": []
     }
    ],
@@ -8819,14 +8734,13 @@
      },
      "context_free": false,
      "elapsed": 0,
-     "cpu_usage": 0,
      "console": "",
-     "total_cpu_usage": 0,
      "trx_id": "a1dc1fc934504d89efaa00f2ed42ef21d26f59b99a70fbdee82eda0cc63831dd",
      "block_num": 21,
      "block_time": "2018-10-15T15:04:31.000",
      "producer_block_id": "000000150c9077cd36b0dfe5fd8102d6d4fe3b2261ede6e46dc916a80824c991",
      "account_ram_deltas": [],
+     "except": null,
      "inline_traces": []
     }
    ],
@@ -9005,14 +8919,13 @@
      },
      "context_free": false,
      "elapsed": 0,
-     "cpu_usage": 0,
      "console": "",
-     "total_cpu_usage": 0,
      "trx_id": "07f5440cf1b769adde46b3e35fb517138fd0e5807ea24aac37019c03d84f5401",
      "block_num": 22,
      "block_time": "2018-10-15T15:04:31.500",
      "producer_block_id": "00000016e20417d87b83cb72733b6b670c852a43455a04efe184d2b250712eeb",
      "account_ram_deltas": [],
+     "except": null,
      "inline_traces": []
     }
    ],
@@ -9064,14 +8977,13 @@
      },
      "context_free": false,
      "elapsed": 0,
-     "cpu_usage": 0,
      "console": "",
-     "total_cpu_usage": 0,
      "trx_id": "b4d2116292dc19b110e4c5acf7cd530a32c6cf099ffead3cd75bde3c776c3ee3",
      "block_num": 22,
      "block_time": "2018-10-15T15:04:31.500",
      "producer_block_id": "00000016e20417d87b83cb72733b6b670c852a43455a04efe184d2b250712eeb",
      "account_ram_deltas": [],
+     "except": null,
      "inline_traces": []
     }
    ],
@@ -9087,8 +8999,8 @@
     "action_traces": [
      {
       "receipt": {
-       "receiver": "",
-       "act_digest": "0000000000000000000000000000000000000000000000000000000000000000",
+       "receiver": "battlefield1",
+       "act_digest": "f8380b14878daacf0aec8c83da6644aab66f4d85b31bbdef22d34c3814314324",
        "global_sequence": 0,
        "recv_sequence": 0,
        "auth_sequence": [],
@@ -9096,21 +9008,79 @@
        "abi_sequence": 0
       },
       "act": {
-       "account": "",
-       "name": "",
-       "authorization": [],
-       "data": ""
+       "account": "battlefield1",
+       "name": "dtrxexec",
+       "authorization": [
+        {
+         "actor": "battlefield1",
+         "permission": "active"
+        }
+       ],
+       "data": {
+        "account": "battlefield1",
+        "fail_later": 1,
+        "nonce": "1"
+       },
+       "hex_data": "1052546ea998b339010131"
       },
       "context_free": false,
       "elapsed": 0,
-      "cpu_usage": 0,
       "console": "",
-      "total_cpu_usage": 0,
-      "trx_id": "0000000000000000000000000000000000000000000000000000000000000000",
-      "block_num": 0,
-      "block_time": "2000-01-01T00:00:00.000",
-      "producer_block_id": null,
+      "trx_id": "f1b30ff73a0c2d967c970b1172ae6b6296b9c562a4a9ba472bd2869f538b3b51",
+      "block_num": 22,
+      "block_time": "2018-10-15T15:04:31.500",
+      "producer_block_id": "00000016e20417d87b83cb72733b6b670c852a43455a04efe184d2b250712eeb",
       "account_ram_deltas": [],
+      "except": {
+       "code": 3050003,
+       "name": "eosio_assert_message_exception",
+       "message": "eosio_assert_message assertion failure",
+       "stack": [
+        {
+         "context": {
+          "level": "error",
+          "file": "wasm_interface.cpp",
+          "line": 934,
+          "method": "eosio_assert",
+          "hostname": "",
+          "thread_name": "thread-0",
+          "timestamp": "9999-99-99T99:99:99.999"
+         },
+         "format": "assertion failure with message: ${s}",
+         "data": {
+          "s": "instructed to fail"
+         }
+        },
+        {
+         "context": {
+          "level": "warn",
+          "file": "wavm.cpp",
+          "line": 73,
+          "method": "call",
+          "hostname": "",
+          "thread_name": "thread-0",
+          "timestamp": "9999-99-99T99:99:99.999"
+         },
+         "format": "",
+         "data": {}
+        },
+        {
+         "context": {
+          "level": "warn",
+          "file": "apply_context.cpp",
+          "line": 72,
+          "method": "exec_one",
+          "hostname": "",
+          "thread_name": "thread-0",
+          "timestamp": "9999-99-99T99:99:99.999"
+         },
+         "format": "pending console output: ${console}",
+         "data": {
+          "console": ""
+         }
+        }
+       ]
+      },
       "inline_traces": []
      }
     ],
@@ -9123,7 +9093,7 @@
        "context": {
         "level": "error",
         "file": "wasm_interface.cpp",
-        "line": 930,
+        "line": 934,
         "method": "eosio_assert",
         "hostname": "",
         "thread_name": "thread-0",
@@ -9151,7 +9121,7 @@
        "context": {
         "level": "warn",
         "file": "apply_context.cpp",
-        "line": 61,
+        "line": 72,
         "method": "exec_one",
         "hostname": "",
         "thread_name": "thread-0",
@@ -9214,9 +9184,7 @@
      },
      "context_free": false,
      "elapsed": 0,
-     "cpu_usage": 0,
      "console": "",
-     "total_cpu_usage": 0,
      "trx_id": "74252eab27b73f759f46b5105a73a697bc7b42db1e5f2c939df01edabbbc6323",
      "block_num": 22,
      "block_time": "2018-10-15T15:04:31.500",
@@ -9227,6 +9195,7 @@
        "delta": 731
       }
      ],
+     "except": null,
      "inline_traces": []
     }
    ],
@@ -9499,14 +9468,13 @@
      },
      "context_free": false,
      "elapsed": 0,
-     "cpu_usage": 0,
      "console": "",
-     "total_cpu_usage": 0,
      "trx_id": "31c1f17ca5dee2100417c65d1817b9baf3cc01c473d3b9a5cace286814295d18",
      "block_num": 23,
      "block_time": "2018-10-15T15:04:32.000",
      "producer_block_id": "0000001752863817c604a1d988fc0407f61768d94b4f9b6b748ec8d9a46c66fb",
      "account_ram_deltas": [],
+     "except": null,
      "inline_traces": []
     }
    ],
@@ -9654,14 +9622,13 @@
      },
      "context_free": false,
      "elapsed": 0,
-     "cpu_usage": 0,
      "console": "",
-     "total_cpu_usage": 0,
      "trx_id": "2675f60364f259b51e4e050a04b50015c02c1a546f91f2edcf36e1956b798052",
      "block_num": 24,
      "block_time": "2018-10-15T15:04:32.500",
      "producer_block_id": "00000018326d2bbfc7cf789f7722d71073c1f2f86d1cf5ebfee14c587a4a38d6",
      "account_ram_deltas": [],
+     "except": null,
      "inline_traces": []
     }
    ],
@@ -9683,8 +9650,8 @@
    "action_traces": [
     {
      "receipt": {
-      "receiver": "",
-      "act_digest": "0000000000000000000000000000000000000000000000000000000000000000",
+      "receiver": "battlefield1",
+      "act_digest": "0c4a8729d5b38850b31dc0ca23cbeae00cd1eca9aabdd9591e6f7541db8c783c",
       "global_sequence": 0,
       "recv_sequence": 0,
       "auth_sequence": [],
@@ -9692,21 +9659,71 @@
       "abi_sequence": 0
      },
      "act": {
-      "account": "",
-      "name": "",
-      "authorization": [],
-      "data": ""
+      "account": "battlefield1",
+      "name": "dbinstwo",
+      "authorization": [
+       {
+        "actor": "battlefield1",
+        "permission": "active"
+       }
+      ],
+      "data": {
+       "account": "battlefield1",
+       "first": 102,
+       "second": 100
+      },
+      "hex_data": "1052546ea998b33966000000000000006400000000000000"
      },
      "context_free": false,
      "elapsed": 0,
-     "cpu_usage": 0,
      "console": "",
-     "total_cpu_usage": 0,
-     "trx_id": "0000000000000000000000000000000000000000000000000000000000000000",
-     "block_num": 0,
-     "block_time": "2000-01-01T00:00:00.000",
-     "producer_block_id": null,
-     "account_ram_deltas": [],
+     "trx_id": "c2dbe5b2712f9ac47daa0140a3459e4c4da86891341e284f5f09b3f3f7c824f1",
+     "block_num": 24,
+     "block_time": "2018-10-15T15:04:32.500",
+     "producer_block_id": "00000018326d2bbfc7cf789f7722d71073c1f2f86d1cf5ebfee14c587a4a38d6",
+     "account_ram_deltas": [
+      {
+       "account": "battlefield1",
+       "delta": 315
+      }
+     ],
+     "except": {
+      "code": 13,
+      "name": "St9exception",
+      "message": "could not insert object, most likely a uniqueness constraint was violated",
+      "stack": [
+       {
+        "context": {
+         "level": "warn",
+         "file": "wavm.cpp",
+         "line": 73,
+         "method": "call",
+         "hostname": "",
+         "thread_name": "thread-0",
+         "timestamp": "9999-99-99T99:99:99.999"
+        },
+        "format": "${what}: ",
+        "data": {
+         "what": "could not insert object, most likely a uniqueness constraint was violated"
+        }
+       },
+       {
+        "context": {
+         "level": "warn",
+         "file": "apply_context.cpp",
+         "line": 72,
+         "method": "exec_one",
+         "hostname": "",
+         "thread_name": "thread-0",
+         "timestamp": "9999-99-99T99:99:99.999"
+        },
+        "format": "pending console output: ${console}",
+        "data": {
+         "console": ""
+        }
+       }
+      ]
+     },
      "inline_traces": []
     }
    ],
@@ -9734,7 +9751,7 @@
       "context": {
        "level": "warn",
        "file": "apply_context.cpp",
-       "line": 61,
+       "line": 72,
        "method": "exec_one",
        "hostname": "",
        "thread_name": "thread-0",
@@ -9906,14 +9923,13 @@
      },
      "context_free": false,
      "elapsed": 0,
-     "cpu_usage": 0,
      "console": "",
-     "total_cpu_usage": 0,
      "trx_id": "06609d55958c7ca765fa9c5207ab70ef0b9aa542f6e43578b219062f621d3586",
      "block_num": 25,
      "block_time": "2018-10-15T15:04:33.000",
      "producer_block_id": "00000019b569c2169019fc27c5b62206fe2b363d7b61f0c0516f8b7a8b97cb3e",
      "account_ram_deltas": [],
+     "except": null,
      "inline_traces": []
     }
    ],
@@ -9966,9 +9982,7 @@
      },
      "context_free": false,
      "elapsed": 0,
-     "cpu_usage": 0,
      "console": "",
-     "total_cpu_usage": 0,
      "trx_id": "d089201798b43e9217aa8cf3f146820c633897dabd3ac4871e29b271624bd5d9",
      "block_num": 25,
      "block_time": "2018-10-15T15:04:33.000",
@@ -9979,6 +9993,7 @@
        "delta": 619
       }
      ],
+     "except": null,
      "inline_traces": []
     }
    ],
@@ -10196,14 +10211,13 @@
      },
      "context_free": false,
      "elapsed": 0,
-     "cpu_usage": 0,
      "console": "",
-     "total_cpu_usage": 0,
      "trx_id": "27681815831ef3c7215bb485e551deaeca6c8f22aa88f35e2387cc943f8849c6",
      "block_num": 26,
      "block_time": "2018-10-15T15:04:33.500",
      "producer_block_id": "0000001af340d039b4ef300b0d3bbf286c0114f032343ea0f38b4d25adf86d57",
      "account_ram_deltas": [],
+     "except": null,
      "inline_traces": []
     }
    ],
@@ -10274,9 +10288,7 @@
      },
      "context_free": false,
      "elapsed": 0,
-     "cpu_usage": 0,
      "console": "",
-     "total_cpu_usage": 0,
      "trx_id": "af33d8233207c8eeb4a1f5cc2cd7c096c3c0fa13a33914ed70dea0530246f04f",
      "block_num": 26,
      "block_time": "2018-10-15T15:04:33.500",
@@ -10287,6 +10299,7 @@
        "delta": -331
       }
      ],
+     "except": null,
      "inline_traces": []
     }
    ],
@@ -10538,14 +10551,13 @@
      },
      "context_free": false,
      "elapsed": 0,
-     "cpu_usage": 0,
      "console": "",
-     "total_cpu_usage": 0,
      "trx_id": "e398bff4e78d548212c36e41d9ba69d0256d75df26d5595a265939bb1c01c2ff",
      "block_num": 27,
      "block_time": "2018-10-15T15:04:34.000",
      "producer_block_id": "0000001bd03c60eeb2fb98ad83bedbd8a8384bb4f0f81c7c85fcc79d9740570b",
      "account_ram_deltas": [],
+     "except": null,
      "inline_traces": []
     }
    ],
@@ -10683,14 +10695,13 @@
      },
      "context_free": false,
      "elapsed": 0,
-     "cpu_usage": 0,
      "console": "",
-     "total_cpu_usage": 0,
      "trx_id": "356c7a25f9ef671bd23e51043261b5795ce10a479e32e95867ddffedbe6c54d5",
      "block_num": 28,
      "block_time": "2018-10-15T15:04:34.500",
      "producer_block_id": "0000001c749249f4ab8531e31f9b07ecfa8f383cca25cbe05b5a0573fde372fa",
      "account_ram_deltas": [],
+     "except": null,
      "inline_traces": []
     }
    ],
