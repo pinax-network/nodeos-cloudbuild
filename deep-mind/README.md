@@ -8,7 +8,7 @@ git clone --recursive git@github.com:EOSIO/eos.git
 cd eos
 ```
 
-Follow upstream changes and apply our patch:
+Follow upstream changes and apply our patch(es):
 ```
 cd ~/build/eos
 git submodule update --recursive
@@ -16,11 +16,10 @@ git submodule update --recursive
 
 From this directory, run:
 ```
-./apply.sh ~/build/eos ../patches/deep-mind-v1.3.x.patch ../patches-deep-mind-logging.patch
+./apply.sh ~/build/eos ../patches/deep-mind-v1.4.1-v8.2.patch ../patches/deep-mind-logging-v1.4.1-v8.patch
 ```
 
-Inspect the output, test `nodeos` against `compare`, extract a new
-patches with:
+Inspect the output, test `nodeos` against `compare`, extract a new patches with:
 
 ```
 git diff --cached --ignore-submodules=all > deep-mind.patch
@@ -54,6 +53,18 @@ changes, leftovers, etc..)
 
 Call `submit_nodeos_full.sh`
 
+Testing
+--------
+
+Compile battlefield contract if you have changes in it:
+```
+./battlefield/build.sh
+```
+
+Execute the actual tests suite via the [boot/run.sh](./boot/run.sh) file:
+```
+./boot/run.sh ~/build/eos/build/programs/nodeos/nodeos
+```
 
 Contents
 --------

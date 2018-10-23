@@ -1,3 +1,5 @@
+.envrc
+deep-mind.log
 output.log
 state/
 blocks/reversible/

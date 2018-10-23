@@ -1,43 +1,63 @@
-#!/bin/bash -e
+#!/bin/bash
+
+set -e
+
+ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 SOURCE_REPO=$1
-DEEP_MIND_PATCH=`pwd`/$2
-DEEP_MIND_LOGGING_PATCH=`pwd`/$3
+DEEP_MIND_PATCH_RELATIVE=$2
+DEEP_MIND_LOGGING_PATCH_RELATIVE=$3
 
-echo "WARNING: this will reset your source repo at $SOURCE_REPO and"
-echo "all its changes, at the current HEAD revision."
+CURRENT=`pwd`
+DEEP_MIND_PATCH="`pwd`/$DEEP_MIND_PATCH_RELATIVE"
+DEEP_MIND_LOGGING_PATCH="`pwd`/$DEEP_MIND_LOGGING_PATCH_RELATIVE"
+
+if [[ ! -d $SOURCE_REPO ]]; then
+  echo "Source repository does not exist, check first argument."
+  exit 1
+fi
+
+if [[ ! -f $DEEP_MIND_PATCH_RELATIVE ]]; then
+  echo "Deep mind patch file does not exist, check second argument."
+  exit 1
+fi
+
+if [[ ! -f $DEEP_MIND_LOGGING_PATCH_RELATIVE ]]; then
+  echo "Deep mind logging patch file does not exist, check third argument."
+  exit 1
+fi
+
+echo "Applying base patch:"
+echo "    $DEEP_MIND_PATCH_RELATIVE (in $SOURCE_REPO)"
+echo "    $DEEP_MIND_LOGGING_PATCH_RELATIVE (in $SOURCE_REPO/libraries/fc)"
 echo ""
-echo "It will then apply the base patch at:"
-echo "    $DEEP_MIND_PATCH"
-echo "and the logging (libraries/fc) patch at:"
-echo "    $DEEP_MIND_LOGGING_PATCH"
-echo ""
-echo "Press ENTER to continue."
 
-read
+# Go back to initial directory on exit
+trap "cd $CURRENT" EXIT
 
-cd $1
+echo "Changing working directory to $SOURCE_REPO and applying patch"
+cd $SOURCE_REPO
 
-echo "Resetting $SOURCE_REPO and applying patch"
+if [[ -n $(git status --porcelain) ]]; then
+  echo "WARNING: Repository at $SOURCE_REPO is dirty, please stash or commit your changes before applying the patch"
+  exit 1
+fi
+
+rm -vf libraries/chain/*.orig
+rm -vf libraries/chain/*.rej
 
 git reset --hard
+git apply --index -p1 --3way $DEEP_MIND_PATCH
 
-#rm -vf libraries/chain/trace.cpp
-#rm -vf libraries/chain/*.orig
-#rm -vf libraries/chain/*.rej
+echo "Changing working directory to $SOURCE_REPO/libraries/fc and applying patch"
+cd libraries/fc
 
-git apply --index -p1 $DEEP_MIND_PATCH
+if [[ -n $(git status --porcelain) ]]; then
+  echo "WARNING: Repository at $SOURCE_REPO/libraries/fc is dirty, please stash or commit your changes before applying the patch"
+  exit 1
+fi
 
-
-echo "Resetting $SOURCE_REPO/libraries/fc"
-
-pushd libraries/fc
 git reset --hard
-#$(find . | grep deep_mind | xargs rm) || true
-popd
-
-pushd libraries/fc
-git apply --index -p3 $DEEP_MIND_LOGGING_PATCH
-popd
+git apply --index -p3 --3way $DEEP_MIND_LOGGING_PATCH
 
 echo "Done"
