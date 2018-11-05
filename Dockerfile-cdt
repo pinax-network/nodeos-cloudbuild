@@ -3,7 +3,7 @@ FROM ubuntu:18.04
 ARG EOSIO_CDT_VERSION
 WORKDIR /workspace
 
-LABEL description="Image containing the eosio.cdt" version="${EOSIO_CDT_VERSION}"
+LABEL description="Image containing the eosio.cdt development toolchain for EOS Blockchains" version="${EOSIO_CDT_VERSION}"
 LABEL maintainer="Alexandre Bourget <alex@eoscanada.com>" \
       maintainer="Francois Proulx <francois@eoscanada.com>" \
       maintainer="Matthieu Vachon <matt@eoscanada.com>"
@@ -11,13 +11,9 @@ LABEL maintainer="Alexandre Bourget <alex@eoscanada.com>" \
 RUN echo 'APT::Install-Recommends 0;' >> /etc/apt/apt.conf.d/01norecommends \
   && echo 'APT::Install-Suggests 0;' >> /etc/apt/apt.conf.d/01norecommends \
   && apt-get update \
-  && DEBIAN_FRONTEND=noninteractive apt-get install -y wget curl net-tools ca-certificates unzip less vim gnupg sudo git-core automake autoconf autotools-dev libtool build-essential pkg-config libtool \
-     mpi-default-dev libicu-dev python-dev python2.7-dev python3-dev libbz2-dev zlib1g-dev doxygen lcov graphviz libssl-dev libgmp-dev \
-     clang-4.0 lldb-4.0 lld-4.0 llvm-4.0-dev libclang-4.0-dev ninja-build libgmp3-dev cmake \
+  && DEBIAN_FRONTEND=noninteractive apt-get install -y make cmake g++ openssl ca-certificates wget \
   && rm -rf /var/lib/apt/lists/*
 
-RUN git clone --depth 1 --recursive -b "${EOSIO_CDT_VERSION}" https://github.com/EOSIO/eosio.cdt \
-    && cd eosio.cdt \
-    && ./build.sh EOS \
-    && ./install.sh \
-    && rm -rf /workspace/eosio.cdt
+RUN wget "https://github.com/eosio/eosio.cdt/releases/download/v${EOSIO_CDT_VERSION}/eosio.cdt-${EOSIO_CDT_VERSION}.x86_64.deb" \
+  && DEBIAN_FRONTEND=noninteractive apt-get install -y ./eosio.cdt-${EOSIO_CDT_VERSION}.x86_64.deb \
+  && rm -rf ./eosio.cdt-${EOSIO_CDT_VERSION}.x86_64.deb
