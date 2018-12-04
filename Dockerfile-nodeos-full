@@ -1,6 +1,6 @@
 ARG BUILD_ENV=v7
 
-# FROM gcr.io/eoscanada-public/eosio-build-env:$BUILD_ENV as builder
+# FROM gcr.io/eoscanada-shared-services/eosio-build-env:$BUILD_ENV as builder
 FROM eosio/builder:v1.1.0 as builder
 
 ARG SRCTAG

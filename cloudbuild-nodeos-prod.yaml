@@ -12,7 +12,7 @@ steps:
 
 - id: push-dockerfile
   name: gcr.io/cloud-builders/gsutil
-  args: ['cp', 'Dockerfile-nodeos-prod', 'gs://artifacts.eoscanada-public.appspot.com/metadata/eosio-nodeos-prod/$_NODEOS_FULL_TAG/Dockerfile']
+  args: ['cp', 'Dockerfile-nodeos-prod', 'gs://artifacts.eoscanada-shared-services.appspot.com/metadata/eosio-nodeos-prod/$_NODEOS_FULL_TAG/Dockerfile']
 
 images:
 - gcr.io/$PROJECT_ID/eosio-nodeos-prod:$_NODEOS_FULL_TAG

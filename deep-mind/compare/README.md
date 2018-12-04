@@ -22,7 +22,7 @@ Produce the output.log (compares to reference.log):
 2 .or a Docker image with:
 
 ```
-./run.sh gcr.io/eoscanada-public/eosio-nodeos-prod:v1.3.2-deep-mind-v7
+./run.sh gcr.io/eoscanada-shared-services/eosio-nodeos-prod:v1.3.2-deep-mind-v7
 ```
 
 Updating the traces

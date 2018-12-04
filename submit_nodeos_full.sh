@@ -2,11 +2,11 @@
 
 # This step builds `nodeos` and keeps all artifacts.
 
-_SRCTAG="v1.4.1"
-_DSTTAG="v1.4.1-deep-mind-v8.2"
-_PATCHES="deep-mind-v1.4.1-v8.2.patch deep-mind-logging-v1.4.1-v8.patch"
+_SRCTAG="v1.4.4"
+_DSTTAG="v1.4.4-deep-mind-v8.2"
+_PATCHES="deep-mind-v1.4.4-v8.2.patch deep-mind-logging-v1.4.4-v8.2.patch"
 
-export CLOUDSDK_CORE_PROJECT=eoscanada-public
+export CLOUDSDK_CORE_PROJECT=eoscanada-shared-services
 
 gcloud builds submit . \
           --config cloudbuild-nodeos-full.yaml \

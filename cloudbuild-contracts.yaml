@@ -1,7 +1,7 @@
 steps:
 
 - id: build-contracts
-  name: gcr.io/eoscanada-public/eosio-wasmsdk:$_SOURCE_BRANCH
+  name: gcr.io/eoscanada-shared-services/eosio-wasmsdk:$_SOURCE_BRANCH
   entrypoint: /bin/bash
   env:
   - CONTRACTS_BRANCH_=v1.1.0
@@ -16,4 +16,4 @@ steps:
 
 - id: push-artifacts
   name: gcr.io/cloud-builders/gsutil
-  args: ['-m', 'cp', '-r', '-P', 'artifacts', 'gs://artifacts.eoscanada-public.appspot.com/contracts/wasmsdk-$_SOURCE_BRANCH/']
+  args: ['-m', 'cp', '-r', '-P', 'artifacts', 'gs://artifacts.eoscanada-shared-services.appspot.com/contracts/wasmsdk-$_SOURCE_BRANCH/']

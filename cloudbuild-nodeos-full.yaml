@@ -4,7 +4,7 @@ steps:
   name: gcr.io/cloud-builders/docker
   args: [
     'build',
-    '-t', 'gcr.io/eoscanada-public/eosio-nodeos-full:$_DSTTAG',
+    '-t', 'gcr.io/eoscanada-shared-services/eosio-nodeos-full:$_DSTTAG',
     '-f', 'Dockerfile-nodeos-full',
     '--build-arg', 'SRCTAG=$_SRCTAG',
     '--build-arg', 'BUILD_ENV=v7',
@@ -13,7 +13,7 @@ steps:
   ]
 
 - id: deep-mind-tests
-  name: gcr.io/eoscanada-public/eosio-nodeos-full:$_DSTTAG
+  name: gcr.io/eoscanada-shared-services/eosio-nodeos-full:$_DSTTAG
   dir: /workspace/deep-mind/compare
   args: [
     './run.sh', '/opt/eos/bin/nodeos'
@@ -21,7 +21,7 @@ steps:
 
 - id: push-dockerfile
   name: gcr.io/cloud-builders/gsutil
-  args: ['cp', 'Dockerfile-nodeos-full', 'gs://artifacts.eoscanada-public.appspot.com/metadata/eosio-nodeos-full/$_DSTTAG/Dockerfile']
+  args: ['cp', 'Dockerfile-nodeos-full', 'gs://artifacts.eoscanada-shared-services.appspot.com/metadata/eosio-nodeos-full/$_DSTTAG/Dockerfile']
 
 images:
-- gcr.io/eoscanada-public/eosio-nodeos-full:$_DSTTAG
+- gcr.io/eoscanada-shared-services/eosio-nodeos-full:$_DSTTAG

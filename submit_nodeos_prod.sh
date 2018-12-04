@@ -2,8 +2,8 @@
 
 # This step builds `nodeos-prod` keeping only artifacts required for production.
 
-NODEOS_FULL_TAG=v1.4.1-deep-mind-v8.2
-export CLOUDSDK_CORE_PROJECT=eoscanada-public
+NODEOS_FULL_TAG=v1.4.4-deep-mind-v8.2
+export CLOUDSDK_CORE_PROJECT=eoscanada-shared-services
 
 gcloud builds submit . \
           --config cloudbuild-nodeos-prod.yaml \

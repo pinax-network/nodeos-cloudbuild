@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export CLOUDSDK_CORE_PROJECT=${CLOUDSDK_CORE_PROJECT:-"eoscanada-public"}
+export CLOUDSDK_CORE_PROJECT=${CLOUDSDK_CORE_PROJECT:-"eoscanada-shared-services"}
 
 main() {
     VERSION=${1}
