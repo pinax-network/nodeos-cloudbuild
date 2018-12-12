@@ -3,8 +3,8 @@
 # This step builds `nodeos` and keeps all artifacts.
 
 _SRCTAG="v1.4.4"
-_DSTTAG="v1.4.4-deep-mind-v8.2"
-_PATCHES="deep-mind-v1.4.4-v8.2.patch deep-mind-logging-v1.4.4-v8.2.patch"
+_DSTTAG="v1.4.4-hotfix"
+_PATCHES="security-fix-v1.4.4.patch"
 
 export CLOUDSDK_CORE_PROJECT=eoscanada-shared-services
 
