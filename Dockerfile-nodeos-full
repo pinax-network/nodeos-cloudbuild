@@ -11,37 +11,22 @@ COPY patches /patches
 RUN git clone -b $SRCTAG --depth 1 $REPOSITORY --recursive \
     && cd eos \
     && echo PATCHING... && for patch in $PATCHES; do echo APPLYING PATCH $patch; patch -p1 < /patches/$patch; done && echo PATCHED \
-    && echo "$branch:$(git rev-parse HEAD)" > /etc/eosio-version \
+    && echo "$SRCTAG:$(git rev-parse HEAD)" > /etc/eosio-version \
     && echo $REPOSITORY ref $SRCTAG revision `git describe --always --long` > /etc/eosio-build-version \
     && cmake -H. -B"/tmp/build" -GNinja \
        -DCMAKE_BUILD_TYPE=Release \
        -DWASM_ROOT=/opt/wasm \
        -DCMAKE_CXX_COMPILER=clang++ \
        -DCMAKE_C_COMPILER=clang \
-       -DCMAKE_INSTALL_PREFIX=/tmp/build \
+       -DCMAKE_INSTALL_PREFIX=/opt/eos \
        -DBUILD_MONGO_DB_PLUGIN=false \
        -DCORE_SYMBOL_NAME=EOS \
     && cp --remove-destination `readlink /usr/lib/x86_64-linux-gnu/libz.so` /usr/lib/x86_64-linux-gnu/libz.so \
     && cp --remove-destination `readlink /usr/lib/x86_64-linux-gnu/libbz2.so` /usr/lib/x86_64-linux-gnu/libbz2.so \
     && cmake --build /tmp/build --target install
 
-FROM ubuntu:18.04
-COPY --from=builder /usr/local/lib/* /usr/local/lib/
-COPY --from=builder /tmp/build/bin /opt/eosio/bin
-COPY --from=builder /tmp/build/contracts /contracts
-COPY --from=builder /eos/Docker/config.ini /
-COPY --from=builder /etc/eosio-version /etc
-COPY --from=builder /etc/eosio-build-version /etc
-COPY --from=builder /eos/Docker/nodeosd.sh /opt/eosio/bin/nodeosd.sh
-
-RUN apt-get update \
-    && DEBIAN_FRONTEND=noninteractive apt-get -y install openssl ca-certificates \
-    && rm -rf /var/lib/apt/lists/* \
-    && chmod +x /opt/eosio/bin/nodeosd.sh
-
 ENV BOOST /usr/local/include
 ENV EOSIO_ROOT=/opt/eosio
 ENV INSTALL_PREFIX /opt/eos
 ENV LD_LIBRARY_PATH /usr/local/lib
-ENV PATH /opt/eosio/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 ENV PREFIX /opt

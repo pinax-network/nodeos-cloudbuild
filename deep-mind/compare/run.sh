@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -e
 
 ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
@@ -42,6 +42,7 @@ DIFF_FILE="$ROOT/diff.patch"
 
 sed -i.bak -e 's/,"elapsed":[0-9]*,"/,"elapsed":0,"/g' "$OUTPUT_FILE"
 sed -i.bak -e 's/"thread_name":"thread-[0-9]*","timestamp":"[^"]*"}/"thread_name":"thread-0","timestamp":"9999-99-99T99:99:99.999"}/g' "$OUTPUT_FILE"
+sed -i.bak -e 's/,"line":[0-9]*,"/,"line":0,"/g' "$OUTPUT_FILE"
 rm -rf "$OUTPUT_FILE.bak"
 
 diff -u "$REFERENCE_FILE" "$OUTPUT_FILE" > "$DIFF_FILE"
