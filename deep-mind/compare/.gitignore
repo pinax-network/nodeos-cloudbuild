@@ -1,5 +1,6 @@
 blocks/
 state/
 diff.log
+diff.patch
 output.log
 output.jsonl
