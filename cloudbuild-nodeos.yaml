@@ -1,7 +1,7 @@
 ### commit and push those values in !
 substitutions:
-  _TAG: v1.5.0
-  _PATCHES: "security-fix-v1.5.0.patch"
+  _TAG: v1.5.1
+  _PATCHES: ""
 
 steps:
 - id: docker-build-full
