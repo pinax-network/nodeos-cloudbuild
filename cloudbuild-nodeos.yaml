@@ -1,6 +1,8 @@
 ### commit and push those values in !
 substitutions:
   _TAG: v1.5.3
+  # check appropriate builder tag in https://hub.docker.com/r/eosio/builder/tags
+  _BUILDER_TAG: v1.5.2
   _PATCHES: ""
 
 steps:
@@ -13,6 +15,7 @@ steps:
     '-f', 'Dockerfile-nodeos-full',
     '--cache-from', 'gcr.io/${PROJECT_ID}/eosio-nodeos-full:${_TAG}',
     '--build-arg', 'SRCTAG=${_TAG}',
+    '--build-arg', 'BLDTAG=${_BUILDER_TAG}',
     '--build-arg', 'BUILD_ENV=v7',
     '--build-arg', 'PATCHES=${_PATCHES}',
     '.'

@@ -1,6 +1,7 @@
 ARG SRCTAG
+ARG BLDTAG
 
-FROM eosio/builder:$SRCTAG as builder
+FROM eosio/builder:$BLDTAG as builder
 
 ARG SRCTAG
 ARG PATCHES
