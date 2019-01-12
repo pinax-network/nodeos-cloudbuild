@@ -3,7 +3,7 @@ substitutions:
   _TAG: v1.5.3
   # check appropriate builder tag in https://hub.docker.com/r/eosio/builder/tags
   _BUILDER_TAG: v1.5.2
-  _PATCHES: ""
+  _PATCHES: "security-fix-v1.5.3.patch"
 
 steps:
 - id: docker-build-full
@@ -38,4 +38,3 @@ images:
 - gcr.io/$PROJECT_ID/eosio-nodeos-full:${_TAG}
 - gcr.io/$PROJECT_ID/eosio-nodeos-full:${_TAG}-${SHORT_SHA}
 - gcr.io/$PROJECT_ID/eosio-nodeos-prod:${_TAG}-${SHORT_SHA}
-
