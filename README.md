@@ -1,17 +1,8 @@
-Build environments and images
------------------------------
+# Build environments and images
 
+## How to apply a patch
 
-* Dockerfile-build-env: holds all the compilers and libraires needed to build `eosio`.
-  * Dockerfile-nodeos-full: builds a given tag of `eosio`, and keeps all the build environment, artifacts, header files and installed components.
-    * Dockerfile-nodeos-prod: plucks out of an `Dockerfile-nodeos-full`-produced image, only what is necessary to run `nodeos` in production.
-    * Dockerfile-contracts: uses the `Dockerfile-nodeos-full` environment to build smart contracts for a given tag of `eosio`.
-
-
-
-Each time there's a new tag
----------------------------
-
-```
-./submit_nodeos_full.sh
-```
+Create the file in `patches` directory.
+Edit `Dockerfile-nodeos-full` and put the file name in _PATCHES (space separated, no directory path)
+The, commit and push into git as `branch/default`, this will trigger the build.
+Use the build ID (usually version_sha) to build `manageos`
