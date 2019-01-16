@@ -10,6 +10,8 @@ EOSIO_ABI(battlefield, (dbins)(dbinstwo)(dbupd)(dbrem)(dtrx)(dtrxcancel)(dtrxexe
 void battlefield::dbins(account_name account) {
     require_auth(account);
 
+    eosio::print("dbins ran and you're authenticated");
+
     members member_table(_self, _self);
     auto index = member_table.template get_index<N(byaccount)>();
     member_table.emplace(account, [&](auto& row) {
