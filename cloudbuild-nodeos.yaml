@@ -1,9 +1,9 @@
 ### commit and push those values in !
 substitutions:
-  _TAG: v1.5.3
+  _TAG: v1.6.0
   # check appropriate builder tag in https://hub.docker.com/r/eosio/builder/tags
   _BUILDER_TAG: v1.5.2
-  _PATCHES: "security-fix-v1.5.3.patch"
+  _PATCHES: ""
 
 steps:
 - id: docker-build-full
