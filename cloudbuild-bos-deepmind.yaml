@@ -16,12 +16,13 @@ steps:
     '--build-arg', 'PATCHES=${_PATCHES}',
     '.'
   ]
-- id: deep-mind-tests
-  name: gcr.io/${PROJECT_ID}/boscore-bos-full:${_TAG}-deep-mind-${SHORT_SHA}
-  dir: /workspace/deep-mind/compare
-  args: [
-    './run.sh', '/opt/eos/bin/nodeos'
-  ]
+# FIXME: Disabled for now as BOS is not booting yet
+# - id: deep-mind-tests
+#   name: gcr.io/${PROJECT_ID}/boscore-bos-full:${_TAG}-deep-mind-${SHORT_SHA}
+#   dir: /workspace/deep-mind/compare
+#   args: [
+#     './run.sh', '/opt/eos/bin/nodeos'
+#   ]
 - id: docker-build-prod
   name: gcr.io/cloud-builders/docker
   args: [
