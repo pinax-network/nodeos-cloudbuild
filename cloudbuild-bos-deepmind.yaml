@@ -1,0 +1,43 @@
+### commit and push those values in !
+substitutions:
+  _TAG: v2.0.1
+  _PATCHES: "deep-mind-v1.5.0-v8.3.patch deep-mind-logging-v1.5.0-v8.3.patch"
+
+steps:
+- id: docker-build-full
+  name: gcr.io/cloud-builders/docker
+  args: [
+    'build',
+    '-t', 'gcr.io/${PROJECT_ID}/boscore-bos-full:${_TAG}-deep-mind-${SHORT_SHA}',
+    '-t', 'gcr.io/${PROJECT_ID}/boscore-bos-full:${_TAG}-deep-mind',
+    '-f', 'Dockerfile-bos-full',
+    '--cache-from', 'gcr.io/${PROJECT_ID}/boscore-bos-full:${_TAG}-deep-mind',
+    '--build-arg', 'SRCTAG=${_TAG}',
+    '--build-arg', 'PATCHES=${_PATCHES}',
+    '.'
+  ]
+- id: deep-mind-tests
+  name: gcr.io/${PROJECT_ID}/boscore-bos-full:${_TAG}-deep-mind-${SHORT_SHA}
+  dir: /workspace/deep-mind/compare
+  args: [
+    './run.sh', '/opt/eos/bin/nodeos'
+  ]
+- id: docker-build-prod
+  name: gcr.io/cloud-builders/docker
+  args: [
+    'build',
+    '-t', 'gcr.io/${PROJECT_ID}/boscore-bos-prod:${_TAG}-deep-mind-${SHORT_SHA}',
+    '-t', 'gcr.io/${PROJECT_ID}/boscore-bos-prod:${_TAG}-deep-mind',
+    '--build-arg', 'BOS_FULL_TAG=${_TAG}-deep-mind-${SHORT_SHA}',
+    '-f', 'Dockerfile-bos-prod',
+    '.'
+  ]
+
+options:
+  machineType: 'N1_HIGHCPU_32'
+
+images:
+- gcr.io/$PROJECT_ID/boscore-bos-full:${_TAG}-deep-mind
+- gcr.io/$PROJECT_ID/boscore-bos-full:${_TAG}-deep-mind-${SHORT_SHA}
+- gcr.io/$PROJECT_ID/boscore-bos-prod:${_TAG}-deep-mind-${SHORT_SHA}
+
