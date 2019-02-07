@@ -1,7 +1,9 @@
 ### commit and push those values in !
 substitutions:
-  _TAG: v1.5.1
-  _PATCHES: "deep-mind-v1.5.0-v8.3.patch deep-mind-logging-v1.5.0-v8.3.patch"
+  _TAG: v1.6.1
+    # check appropriate builder tag in https://hub.docker.com/r/eosio/builder/tags
+  _BUILDER_TAG: v1.5.2
+  _PATCHES: "deep-mind-v1.6.1-v8.3.patch deep-mind-logging-v1.6.1-v8.3.patch"
 
 steps:
 - id: docker-build-full
@@ -13,6 +15,7 @@ steps:
     '-f', 'Dockerfile-nodeos-full',
     '--cache-from', 'gcr.io/${PROJECT_ID}/eosio-nodeos-full:${_TAG}-deep-mind',
     '--build-arg', 'SRCTAG=${_TAG}',
+    '--build-arg', 'BLDTAG=${_BUILDER_TAG}',
     '--build-arg', 'PATCHES=${_PATCHES}',
     '.'
   ]
