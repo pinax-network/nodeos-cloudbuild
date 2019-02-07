@@ -13,7 +13,6 @@ steps:
     '-f', 'Dockerfile-bos-full',
     '--cache-from', 'gcr.io/${PROJECT_ID}/boscore-bos-full:${_TAG}',
     '--build-arg', 'SRCTAG=${_TAG}',
-    '--build-arg', 'BUILD_ENV=v1',
     '--build-arg', 'PATCHES=${_PATCHES}',
     '.'
   ]

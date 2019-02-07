@@ -12,7 +12,10 @@ trap shutdown EXIT
 
 sleep 1
 
-eos-bios boot bootseq.yaml --reuse-genesis --api-url http://localhost:9898
+echo "Booting $1 node with smart contracts ..."
+eos-bios boot bootseq.yaml --verbose --reuse-genesis --api-url http://localhost:9898
+
+echo "Booting completed, launching test cases..."
 
 export EOSC_GLOBAL_INSECURE_VAULT_PASSPHRASE=secure
 export EOSC_GLOBAL_API_URL=http://localhost:9898
