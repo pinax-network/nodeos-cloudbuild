@@ -18,22 +18,22 @@ read
 
 cd $1
 
-# echo "Resetting $SOURCE_REPO and applying patch"
+echo "Resetting $SOURCE_REPO and applying patch"
 
-# git reset --hard
+git reset --hard
 
-# rm -vf libraries/chain/trace.cpp
-# rm -vf libraries/chain/*.orig
-# rm -vf libraries/chain/*.rej
+#rm -vf libraries/chain/trace.cpp
+#rm -vf libraries/chain/*.orig
+#rm -vf libraries/chain/*.rej
 
-# git apply --index -p1 $DEEP_MIND_PATCH
+git apply --index -p1 $DEEP_MIND_PATCH
 
 
 echo "Resetting $SOURCE_REPO/libraries/fc"
 
 pushd libraries/fc
 git reset --hard
-$(find . | grep deep_mind | xargs rm) || true
+#$(find . | grep deep_mind | xargs rm) || true
 popd
 
 pushd libraries/fc

@@ -1,24 +1,7 @@
 Deep mind patches
 -----------------
 
-Clone our private fork of EOS, checkout the right branch with submodules and perform the `git diff` command above:
-
-```
-cd /tmp
-git clone --recursive git@github.com:eoscanada/eosio-eos-private.git
-cd eosio-eos-private
-git checkout eoscanada/deep-mind
-git submodule update --recursive
-
-git diff \
-    --no-color \
-    --submodule=diff \
-    origin/release/1.3.x-dev eoscanada/deep-mind \
-    . ':(exclude).gitmodules' \
-    > ./deep-mind-1.3.x.patch
-```
-
-Alternatively checkout a fresh `eos` repo:
+Checkout a fresh `eos` repo:
 ```
 cd ~/build
 git clone --recursive git@github.com:EOSIO/eos.git
@@ -46,6 +29,25 @@ pushd libraries/fc
   git diff --cached --src-prefix=a/libraries/fc/ --dst-prefix=b/libraries/fc/ > ../../deep-mind-logging.patch
 popd
 ```
+
+
+Local development
+-----------------
+
+In (or around) your `eos` checkout, run:
+
+    docker run --name eos-buildenv -ti -v `pwd`:`pwd` -w `pwd` gcr.io/eoscanada-shared-services/eosio-build-env:v7 /bin/bash
+
+and from within:
+
+    cd eos
+    ./eosio_build.sh
+
+Output is in `eos/build/programs/nodeos/nodeos`.  You can use that in `boot` and `compare`.
+
+
+Publish build
+-------------
 
 Inspect the patch, make sure nothing extraneous crept in (whitespace
 changes, leftovers, etc..)
