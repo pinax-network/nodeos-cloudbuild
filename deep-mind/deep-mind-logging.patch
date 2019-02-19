@@ -12,10 +12,10 @@ index 265f645..dffac46 100644
       src/crypto/_digest_common.cpp
 diff --git a/libraries/fc/include/fc/log/deep_mind_appender.hpp b/libraries/fc/include/fc/log/deep_mind_appender.hpp
 new file mode 100644
-index 0000000..a766851
+index 0000000..111db65
 --- /dev/null
 +++ b/libraries/fc/include/fc/log/deep_mind_appender.hpp
-@@ -0,0 +1,24 @@
+@@ -0,0 +1,26 @@
 +#pragma once
 +#include <fc/log/appender.hpp>
 +#include <fc/log/logger.hpp>
@@ -30,7 +30,9 @@ index 0000000..a766851
 +            deep_mind_appender();
 +
 +            ~deep_mind_appender();
-+            void initialize( boost::asio::io_service& io_service ) {}
++            void initialize( boost::asio::io_service& io_service ) {
++                 setbuf(stdout, NULL);
++            }
 +
 +            virtual void log( const log_message& m );
 +
@@ -86,10 +88,10 @@ index d504cfc..9b0ab7b 100644
  
 diff --git a/libraries/fc/src/log/deep_mind_appender.cpp b/libraries/fc/src/log/deep_mind_appender.cpp
 new file mode 100644
-index 0000000..8bf79a9
+index 0000000..6bc1ce5
 --- /dev/null
 +++ b/libraries/fc/src/log/deep_mind_appender.cpp
-@@ -0,0 +1,43 @@
+@@ -0,0 +1,58 @@
 +#include <fc/log/deep_mind_appender.hpp>
 +#include <fc/log/log_message.hpp>
 +#include <fc/string.hpp>
@@ -122,15 +124,30 @@ index 0000000..8bf79a9
 +
 +   void deep_mind_appender::log( const log_message& m ) {
 +      FILE* out = stdout;
++      int err;
 +
-+      std::stringstream line;
 +      fc::string message = fc::format_string( m.get_format(), m.get_data() );
-+      if (message.empty()) return;
++      if (message.empty()) {
++         return;
++      }
 +
 +      std::unique_lock<boost::mutex> lock(my->log_mutex);
 +
-+      fprintf( out, "%s\n", message.c_str() );
-+      fflush( out );
++      int retries = 0;
++      printagain:
++      if ((err = fprintf( out, "DMLOG %s\n", message.c_str() )) < 0) {
++         retries++;
++         int errval = ferror(out);
++         fprintf(out, "DMLOG FPRINTF_FAILED failed %d %d %s\n", ferror(out), errval, strerror(errno));
++         goto printagain;
++      }
++
++      // We don't `fflush`, rather we made `stdout` unbuffered with `setbuf`. This way we have
++      // atomic error handling and retry logic up here ^^.
++
++      if (retries > 0) {
++         fprintf(out, "DMLOG FPRINTF_FAILURE_RETRIES %d\n", retries);
++      }
 +   }
 +}
 diff --git a/libraries/fc/src/log/logger_config.cpp b/libraries/fc/src/log/logger_config.cpp

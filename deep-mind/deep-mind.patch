@@ -1,5 +1,5 @@
 diff --git a/libraries/chain/apply_context.cpp b/libraries/chain/apply_context.cpp
-index 1beb647ee..d8094c3a3 100644
+index 1beb647ee..d2b54b6e8 100644
 --- a/libraries/chain/apply_context.cpp
 +++ b/libraries/chain/apply_context.cpp
 @@ -114,10 +114,13 @@ void apply_context::exec( action_trace& trace )
@@ -16,7 +16,21 @@ index 1beb647ee..d8094c3a3 100644
     }
  
     if( _cfa_inline_actions.size() > 0 || _inline_actions.size() > 0 ) {
-@@ -363,14 +366,37 @@ void apply_context::schedule_deferred_transaction( const uint128_t& sender_id, a
+@@ -180,6 +183,13 @@ bool apply_context::has_recipient( account_name code )const {
+ 
+ void apply_context::require_recipient( account_name recipient ) {
+    if( !has_recipient(recipient) ) {
++      if (eosio::chain::chain_config::deep_mind_enabled) {
++         dmlog("NOTIFY ${rev} ${action_id}",
++                 ("rev", db.revision()-1)
++                 ("action_id", trx_context.action_id.current())
++         );
++      }
++
+       _notified.push_back(recipient);
+    }
+ }
+@@ -363,14 +373,37 @@ void apply_context::schedule_deferred_transaction( const uint128_t& sender_id, a
     if ( auto ptr = db.find<generated_transaction_object,by_sender_id>(boost::make_tuple(receiver, sender_id)) ) {
        EOS_ASSERT( replace_existing, deferred_tx_duplicate, "deferred transaction with the same sender_id and payer already exists" );
  
@@ -55,7 +69,7 @@ index 1beb647ee..d8094c3a3 100644
              gtx.sender      = receiver;
              gtx.sender_id   = sender_id;
              gtx.payer       = payer;
-@@ -379,6 +405,20 @@ void apply_context::schedule_deferred_transaction( const uint128_t& sender_id, a
+@@ -379,6 +412,20 @@ void apply_context::schedule_deferred_transaction( const uint128_t& sender_id, a
              gtx.expiration  = gtx.delay_until + fc::seconds(control.get_global_properties().configuration.deferred_trx_expiration_window);
  
              trx_size = gtx.set( trx );
@@ -76,7 +90,7 @@ index 1beb647ee..d8094c3a3 100644
           });
     } else {
        db.create<generated_transaction_object>( [&]( auto& gtx ) {
-@@ -391,19 +431,54 @@ void apply_context::schedule_deferred_transaction( const uint128_t& sender_id, a
+@@ -391,19 +438,54 @@ void apply_context::schedule_deferred_transaction( const uint128_t& sender_id, a
              gtx.expiration  = gtx.delay_until + fc::seconds(control.get_global_properties().configuration.deferred_trx_expiration_window);
  
              trx_size = gtx.set( trx );
@@ -133,25 +147,47 @@ index 1beb647ee..d8094c3a3 100644
        generated_transaction_idx.remove(*gto);
     }
     return gto;
-@@ -419,7 +494,7 @@ const table_id_object& apply_context::find_or_create_table( name code, name scop
+@@ -419,7 +501,18 @@ const table_id_object& apply_context::find_or_create_table( name code, name scop
        return *existing_tid;
     }
  
 -   update_db_usage(payer, config::billable_size_v<table_id_object>);
 +   update_db_usage(payer, config::billable_size_v<table_id_object>, "create_table");
++
++
++   if (eosio::chain::chain_config::deep_mind_enabled) {
++      dmlog("TBL_OP INS ${action_id} ${code} ${scope} ${table} ${payer}",
++         ("action_id", trx_context.action_id.current())
++         ("code", code)
++         ("scope", scope)
++         ("table", table)
++         ("payer", payer)
++      );
++   }
  
     return db.create<table_id_object>([&](table_id_object &t_id){
        t_id.code = code;
-@@ -430,7 +505,7 @@ const table_id_object& apply_context::find_or_create_table( name code, name scop
+@@ -430,7 +523,18 @@ const table_id_object& apply_context::find_or_create_table( name code, name scop
  }
  
  void apply_context::remove_table( const table_id_object& tid ) {
 -   update_db_usage(tid.payer, - config::billable_size_v<table_id_object>);
 +   update_db_usage(tid.payer, - config::billable_size_v<table_id_object>, "remove_table");
++
++   if (eosio::chain::chain_config::deep_mind_enabled) {
++      dmlog("TBL_OP REM ${action_id} ${code} ${scope} ${table} ${payer}",
++         ("action_id", trx_context.action_id.current())
++         ("code", tid.code)
++         ("scope", tid.scope)
++         ("table", tid.table)
++         ("payer", tid.payer)
++      );
++   }
++
     db.remove(tid);
  }
  
-@@ -454,7 +529,7 @@ bytes apply_context::get_packed_transaction() {
+@@ -454,7 +558,7 @@ bytes apply_context::get_packed_transaction() {
     return r;
  }
  
@@ -160,7 +196,7 @@ index 1beb647ee..d8094c3a3 100644
     if( delta > 0 ) {
        if( !(privileged || payer == account_name(receiver)) ) {
           EOS_ASSERT( control.is_ram_billing_in_notify_allowed() || (receiver == act.account),
-@@ -462,7 +537,7 @@ void apply_context::update_db_usage( const account_name& payer, int64_t delta )
+@@ -462,7 +566,7 @@ void apply_context::update_db_usage( const account_name& payer, int64_t delta )
           require_authorization( payer );
        }
     }
@@ -169,7 +205,7 @@ index 1beb647ee..d8094c3a3 100644
  }
  
  
-@@ -530,7 +605,21 @@ int apply_context::db_store_i64( uint64_t code, uint64_t scope, uint64_t table,
+@@ -530,7 +634,21 @@ int apply_context::db_store_i64( uint64_t code, uint64_t scope, uint64_t table,
     });
  
     int64_t billable_size = (int64_t)(buffer_size + config::billable_size_v<key_value_object>);
@@ -192,7 +228,7 @@ index 1beb647ee..d8094c3a3 100644
  
     keyval_cache.cache_table( tab );
     return keyval_cache.add( obj );
-@@ -552,12 +641,27 @@ void apply_context::db_update_i64( int iterator, account_name payer, const char*
+@@ -552,12 +670,27 @@ void apply_context::db_update_i64( int iterator, account_name payer, const char*
  
     if( account_name(obj.payer) != payer ) {
        // refund the existing payer
@@ -218,12 +254,12 @@ index 1beb647ee..d8094c3a3 100644
 +              ("table_name", table_obj.table)
 +              ("primkey", name(obj.primary_key))
 +              ("odata", to_hex(obj.value.data(),obj.value.size()))
-+              ("ndata", to_hex(buffer, buffer_size))
++              ("ndata", to_hex(buffer, buffer_size))           
 +      );
     }
  
     db.modify( obj, [&]( auto& o ) {
-@@ -574,7 +678,20 @@ void apply_context::db_remove_i64( int iterator ) {
+@@ -574,7 +707,20 @@ void apply_context::db_remove_i64( int iterator ) {
  
  //   require_write_lock( table_obj.scope );
  
@@ -245,7 +281,7 @@ index 1beb647ee..d8094c3a3 100644
  
     db.modify( table_obj, [&]( auto& t ) {
        --t.count;
-@@ -725,8 +842,8 @@ uint64_t apply_context::next_auth_sequence( account_name actor ) {
+@@ -725,8 +871,8 @@ uint64_t apply_context::next_auth_sequence( account_name actor ) {
     return rs.auth_sequence;
  }
  
@@ -256,6 +292,101 @@ index 1beb647ee..d8094c3a3 100644
  
     auto p = _account_ram_deltas.emplace( account, ram_delta );
     if( !p.second ) {
+diff --git a/libraries/chain/authorization_manager.cpp b/libraries/chain/authorization_manager.cpp
+index e69f71291..b4605ecee 100644
+--- a/libraries/chain/authorization_manager.cpp
++++ b/libraries/chain/authorization_manager.cpp
+@@ -137,6 +137,7 @@ namespace eosio { namespace chain {
+                                                                       permission_name name,
+                                                                       permission_id_type parent,
+                                                                       const authority& auth,
++                                                                      uint32_t action_id,
+                                                                       time_point initial_creation_time
+                                                                     )
+    {
+@@ -157,6 +158,14 @@ namespace eosio { namespace chain {
+          p.last_updated = creation_time;
+          p.auth         = auth;
+       });
++
++      if ( eosio::chain::chain_config::deep_mind_db_enabled ) {
++         dmlog("AUTH_OP INS ${rev} ${action_id} ${data}",
++            ("rev", _db.revision()-1)
++            ("action_id", action_id)
++            ("data", _control.to_variant_with_abi(perm, fc::microseconds(5000000)))
++         );
++      }
+       return perm;
+    }
+ 
+@@ -164,6 +173,7 @@ namespace eosio { namespace chain {
+                                                                       permission_name name,
+                                                                       permission_id_type parent,
+                                                                       authority&& auth,
++                                                                      uint32_t action_id,
+                                                                       time_point initial_creation_time
+                                                                     )
+    {
+@@ -184,23 +194,57 @@ namespace eosio { namespace chain {
+          p.last_updated = creation_time;
+          p.auth         = std::move(auth);
+       });
++      if ( eosio::chain::chain_config::deep_mind_db_enabled ) {
++         dmlog("AUTH_OP INS ${rev} ${action_id} ${data}",
++            ("rev", _db.revision()-1)
++            ("action_id", action_id)
++            ("data", _control.to_variant_with_abi(perm, fc::microseconds(5000000)))
++         );
++      }
+       return perm;
+    }
+ 
+-   void authorization_manager::modify_permission( const permission_object& permission, const authority& auth ) {
++   void authorization_manager::modify_permission( const permission_object& permission, const authority& auth, uint32_t action_id) {
+       _db.modify( permission, [&](permission_object& po) {
++         const permission_object old_permission(po);
++         //std::map<string,permission_object> localdata;
++         if ( eosio::chain::chain_config::deep_mind_db_enabled ) {
++            //old_permission = po;//localdata["old"] = po;
++         }
++
+          po.auth = auth;
+          po.last_updated = _control.pending_block_time();
++
++         if ( eosio::chain::chain_config::deep_mind_db_enabled ) {
++            //localdata["new"] = po;
++            dmlog("AUTH_OP UPD ${rev} ${action_id} ${data}",
++              ("rev", _db.revision()-1)
++              ("action_id", action_id)
++              ("data", _control.to_variant_with_abi(
++                 fc::mutable_variant_object()
++                   ("old", old_permission)
++                   ("new", po)
++                 , fc::microseconds(5000000)))
++            );
++         }
+       });
+    }
+ 
+-   void authorization_manager::remove_permission( const permission_object& permission ) {
++   void authorization_manager::remove_permission( const permission_object& permission, uint32_t action_id) {
+       const auto& index = _db.template get_index<permission_index, by_parent>();
+       auto range = index.equal_range(permission.id);
+       EOS_ASSERT( range.first == range.second, action_validate_exception,
+                   "Cannot remove a permission which has children. Remove the children first.");
+ 
+       _db.get_mutable_index<permission_usage_index>().remove_object( permission.usage_id._id );
++
++      if (eosio::chain::chain_config::deep_mind_db_enabled) {
++         dmlog("AUTH_OP REM ${rev} ${action_id} ${data}",
++              ("rev", _db.revision()-1)
++              ("action_id", action_id)
++              ("data", _control.to_variant_with_abi(permission, fc::microseconds(5000000)))
++         );
++      }
+       _db.remove( permission );
+    }
+ 
 diff --git a/libraries/chain/chain_config.cpp b/libraries/chain/chain_config.cpp
 index 35c77f832..021d77c38 100644
 --- a/libraries/chain/chain_config.cpp
@@ -272,9 +403,21 @@ index 35c77f832..021d77c38 100644
        EOS_ASSERT( target_block_net_usage_pct <= config::percent_100, action_validate_exception,
                    "target block net usage percentage cannot exceed 100%" );
 diff --git a/libraries/chain/controller.cpp b/libraries/chain/controller.cpp
-index 2d2af25f0..55bb07128 100644
+index 2d2af25f0..11da763f8 100644
 --- a/libraries/chain/controller.cpp
 +++ b/libraries/chain/controller.cpp
+@@ -617,9 +617,9 @@ struct controller_impl {
+       });
+ 
+       const auto& owner_permission  = authorization.create_permission(name, config::owner_name, 0,
+-                                                                      owner, conf.genesis.initial_timestamp );
++                                                                      owner, 0, conf.genesis.initial_timestamp );
+       const auto& active_permission = authorization.create_permission(name, config::active_name, owner_permission.id,
+-                                                                      active, conf.genesis.initial_timestamp );
++                                                                      active, 0, conf.genesis.initial_timestamp );
+ 
+       resource_limits.initialize_account(name);
+ 
 @@ -628,7 +628,7 @@ struct controller_impl {
        ram_delta += owner_permission.auth.get_billable_size();
        ram_delta += active_permission.auth.get_billable_size();
@@ -284,7 +427,21 @@ index 2d2af25f0..55bb07128 100644
        resource_limits.verify_account_ram_usage(name);
     }
  
-@@ -778,7 +778,9 @@ struct controller_impl {
+@@ -665,11 +665,13 @@ struct controller_impl {
+                                                                              config::majority_producers_permission_name,
+                                                                              active_permission.id,
+                                                                              active_producers_authority,
++                                                                             0,
+                                                                              conf.genesis.initial_timestamp );
+       const auto& minority_permission     = authorization.create_permission( config::producers_account_name,
+                                                                              config::minority_producers_permission_name,
+                                                                              majority_permission.id,
+                                                                              active_producers_authority,
++                                                                             0,
+                                                                              conf.genesis.initial_timestamp );
+    }
+ 
+@@ -778,7 +780,9 @@ struct controller_impl {
     void remove_scheduled_transaction( const generated_transaction_object& gto ) {
        resource_limits.add_pending_ram_usage(
           gto.payer,
@@ -295,7 +452,7 @@ index 2d2af25f0..55bb07128 100644
        );
        // No need to verify_account_ram_usage since we are only reducing memory
  
-@@ -904,6 +906,13 @@ struct controller_impl {
+@@ -904,6 +908,13 @@ struct controller_impl {
           trace->except = e;
           trace->except_ptr = std::current_exception();
           trace->elapsed = fc::time_point::now() - trx_context.start;
@@ -310,9 +467,21 @@ index 2d2af25f0..55bb07128 100644
        trx_context.undo();
  
 diff --git a/libraries/chain/eosio_contract.cpp b/libraries/chain/eosio_contract.cpp
-index 03e0fed7f..e6283f4b0 100644
+index 03e0fed7f..d926ade73 100644
 --- a/libraries/chain/eosio_contract.cpp
 +++ b/libraries/chain/eosio_contract.cpp
+@@ -110,9 +110,9 @@ void apply_eosio_newaccount(apply_context& context) {
+    }
+ 
+    const auto& owner_permission  = authorization.create_permission( create.name, config::owner_name, 0,
+-                                                                    std::move(create.owner) );
++                                                                    std::move(create.owner), context.trx_context.action_id.current() );
+    const auto& active_permission = authorization.create_permission( create.name, config::active_name, owner_permission.id,
+-                                                                    std::move(create.active) );
++                                                                    std::move(create.active), context.trx_context.action_id.current() );
+ 
+    context.control.get_mutable_resource_limits_manager().initialize_account(create.name);
+ 
 @@ -121,7 +121,7 @@ void apply_eosio_newaccount(apply_context& context) {
     ram_delta += owner_permission.auth.get_billable_size();
     ram_delta += active_permission.auth.get_billable_size();
@@ -340,14 +509,20 @@ index 03e0fed7f..e6283f4b0 100644
     }
  }
  
-@@ -257,13 +257,13 @@ void apply_eosio_updateauth(apply_context& context) {
+@@ -253,17 +253,17 @@ void apply_eosio_updateauth(apply_context& context) {
+ 
+       int64_t old_size = (int64_t)(config::billable_size_v<permission_object> + permission->auth.get_billable_size());
+ 
+-      authorization.modify_permission( *permission, update.auth );
++      authorization.modify_permission( *permission, update.auth, context.trx_context.action_id.current() );
  
        int64_t new_size = (int64_t)(config::billable_size_v<permission_object> + permission->auth.get_billable_size());
  
 -      context.add_ram_usage( permission->owner, new_size - old_size );
 +      context.add_ram_usage( permission->owner, new_size - old_size, "updateauth_update" );
     } else {
-       const auto& p = authorization.create_permission( update.account, update.permission, parent_id, update.auth );
+-      const auto& p = authorization.create_permission( update.account, update.permission, parent_id, update.auth );
++      const auto& p = authorization.create_permission( update.account, update.permission, parent_id, update.auth, context.trx_context.action_id.current() );
  
        int64_t new_size = (int64_t)(config::billable_size_v<permission_object> + p.auth.get_billable_size());
  
@@ -356,12 +531,15 @@ index 03e0fed7f..e6283f4b0 100644
     }
  }
  
-@@ -294,8 +294,7 @@ void apply_eosio_deleteauth(apply_context& context) {
+@@ -292,10 +292,9 @@ void apply_eosio_deleteauth(apply_context& context) {
+    const auto& permission = authorization.get_permission({remove.account, remove.permission});
+    int64_t old_size = config::billable_size_v<permission_object> + permission.auth.get_billable_size();
  
-    authorization.remove_permission( permission );
- 
--   context.add_ram_usage( remove.account, -old_size );
+-   authorization.remove_permission( permission );
 -
+-   context.add_ram_usage( remove.account, -old_size );
++   authorization.remove_permission( permission, context.trx_context.action_id.current() );
+ 
 +   context.add_ram_usage( remove.account, -old_size, "deleteauth" );
  }
  
@@ -440,6 +618,43 @@ index 1bb8e0e4c..2bcd2f76a 100644
        void finalize_trace( action_trace& trace, const fc::time_point& start );
  
     /// Fields:
+diff --git a/libraries/chain/include/eosio/chain/authorization_manager.hpp b/libraries/chain/include/eosio/chain/authorization_manager.hpp
+index 3e9ffd0bb..7fbc6628c 100644
+--- a/libraries/chain/include/eosio/chain/authorization_manager.hpp
++++ b/libraries/chain/include/eosio/chain/authorization_manager.hpp
+@@ -35,6 +35,7 @@ namespace eosio { namespace chain {
+                                                      permission_name name,
+                                                      permission_id_type parent,
+                                                      const authority& auth,
++                                                     uint32_t action_id,
+                                                      time_point initial_creation_time = time_point()
+                                                    );
+ 
+@@ -42,12 +43,13 @@ namespace eosio { namespace chain {
+                                                      permission_name name,
+                                                      permission_id_type parent,
+                                                      authority&& auth,
++                                                     uint32_t action_id,
+                                                      time_point initial_creation_time = time_point()
+                                                    );
+ 
+-         void modify_permission( const permission_object& permission, const authority& auth );
++         void modify_permission( const permission_object& permission, const authority& auth, uint32_t action_id );
+ 
+-         void remove_permission( const permission_object& permission );
++         void remove_permission( const permission_object& permission, uint32_t action_id );
+ 
+          void update_permission_usage( const permission_object& permission );
+ 
+@@ -119,7 +121,7 @@ namespace eosio { namespace chain {
+          static std::function<void()> _noop_checktime;
+ 
+       private:
+-         const controller&    _control;
++         controller&    _control;
+          chainbase::database& _db;
+ 
+          void             check_updateauth_authorization( const updateauth& update, const vector<permission_level>& auths )const;
 diff --git a/libraries/chain/include/eosio/chain/chain_config.hpp b/libraries/chain/include/eosio/chain/chain_config.hpp
 index 37b73cb51..d2a4e6069 100644
 --- a/libraries/chain/include/eosio/chain/chain_config.hpp
@@ -588,7 +803,7 @@ index d5da8ca27..622245819 100644
  
     void transaction_context::record_transaction( const transaction_id_type& id, fc::time_point_sec expire ) {
 diff --git a/plugins/chain_plugin/chain_plugin.cpp b/plugins/chain_plugin/chain_plugin.cpp
-index 91d130d3e..8ecb02d51 100644
+index 91d130d3e..802746c47 100644
 --- a/plugins/chain_plugin/chain_plugin.cpp
 +++ b/plugins/chain_plugin/chain_plugin.cpp
 @@ -224,6 +224,12 @@ void chain_plugin::set_program_options(options_description& cli, options_descrip
@@ -634,13 +849,29 @@ index 91d130d3e..8ecb02d51 100644
              [this]( const transaction_trace_ptr& trace ) {
 +               if (eosio::chain::chain_config::deep_mind_enabled) {
 +                  dmlog( "APPLIED_TRANSACTION ${block} ${traces}",
-+                        ("traces", chain().to_variant_with_abi(trace, fc::microseconds(5000000)))
 +                        ("block", chain().pending_block_state()->block_num)
++                        ("traces", chain().to_variant_with_abi(trace, fc::microseconds(5000000)))
 +                  );
 +               }
                 my->applied_transaction_channel.publish( trace );
              } );
  
+@@ -738,6 +760,7 @@ void chain_plugin::plugin_startup()
+ } FC_CAPTURE_AND_RETHROW() }
+ 
+ void chain_plugin::plugin_shutdown() {
++   ilog("chain shutdown");
+    my->pre_accepted_block_connection.reset();
+    my->accepted_block_header_connection.reset();
+    my->accepted_block_connection.reset();
+@@ -748,6 +771,7 @@ void chain_plugin::plugin_shutdown() {
+    my->chain->get_thread_pool().stop();
+    my->chain->get_thread_pool().join();
+    my->chain.reset();
++   ilog("chain done");
+ }
+ 
+ chain_apis::read_write::read_write(controller& db, const fc::microseconds& abi_serializer_max_time)
 diff --git a/unittests/resource_limits_test.cpp b/unittests/resource_limits_test.cpp
 index 76c0d5416..dbe22290a 100644
 --- a/unittests/resource_limits_test.cpp
