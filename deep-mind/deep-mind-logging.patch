@@ -88,10 +88,10 @@ index d504cfc..9b0ab7b 100644
  
 diff --git a/libraries/fc/src/log/deep_mind_appender.cpp b/libraries/fc/src/log/deep_mind_appender.cpp
 new file mode 100644
-index 0000000..6bc1ce5
+index 0000000..78a811c
 --- /dev/null
 +++ b/libraries/fc/src/log/deep_mind_appender.cpp
-@@ -0,0 +1,58 @@
+@@ -0,0 +1,59 @@
 +#include <fc/log/deep_mind_appender.hpp>
 +#include <fc/log/log_message.hpp>
 +#include <fc/string.hpp>
@@ -135,10 +135,10 @@ index 0000000..6bc1ce5
 +
 +      int retries = 0;
 +      printagain:
-+      if ((err = fprintf( out, "DMLOG %s\n", message.c_str() )) < 0) {
++      if ((err = fprintf( out, "DMLOG %s\n", message.c_str() )) < 0 && retries < 5) {
 +         retries++;
 +         int errval = ferror(out);
-+         fprintf(out, "DMLOG FPRINTF_FAILED failed %d %d %s\n", ferror(out), errval, strerror(errno));
++         fprintf(out, "DMLOG FPRINTF_FAILED failed %d %d %s\n", retries, errval, strerror(errno));
 +         goto printagain;
 +      }
 +
@@ -146,6 +146,7 @@ index 0000000..6bc1ce5
 +      // atomic error handling and retry logic up here ^^.
 +
 +      if (retries > 0) {
++         // We don't care if those does not work correctly
 +         fprintf(out, "DMLOG FPRINTF_FAILURE_RETRIES %d\n", retries);
 +      }
 +   }
