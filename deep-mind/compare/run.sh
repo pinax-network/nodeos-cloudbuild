@@ -68,10 +68,13 @@ else
     echo "No differences found with this version of the deep-mind instrumentation and the reference log."
 fi
 
-echo ""
-echo "Running unit tests..."
+if [[ "$SKIP_GO_TESTS" == "" ]]; then
+    echo ""
+    echo "Running unit tests..."
 
-current=`pwd`
-trap "cd $current" EXIT
-cd "$ROOT"
-go test ./...
+    current=`pwd`
+    trap "cd $current" EXIT
+    cd "$ROOT"
+    go test ./...
+fi
+
