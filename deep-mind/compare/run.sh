@@ -59,7 +59,19 @@ if [ "$(cat $DIFF_FILE | wc -l | tr -d ' ')" != "0" ]; then
         echo "$DIFF_FILE"
     fi
 
+    echo ""
+    echo "You can accept the changes by doing the following command:"
+    echo "cp $OUTPUT_FILE $REFERENCE_FILE"
+
     exit 1
 else
     echo "No differences found with this version of the deep-mind instrumentation and the reference log."
 fi
+
+echo ""
+echo "Running unit tests..."
+
+current=`pwd`
+trap "cd $current" EXIT
+cd "$ROOT"
+go test ./...

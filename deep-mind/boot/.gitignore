@@ -1,5 +1,7 @@
 .envrc
+bios-boot.log
 deep-mind.log
-output.log
+deep-mind-adhoc.log
+nodeos.log
 state/
 blocks/reversible/

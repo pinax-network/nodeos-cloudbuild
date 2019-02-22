@@ -1,4 +1,4 @@
-package consolelog
+package compare
 
 import (
 	"bytes"
@@ -9,7 +9,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/eoscanada/capture/hlog"
+	"github.com/eoscanada/bstream/hlog"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -97,8 +97,11 @@ func computeDeepMindStats(blocks []*hlog.AcceptedBlock) *ReferenceStats {
 		stats.TransactionCount += int64(len(block.AllTransactionTraces()))
 
 		adjustDeepMindDBOpsStats(block, stats)
-		adjustDeepMindRAMOpsStats(block, stats)
 		adjustDeepMindDTrxOpsStats(block, stats)
+		adjustDeepMindExcOpsStats(block, stats)
+		adjustDeepMindPermOpsStats(block, stats)
+		adjustDeepMindRAMOpsStats(block, stats)
+		adjustDeepMindRLimitOpsStats(block, stats)
 	}
 
 	return stats
@@ -114,6 +117,32 @@ func adjustDeepMindDBOpsStats(block *hlog.AcceptedBlock, stats *ReferenceStats) 
 	}
 }
 
+func adjustDeepMindDTrxOpsStats(block *hlog.AcceptedBlock, stats *ReferenceStats) {
+	for _, ops := range block.DTrxOps {
+		for _, op := range ops {
+			if strings.Contains(op.Payer, "battlefield") {
+				stats.DTrxOpCount++
+			}
+		}
+	}
+}
+
+func adjustDeepMindExcOpsStats(block *hlog.AcceptedBlock, stats *ReferenceStats) {
+	for _, ops := range block.ExecOps {
+		for range ops {
+			stats.ExecOpTupleCount++
+		}
+	}
+}
+
+func adjustDeepMindPermOpsStats(block *hlog.AcceptedBlock, stats *ReferenceStats) {
+	for _, ops := range block.PermOps {
+		for range ops {
+			stats.PermOpCount++
+		}
+	}
+}
+
 func adjustDeepMindRAMOpsStats(block *hlog.AcceptedBlock, stats *ReferenceStats) {
 	for _, ops := range block.RAMOps {
 		for _, op := range ops {
@@ -124,12 +153,10 @@ func adjustDeepMindRAMOpsStats(block *hlog.AcceptedBlock, stats *ReferenceStats)
 	}
 }
 
-func adjustDeepMindDTrxOpsStats(block *hlog.AcceptedBlock, stats *ReferenceStats) {
-	for _, ops := range block.DTrxOps {
-		for _, op := range ops {
-			if strings.Contains(op.Payer, "battlefield") {
-				stats.RAMOpCount++
-			}
+func adjustDeepMindRLimitOpsStats(block *hlog.AcceptedBlock, stats *ReferenceStats) {
+	for _, ops := range block.RLimitOps {
+		for range ops {
+			stats.RLimitOpCount++
 		}
 	}
 }
@@ -150,6 +177,9 @@ func getOrderedTransactionIDs(block *hlog.AcceptedBlock) []string {
 type ReferenceStats = struct {
 	TransactionCount int64
 	DBOpCount        int64
-	RAMOpCount       int64
 	DTrxOpCount      int64
+	ExecOpTupleCount int64
+	PermOpCount      int64
+	RAMOpCount       int64
+	RLimitOpCount    int64
 }

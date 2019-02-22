@@ -15,8 +15,8 @@ To build the contract using this method, simply do:
 
 #### EOS.IO CDT
 
-If you have the EOS.IO CDT SDK available on your machine directly, simply do only the compile step
-instead:
+If you have the EOS.IO CDT SDK available on your machine directly, simply do only
+the compile step instead:
 
 ```
 ./compile.sh
