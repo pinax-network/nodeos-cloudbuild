@@ -1,6 +1,6 @@
 ### commit and push those values in !
 substitutions:
-  _TAG: v1.6.1
+  _TAG: v1.6.2
   # check appropriate builder tag in https://hub.docker.com/r/eosio/builder/tags
   _BUILDER_TAG: v1.5.2
   _PATCHES: ""
