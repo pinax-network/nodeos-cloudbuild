@@ -1,5 +1,5 @@
 diff --git a/libraries/chain/apply_context.cpp b/libraries/chain/apply_context.cpp
-index 1beb647ee..413efe007 100644
+index 1beb647ee..a24d31b10 100644
 --- a/libraries/chain/apply_context.cpp
 +++ b/libraries/chain/apply_context.cpp
 @@ -114,10 +114,13 @@ void apply_context::exec( action_trace& trace )
@@ -42,7 +42,20 @@ index 1beb647ee..413efe007 100644
  }
  
  void apply_context::execute_context_free_inline( action&& a ) {
-@@ -363,14 +378,37 @@ void apply_context::schedule_deferred_transaction( const uint128_t& sender_id, a
+@@ -283,6 +298,12 @@ void apply_context::execute_context_free_inline( action&& a ) {
+                "context-free actions cannot have authorizations" );
+ 
+    _cfa_inline_actions.emplace_back( move(a) );
++
++   if (eosio::chain::chain_config::deep_mind_enabled) {
++      dmlog("EXEC_OP CFA_INLINE ${action_id}",
++         ("action_id", trx_context.action_id.current())
++      );
++   }
+ }
+ 
+ 
+@@ -363,14 +384,37 @@ void apply_context::schedule_deferred_transaction( const uint128_t& sender_id, a
     if ( auto ptr = db.find<generated_transaction_object,by_sender_id>(boost::make_tuple(receiver, sender_id)) ) {
        EOS_ASSERT( replace_existing, deferred_tx_duplicate, "deferred transaction with the same sender_id and payer already exists" );
  
@@ -81,7 +94,7 @@ index 1beb647ee..413efe007 100644
              gtx.sender      = receiver;
              gtx.sender_id   = sender_id;
              gtx.payer       = payer;
-@@ -379,6 +417,20 @@ void apply_context::schedule_deferred_transaction( const uint128_t& sender_id, a
+@@ -379,6 +423,20 @@ void apply_context::schedule_deferred_transaction( const uint128_t& sender_id, a
              gtx.expiration  = gtx.delay_until + fc::seconds(control.get_global_properties().configuration.deferred_trx_expiration_window);
  
              trx_size = gtx.set( trx );
@@ -102,7 +115,7 @@ index 1beb647ee..413efe007 100644
           });
     } else {
        db.create<generated_transaction_object>( [&]( auto& gtx ) {
-@@ -391,19 +443,54 @@ void apply_context::schedule_deferred_transaction( const uint128_t& sender_id, a
+@@ -391,19 +449,54 @@ void apply_context::schedule_deferred_transaction( const uint128_t& sender_id, a
              gtx.expiration  = gtx.delay_until + fc::seconds(control.get_global_properties().configuration.deferred_trx_expiration_window);
  
              trx_size = gtx.set( trx );
@@ -159,7 +172,7 @@ index 1beb647ee..413efe007 100644
        generated_transaction_idx.remove(*gto);
     }
     return gto;
-@@ -419,18 +506,38 @@ const table_id_object& apply_context::find_or_create_table( name code, name scop
+@@ -419,18 +512,38 @@ const table_id_object& apply_context::find_or_create_table( name code, name scop
        return *existing_tid;
     }
  
@@ -201,7 +214,7 @@ index 1beb647ee..413efe007 100644
     db.remove(tid);
  }
  
-@@ -454,7 +561,7 @@ bytes apply_context::get_packed_transaction() {
+@@ -454,7 +567,7 @@ bytes apply_context::get_packed_transaction() {
     return r;
  }
  
@@ -210,7 +223,7 @@ index 1beb647ee..413efe007 100644
     if( delta > 0 ) {
        if( !(privileged || payer == account_name(receiver)) ) {
           EOS_ASSERT( control.is_ram_billing_in_notify_allowed() || (receiver == act.account),
-@@ -462,7 +569,7 @@ void apply_context::update_db_usage( const account_name& payer, int64_t delta )
+@@ -462,7 +575,7 @@ void apply_context::update_db_usage( const account_name& payer, int64_t delta )
           require_authorization( payer );
        }
     }
@@ -219,7 +232,7 @@ index 1beb647ee..413efe007 100644
  }
  
  
-@@ -530,7 +637,20 @@ int apply_context::db_store_i64( uint64_t code, uint64_t scope, uint64_t table,
+@@ -530,7 +643,20 @@ int apply_context::db_store_i64( uint64_t code, uint64_t scope, uint64_t table,
     });
  
     int64_t billable_size = (int64_t)(buffer_size + config::billable_size_v<key_value_object>);
@@ -241,7 +254,7 @@ index 1beb647ee..413efe007 100644
  
     keyval_cache.cache_table( tab );
     return keyval_cache.add( obj );
-@@ -552,12 +672,26 @@ void apply_context::db_update_i64( int iterator, account_name payer, const char*
+@@ -552,12 +678,26 @@ void apply_context::db_update_i64( int iterator, account_name payer, const char*
  
     if( account_name(obj.payer) != payer ) {
        // refund the existing payer
@@ -271,7 +284,7 @@ index 1beb647ee..413efe007 100644
     }
  
     db.modify( obj, [&]( auto& o ) {
-@@ -574,7 +708,19 @@ void apply_context::db_remove_i64( int iterator ) {
+@@ -574,7 +714,19 @@ void apply_context::db_remove_i64( int iterator ) {
  
  //   require_write_lock( table_obj.scope );
  
@@ -292,7 +305,7 @@ index 1beb647ee..413efe007 100644
  
     db.modify( table_obj, [&]( auto& t ) {
        --t.count;
-@@ -725,8 +871,8 @@ uint64_t apply_context::next_auth_sequence( account_name actor ) {
+@@ -725,8 +877,8 @@ uint64_t apply_context::next_auth_sequence( account_name actor ) {
     return rs.auth_sequence;
  }
  
