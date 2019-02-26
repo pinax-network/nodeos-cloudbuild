@@ -130,16 +130,22 @@ void battlefield::dtrxexec(name account, bool fail, std::string nonce) {
 [[eosio::action]]
 void battlefield::creaorder(name n1, name n2, name n3, name n4, name n5) {
     if (_self == _code) {
-        // We are the root action (a1), let's notify n1, n2 and send i5
+        // We are the root action (a1), let's notify n1, n2 and send c2 then i2
         require_recipient(n1);
         require_recipient(n2);
 
-        inlinedeep_action i5(_code, {_self, "active"_n});
-        i5.send(string("i5"), n4, n5, string("i6"), false);
+        action c2(std::vector<permission_level>(), "eosio.null"_n, "nonce"_n, std::make_tuple(string("c2")));
+        c2.send_context_free();
+
+        inlinedeep_action i2(_code, {_self, "active"_n});
+        i2.send(string("i2"), n4, n5, string("i3"), false, string("c3"));
     } else if (_self == n2) {
-        // We are actually dealing with the notification of n2, send i4 and notify n3
-        inlineempty_action i4(_code, {_self, "active"_n});
-        i4.send(string("i4"), false);
+        // We are actually dealing with the notification of n2, send i1 and notify n3
+        inlineempty_action i1(_code, {_self, "active"_n});
+        i1.send(string("i1"), false);
+
+        action c1(std::vector<permission_level>(), "eosio.null"_n, "nonce"_n, std::make_tuple(string("c1")));
+        c1.send_context_free();
 
         require_recipient(n3);
     }
@@ -151,10 +157,20 @@ void battlefield::inlineempty(string tag, bool fail) {
 }
 
 [[eosio::action]]
-void battlefield::inlinedeep(string tag, name n4, name n5, string nestedInlineTag, bool nestedInlineFail) {
+void battlefield::inlinedeep(
+    string tag,
+    name n4,
+    name n5,
+    string nestedInlineTag,
+    bool nestedInlineFail,
+    string nestedCfaInlineTag
+) {
     require_recipient(n4);
     require_recipient(n5);
 
     inlineempty_action nested(_code, {_self, "active"_n});
     nested.send(nestedInlineTag, nestedInlineFail);
+
+    action cfaNested(std::vector<permission_level>(), "eosio.null"_n, "nonce"_n, std::make_tuple(nestedCfaInlineTag));
+    cfaNested.send_context_free();
 }

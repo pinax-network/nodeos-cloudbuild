@@ -1,5 +1,5 @@
 {
-    "____comment": "This file was generated with eosio-abigen. DO NOT EDIT Fri Feb 22 16:05:25 2019",
+    "____comment": "This file was generated with eosio-abigen. DO NOT EDIT Mon Feb 25 04:56:10 2019",
     "version": "eosio::abi/1.1",
     "structs": [
         {
@@ -153,6 +153,10 @@
                 {
                     "name": "nestedInlineFail",
                     "type": "bool"
+                },
+                {
+                    "name": "nestedCfaInlineTag",
+                    "type": "string"
                 }
             ]
         },

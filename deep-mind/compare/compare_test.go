@@ -96,15 +96,24 @@ func computeDeepMindStats(blocks []*hlog.AcceptedBlock) *ReferenceStats {
 	for _, block := range blocks {
 		stats.TransactionCount += int64(len(block.AllTransactionTraces()))
 
+		adjustDeepMindCreationTreeStats(block, stats)
 		adjustDeepMindDBOpsStats(block, stats)
 		adjustDeepMindDTrxOpsStats(block, stats)
-		adjustDeepMindExcOpsStats(block, stats)
 		adjustDeepMindPermOpsStats(block, stats)
 		adjustDeepMindRAMOpsStats(block, stats)
 		adjustDeepMindRLimitOpsStats(block, stats)
+		adjustDeepMindTableOpsStats(block, stats)
 	}
 
 	return stats
+}
+
+func adjustDeepMindCreationTreeStats(block *hlog.AcceptedBlock, stats *ReferenceStats) {
+	for _, creationTree := range block.CreationTree {
+		for range creationTree {
+			stats.CreationTreeNodeCount++
+		}
+	}
 }
 
 func adjustDeepMindDBOpsStats(block *hlog.AcceptedBlock, stats *ReferenceStats) {
@@ -123,14 +132,6 @@ func adjustDeepMindDTrxOpsStats(block *hlog.AcceptedBlock, stats *ReferenceStats
 			if strings.Contains(op.Payer, "battlefield") {
 				stats.DTrxOpCount++
 			}
-		}
-	}
-}
-
-func adjustDeepMindExcOpsStats(block *hlog.AcceptedBlock, stats *ReferenceStats) {
-	for _, ops := range block.ExecOps {
-		for range ops {
-			stats.ExecOpTupleCount++
 		}
 	}
 }
@@ -161,6 +162,14 @@ func adjustDeepMindRLimitOpsStats(block *hlog.AcceptedBlock, stats *ReferenceSta
 	}
 }
 
+func adjustDeepMindTableOpsStats(block *hlog.AcceptedBlock, stats *ReferenceStats) {
+	for _, ops := range block.TableOps {
+		for range ops {
+			stats.TableOpCount++
+		}
+	}
+}
+
 func getOrderedRAMOps(block *hlog.AcceptedBlock) []*hlog.RAMOp {
 	ramOps := []*hlog.RAMOp{}
 	for _, transactionID := range getOrderedTransactionIDs(block) {
@@ -175,11 +184,12 @@ func getOrderedTransactionIDs(block *hlog.AcceptedBlock) []string {
 }
 
 type ReferenceStats = struct {
-	TransactionCount int64
-	DBOpCount        int64
-	DTrxOpCount      int64
-	ExecOpTupleCount int64
-	PermOpCount      int64
-	RAMOpCount       int64
-	RLimitOpCount    int64
+	TransactionCount      int64
+	CreationTreeNodeCount int64
+	DBOpCount             int64
+	DTrxOpCount           int64
+	PermOpCount           int64
+	RAMOpCount            int64
+	RLimitOpCount         int64
+	TableOpCount          int64
 }

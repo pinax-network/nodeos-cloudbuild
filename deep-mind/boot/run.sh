@@ -115,7 +115,7 @@ sleep 0.6
 
 echo ""
 echo "Create a creational order different than the execution order"
-eosc tx create battlefield1 creaorder '{"n1": "notified1", "n2": "notified2", "n3": "notified3", "n4": "notified4", "n5": "notified5"}' -p battlefield1
+eosc tx create --force-unique battlefield1 creaorder '{"n1": "notified1", "n2": "notified2", "n3": "notified3", "n4": "notified4", "n5": "notified5"}' -p battlefield1
 sleep 0.6
 
 # TODO: provode a `soft_fail` transaction
@@ -178,4 +178,11 @@ cat $LOG_FILE | grep "RAM_OP" | wc -l
 echo ""
 
 cat $LOG_FILE | grep "RAM_OP" | cut -f 1,2,3,4,5,6,7,8 -d ' '
+echo ""
+
+printf "## Table (TBL_OP): "
+cat $LOG_FILE | grep "TBL_OP" | wc -l
+echo ""
+
+cat $LOG_FILE | grep "TBL_OP" | cut -f 1,2,3,4,5,6,7,8 -d ' '
 echo ""

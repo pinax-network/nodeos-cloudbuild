@@ -88,10 +88,10 @@ index d504cfc..9b0ab7b 100644
  
 diff --git a/libraries/fc/src/log/deep_mind_appender.cpp b/libraries/fc/src/log/deep_mind_appender.cpp
 new file mode 100644
-index 0000000..78a811c
+index 0000000..380a1a1
 --- /dev/null
 +++ b/libraries/fc/src/log/deep_mind_appender.cpp
-@@ -0,0 +1,59 @@
+@@ -0,0 +1,62 @@
 +#include <fc/log/deep_mind_appender.hpp>
 +#include <fc/log/log_message.hpp>
 +#include <fc/string.hpp>
@@ -124,31 +124,34 @@ index 0000000..78a811c
 +
 +   void deep_mind_appender::log( const log_message& m ) {
 +      FILE* out = stdout;
-+      int err;
 +
-+      fc::string message = fc::format_string( m.get_format(), m.get_data() );
-+      if (message.empty()) {
-+         return;
-+      }
++      fc::string message = fc::format_string( "DMLOG " + m.get_format() + "\n", m.get_data() );
 +
 +      std::unique_lock<boost::mutex> lock(my->log_mutex);
 +
 +      int retries = 0;
-+      printagain:
-+      if ((err = fprintf( out, "DMLOG %s\n", message.c_str() )) < 0 && retries < 5) {
-+         retries++;
++      auto remaining_size = message.size();
++      auto message_ptr = message.c_str();
++      while (true) {
++         auto written = fwrite(message_ptr, sizeof(char), remaining_size, out);
++         if (written == remaining_size) {
++            break;
++         }
++
 +         int errval = ferror(out);
-+         fprintf(out, "DMLOG FPRINTF_FAILED failed %d %d %s\n", retries, errval, strerror(errno));
-+         goto printagain;
++         fprintf(stderr, "DMLOG FPRINTF_FAILED failed written=%lu remaining=%lu %d %d %s\n", written, remaining_size, ferror(out), errval, strerror(errno));
++
++         if (retries++ > 5) {
++            fprintf(stderr, "DMLOG FPRINTF_FAILED enough is enough\n");
++            exit(1);
++         }
++
++         message_ptr = &message_ptr[written];
++         remaining_size -= written;
 +      }
 +
 +      // We don't `fflush`, rather we made `stdout` unbuffered with `setbuf`. This way we have
 +      // atomic error handling and retry logic up here ^^.
-+
-+      if (retries > 0) {
-+         // We don't care if those does not work correctly
-+         fprintf(out, "DMLOG FPRINTF_FAILURE_RETRIES %d\n", retries);
-+      }
 +   }
 +}
 diff --git a/libraries/fc/src/log/logger_config.cpp b/libraries/fc/src/log/logger_config.cpp
