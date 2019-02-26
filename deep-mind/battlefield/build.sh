@@ -1,16 +1,28 @@
 #!/usr/bin/env bash
 
+ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
 BROWN='\033[0;33m'
-RED='\033[0;31m'
 NC='\033[0m'
 
-printf "${BROWN}=========== Building contract ===========${NC}\n\n"
+CDT_CONTAINER=${CDT_CONTAINER:-"eoscanada/eosio-cdt"}
+CDT_VERSION=${CDT_VERSION:-"v1.4.1"}
 
-BUILD_SUFFIX=${1}
-CORES=`getconf _NPROCESSORS_ONLN`
+image_id="${CDT_CONTAINER}:${CDT_VERSION}"
 
-mkdir -p build${BUILD_SUFFIX}
-pushd build${BUILD_SUFFIX} &> /dev/null
-cmake ../
-make -j${CORES}
-popd &> /dev/null
+set +e
+images=`docker images | grep -E "${CDT_CONTAINER}\s+${CDT_VERSION}"`
+exit_code=$?
+if [[ $exit_code != 0 ]]; then
+    echo "Docker image [${image_id}] does not exist yet, pulling it..."
+    docker pull ${image_id}
+fi
+set -e
+
+if [[ $1 == "clean" ]]; then
+    $ROOT/clean.sh
+    echo ""
+fi
+
+printf "${BROWN}Starting container and compiling${NC}\n"
+docker run --rm -it -v "$ROOT:/contract" -w /contract "${image_id}" ./compile.sh

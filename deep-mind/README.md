@@ -1,31 +1,14 @@
 Deep mind patches
 -----------------
 
-Clone our private fork of EOS, checkout the right branch with submodules and perform the `git diff` command above:
-
-```
-cd /tmp
-git clone --recursive git@github.com:eoscanada/eosio-eos-private.git
-cd eosio-eos-private
-git checkout eoscanada/deep-mind
-git submodule update --recursive
-
-git diff \
-    --no-color \
-    --submodule=diff \
-    origin/release/1.3.x-dev eoscanada/deep-mind \
-    . ':(exclude).gitmodules' \
-    > ./deep-mind-1.3.x.patch
-```
-
-Alternatively checkout a fresh `eos` repo:
+Checkout a fresh `eos` repo:
 ```
 cd ~/build
 git clone --recursive git@github.com:EOSIO/eos.git
 cd eos
 ```
 
-Follow upstream changes and apply our patch:
+Follow upstream changes and apply our patch(es):
 ```
 cd ~/build/eos
 git submodule update --recursive
@@ -33,11 +16,10 @@ git submodule update --recursive
 
 From this directory, run:
 ```
-./apply.sh ~/build/eos ../patches/deep-mind-v1.3.x.patch ../patches-deep-mind-logging.patch
+./apply.sh ~/build/eos ../patches/deep-mind-v1.4.1-v8.2.patch ../patches/deep-mind-logging-v1.4.1-v8.patch
 ```
 
-Inspect the output, test `nodeos` against `compare`, extract a new
-patches with:
+Inspect the output, test `nodeos` against `compare`, extract a new patches with:
 
 ```
 git diff --cached --ignore-submodules=all > deep-mind.patch
@@ -47,11 +29,42 @@ pushd libraries/fc
 popd
 ```
 
+
+Local development
+-----------------
+
+In (or around) your `eos` checkout, run:
+
+    docker run --name eos-buildenv -ti -v `pwd`:`pwd` -w `pwd` gcr.io/eoscanada-shared-services/eosio-build-env:v7 /bin/bash
+
+and from within:
+
+    cd eos
+    ./eosio_build.sh
+
+Output is in `eos/build/programs/nodeos/nodeos`.  You can use that in `boot` and `compare`.
+
+
+Publish build
+-------------
+
 Inspect the patch, make sure nothing extraneous crept in (whitespace
 changes, leftovers, etc..)
 
 Call `submit_nodeos_full.sh`
 
+Testing
+--------
+
+Compile battlefield contract if you have changes in it:
+```
+./battlefield/build.sh
+```
+
+Execute the actual tests suite via the [boot/run.sh](./boot/run.sh) file:
+```
+./boot/run.sh ~/build/eos/build/programs/nodeos/nodeos
+```
 
 Contents
 --------

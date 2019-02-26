@@ -1,4 +1,4 @@
-#!/bin/bash -e
+#!/bin/bash
 
 ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
@@ -47,7 +47,7 @@ rm -rf "$OUTPUT_FILE.bak"
 
 diff -u "$REFERENCE_FILE" "$OUTPUT_FILE" > "$DIFF_FILE"
 
-if [[ "$(cat $DIFF_FILE | wc -l | tr -d ' ')" != "0" ]]; then
+if [ "$(cat $DIFF_FILE | wc -l | tr -d ' ')" != "0" ]; then
     echo "Some differences found between deep-mind reference log and logs produced by this build"
     printf "Check them right now? (y/N) "
     read value
@@ -55,11 +55,26 @@ if [[ "$(cat $DIFF_FILE | wc -l | tr -d ' ')" != "0" ]]; then
     if [[ $value == "y" || $value == "yes", || $value == "Y" ]]; then
         less $DIFF_FILE
     else
-        echo "Perfect, you can check them later with:"
-        echo "less $DIFF_FILE"
+        echo "Perfect, you can check them later at:"
+        echo "$DIFF_FILE"
     fi
+
+    echo ""
+    echo "You can accept the changes by doing the following command:"
+    echo "cp $OUTPUT_FILE $REFERENCE_FILE"
 
     exit 1
 else
-    echo No differences found with this version of the deep-mind instrumentation and the reference log.
+    echo "No differences found with this version of the deep-mind instrumentation and the reference log."
 fi
+
+if [[ "$SKIP_GO_TESTS" == "" ]]; then
+    echo ""
+    echo "Running unit tests..."
+
+    current=`pwd`
+    trap "cd $current" EXIT
+    cd "$ROOT"
+    go test ./...
+fi
+
