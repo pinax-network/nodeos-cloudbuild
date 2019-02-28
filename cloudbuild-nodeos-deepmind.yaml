@@ -3,7 +3,7 @@ substitutions:
   _TAG: v1.6.2
     # check appropriate builder tag in https://hub.docker.com/r/eosio/builder/tags
   _BUILDER_TAG: v1.5.2
-  _PATCHES: "deep-mind-v1.6.2-v9.patch deep-mind-logging-v1.6.2-v9.patch"
+  _PATCHES: "deep-mind-v1.6.2-v9.1.patch deep-mind-logging-v1.6.2-v9.1.patch"
 
 steps:
 - id: docker-build-full

@@ -43,10 +43,13 @@ DIFF_FILE="$ROOT/diff.patch"
 sed -i.bak -e 's/,"elapsed":[0-9]*,"/,"elapsed":0,"/g' "$OUTPUT_FILE"
 sed -i.bak -e 's/"thread_name":"thread-[0-9]*","timestamp":"[^"]*"}/"thread_name":"thread-0","timestamp":"9999-99-99T99:99:99.999"}/g' "$OUTPUT_FILE"
 sed -i.bak -e 's/,"line":[0-9]*,"/,"line":0,"/g' "$OUTPUT_FILE"
+sed -i.bak -e 's/\([,{]\)"last_ordinal":[0-9]*,"/\1"last_ordinal":0,"/g' "$OUTPUT_FILE"
+sed -i.bak -e 's/\([,{]\)"last_updated":"[^"]*","/\1"last_updated":"9999-99-99T99:99:99.999","/g' "$OUTPUT_FILE"
 rm -rf "$OUTPUT_FILE.bak"
 
 diff -u "$REFERENCE_FILE" "$OUTPUT_FILE" > "$DIFF_FILE"
 
+difference_found=""
 if [ "$(cat $DIFF_FILE | wc -l | tr -d ' ')" != "0" ]; then
     echo "Some differences found between deep-mind reference log and logs produced by this build"
     printf "Check them right now? (y/N) "
@@ -54,16 +57,17 @@ if [ "$(cat $DIFF_FILE | wc -l | tr -d ' ')" != "0" ]; then
 
     if [[ $value == "y" || $value == "yes", || $value == "Y" ]]; then
         less $DIFF_FILE
-    else
-        echo "Perfect, you can check them later at:"
-        echo "$DIFF_FILE"
     fi
+
+    echo ""
+    echo "You can check differences later on this file:"
+    echo "$DIFF_FILE"
 
     echo ""
     echo "You can accept the changes by doing the following command:"
     echo "cp $OUTPUT_FILE $REFERENCE_FILE"
 
-    exit 1
+    difference_found="true"
 else
     echo "No differences found with this version of the deep-mind instrumentation and the reference log."
 fi
@@ -76,5 +80,11 @@ if [[ "$SKIP_GO_TESTS" == "" ]]; then
     trap "cd $current" EXIT
     cd "$ROOT"
     go test ./...
+    if [[ $? != 0 ]]; then
+        difference_found="true"
+    fi
 fi
 
+if [[ "$difference_found" == "true" ]]; then
+    exit 1
+fi
