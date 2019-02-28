@@ -138,11 +138,11 @@ sleep 0.5
 set +ex
 echo ""
 echo "# Statistics"
-printf "## Deferred (DTRX_OP): "
-cat $LOG_FILE | grep -E "DTRX_OP" | wc -l
+printf "## Creation (CREATION_OP): "
+cat $LOG_FILE | grep "CREATION_OP" | wc -l
 echo ""
 
-cat $LOG_FILE | grep -E "DTRX_OP" | cut -f 1,2,3,4,5,6,7,8 -d ' '
+cat $LOG_FILE | grep "CREATION_OP" | cut -f 1,2,3,4 -d ' '
 echo ""
 
 printf "## Database (DB_OP): "
@@ -152,11 +152,11 @@ echo ""
 cat $LOG_FILE | grep "DB_OP" | cut -f 1,2,3,4,5,6,7,8,9 -d ' '
 echo ""
 
-printf "## Execution (EXEC_OP): "
-cat $LOG_FILE | grep "EXEC_OP" | wc -l
+printf "## Deferred (DTRX_OP): "
+cat $LOG_FILE | grep -E "DTRX_OP" | wc -l
 echo ""
 
-cat $LOG_FILE | grep "EXEC_OP" | cut -f 1,2,3,4 -d ' '
+cat $LOG_FILE | grep -E "DTRX_OP" | cut -f 1,2,3,4,5,6,7,8 -d ' '
 echo ""
 
 printf "## Permission (PERM_OP): "
@@ -170,8 +170,7 @@ printf "## Resource Limits (RLIMIT_OP): "
 cat $LOG_FILE | grep "RLIMIT_OP" | wc -l
 echo ""
 
-cat $LOG_FILE | grep -E "RLIMIT_OP (CONFIG|STATE)" | cut -f 1,2,3,4 -d ' '
-cat $LOG_FILE | grep "RLIMIT_OP ACCOUNT_" | cut -f 1,2,3,4,5 -d ' '
+cat $LOG_FILE | grep -E "RLIMIT_OP" | cut -f 1,2,3,4 -d ' '
 echo ""
 
 printf "## RAM (RAM_OP): "
