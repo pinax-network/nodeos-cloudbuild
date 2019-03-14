@@ -1,9 +1,14 @@
 FROM ubuntu:18.04
 
+ARG EOSIO_CDT_MODIFIER
 ARG EOSIO_CDT_VERSION
+
 WORKDIR /workspace
 
-LABEL description="Image containing the eosio.cdt development toolchain for EOS Blockchains" version="${EOSIO_CDT_VERSION}"
+LABEL description="Image containing the eosio.cdt development toolchain for EOS Blockchains" \
+      version="${EOSIO_CDT_VERSION}" \
+      modifier="${EOSIO_CDT_MODIFIER}
+
 LABEL maintainer="Alexandre Bourget <alex@eoscanada.com>" \
       maintainer="Francois Proulx <francois@eoscanada.com>" \
       maintainer="Matthieu Vachon <matt@eoscanada.com>"
@@ -14,6 +19,6 @@ RUN echo 'APT::Install-Recommends 0;' >> /etc/apt/apt.conf.d/01norecommends \
   && DEBIAN_FRONTEND=noninteractive apt-get install -y make cmake g++ openssl ca-certificates wget \
   && rm -rf /var/lib/apt/lists/*
 
-RUN wget "https://github.com/eosio/eosio.cdt/releases/download/v${EOSIO_CDT_VERSION}/eosio.cdt-${EOSIO_CDT_VERSION}.x86_64.deb" \
-  && DEBIAN_FRONTEND=noninteractive apt-get install -y ./eosio.cdt-${EOSIO_CDT_VERSION}.x86_64.deb \
-  && rm -rf ./eosio.cdt-${EOSIO_CDT_VERSION}.x86_64.deb
+RUN wget "https://github.com/eosio/eosio.cdt/releases/download/v${EOSIO_CDT_VERSION}/eosio.cdt-${EOSIO_CDT_VERSION}${EOSIO_CDT_MODIFIER}.deb" \
+  && DEBIAN_FRONTEND=noninteractive apt-get install -y ./eosio.cdt-${EOSIO_CDT_VERSION}${EOSIO_CDT_MODIFIER}.deb \
+  && rm -rf ./eosio.cdt-${EOSIO_CDT_VERSION}${EOSIO_CDT_MODIFIER}.deb
