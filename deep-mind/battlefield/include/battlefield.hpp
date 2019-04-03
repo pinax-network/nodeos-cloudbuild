@@ -3,20 +3,24 @@
 #include <algorithm>
 #include <string>
 
-#include <eosiolib/eosio.hpp>
-#include <eosiolib/asset.hpp>
-#include <eosiolib/time.hpp>
-#include <eosiolib/transaction.hpp>
+#include <eosio/eosio.hpp>
+#include <eosio/asset.hpp>
+#include <eosio/time.hpp>
+#include <eosio/transaction.hpp>
 
 using eosio::action;
 using eosio::action_wrapper;
 using eosio::asset;
+using eosio::cancel_deferred;
+using eosio::check;
 using eosio::contract;
 using eosio::const_mem_fun;
+using eosio::current_time_point;
 using eosio::datastream;
 using eosio::indexed_by;
 using eosio::name;
 using eosio::permission_level;
+using eosio::print;
 using eosio::time_point_sec;
 using std::function;
 using std::string;
@@ -117,6 +121,9 @@ class [[eosio::contract("battlefield")]] battlefield : public contract {
          */
         [[eosio::action]]
         void creaorder(name n1, name n2, name n3, name n4, name n5);
+
+        [[eosio::on_notify("battlefield1::creaorder")]]
+        void on_creaorder(name n1, name n2, name n3, name n4, name n5);
 
         [[eosio::action]]
         void inlineempty(string tag, bool fail);
