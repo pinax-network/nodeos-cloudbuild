@@ -5,7 +5,7 @@ steps:
   args: [
     'build',
     '--build-arg', 'EOSIO_CDT_VERSION=${_EOSIO_CDT_VERSION}',
-    '--build-arg', 'EOSIO_CDT_MODIFIER=${_EOSIO_CDT_MODIFIER}',
+    '--build-arg', 'EOSIO_CDT_PACKAGE_NAME=${_EOSIO_CDT_PACKAGE_NAME}',
     '-t', 'gcr.io/$PROJECT_ID/eosio-cdt:${_TAG}',
     '-t', 'gcr.io/$PROJECT_ID/eosio-cdt:latest',
     '-f', 'Dockerfile-cdt',
