@@ -15,9 +15,22 @@ git submodule update --recursive
 ```
 
 From this directory, run:
+
+
 ```
 ./apply.sh ~/build/eos ../patches/deep-mind-v1.4.1-v8.2.patch ../patches/deep-mind-logging-v1.4.1-v8.patch
 ```
+
+This usually performs a `git apply --index --3way` on the repository, leaving conflict markers
+when patch(es) not apply cleanly.
+
+**Note** If you are applying the patch to a forked chain (`boscore/bos` for example) and the patches
+does not apply cleanly, set the environment `REJECT=true` before the apply:
+
+    REJECT=true ./apply.sh ~/build/eos ../patches/deep-mind-v1.4.1-v8.2.patch ../patches/deep-mind-logging-v1.4.1-v8.patch
+
+This is instead do a `git apply --reject` which will apply patch's hunk that matches and
+create a `.rej` file with the hunk that do not apply cleanly.
 
 Inspect the output, test `nodeos` against `compare`, extract a new patches with:
 
@@ -28,6 +41,7 @@ pushd libraries/fc
   git diff --cached --src-prefix=a/libraries/fc/ --dst-prefix=b/libraries/fc/ > ../../deep-mind-logging.patch
 popd
 ```
+
 
 
 Local development

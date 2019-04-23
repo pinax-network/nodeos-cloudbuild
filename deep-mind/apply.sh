@@ -12,6 +12,8 @@ CURRENT=`pwd`
 DEEP_MIND_PATCH="`pwd`/$DEEP_MIND_PATCH_RELATIVE"
 DEEP_MIND_LOGGING_PATCH="`pwd`/$DEEP_MIND_LOGGING_PATCH_RELATIVE"
 
+REJECT=${REJECT:-"false"}
+
 if [[ ! -d $SOURCE_REPO ]]; then
   echo "Source repository does not exist, check first argument."
   exit 1
@@ -46,8 +48,14 @@ fi
 rm -vf libraries/chain/*.orig
 rm -vf libraries/chain/*.rej
 
+apply_args="--index --3way"
+if [[ $REJECT == "true" ]]; then
+  apply_args="--reject"
+fi
+
+set +e
 git reset --hard
-git apply --index -p1 --3way $DEEP_MIND_PATCH
+git apply ${apply_args} -p1 $DEEP_MIND_PATCH
 
 echo "Changing working directory to $SOURCE_REPO/libraries/fc and applying patch"
 cd libraries/fc
@@ -58,6 +66,7 @@ if [[ -n $(git status --porcelain) ]]; then
 fi
 
 git reset --hard
-git apply --index -p3 --3way $DEEP_MIND_LOGGING_PATCH
+git apply ${apply_args} -p3 $DEEP_MIND_LOGGING_PATCH
+set -e
 
 echo "Done"
