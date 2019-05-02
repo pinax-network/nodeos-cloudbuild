@@ -1,9 +1,9 @@
 ### commit and push those values in !
 substitutions:
-  _TAG: v1.8.0-rc.1
+  _TAG: v1.8.0-rc1
     # check appropriate builder tag in https://hub.docker.com/r/eosio/builder/tags
   _BUILDER_TAG: v1.5.2
-  _PATCHES: "deep-mind-v1.8.0-rc.1-v9.1.patch deep-mind-logging-v1.8.0-rc.1-v9.1.patch"
+  _PATCHES: "deep-mind-v1.8.0-rc1-v9.1.patch deep-mind-logging-v1.8.0-rc1-v9.1.patch"
 
 steps:
 - id: docker-build-full
