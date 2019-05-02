@@ -1,7 +1,7 @@
 ### commit and push those values in !
 substitutions:
   _TAG: v2.0.3
-  _PATCHES: "bos-deep-mind-logging-v2.0.3-v10.0.patch bos-deep-mind-v2.0.3-v10.0.patch"
+  _PATCHES: "bos-deep-mind-logging-v2.0.3-v9.1.patch bos-deep-mind-v2.0.3-v9.1.patch"
 
 steps:
 - id: docker-build-full

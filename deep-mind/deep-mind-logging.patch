@@ -1,8 +1,8 @@
 diff --git a/libraries/fc/CMakeLists.txt b/libraries/fc/CMakeLists.txt
-index 6ff1477..c50f3d4 100644
+index 3e1f2a7..47f86d6 100644
 --- a/libraries/fc/CMakeLists.txt
 +++ b/libraries/fc/CMakeLists.txt
-@@ -71,6 +71,7 @@ set( fc_sources
+@@ -64,6 +64,7 @@ set( fc_sources
       src/log/logger.cpp
       src/log/appender.cpp
       src/log/console_appender.cpp
@@ -43,10 +43,10 @@ index 0000000..111db65
 +} // namespace fc
 +
 diff --git a/libraries/fc/include/fc/log/logger.hpp b/libraries/fc/include/fc/log/logger.hpp
-index 9005d75..69163df 100644
+index c41e217..3925310 100644
 --- a/libraries/fc/include/fc/log/logger.hpp
 +++ b/libraries/fc/include/fc/log/logger.hpp
-@@ -104,6 +104,11 @@ namespace fc
+@@ -103,6 +103,11 @@ namespace fc
        (fc::logger::get(DEFAULT_LOGGER)).log( FC_LOG_MESSAGE( debug, FORMAT, __VA_ARGS__ ) ); \
    FC_MULTILINE_MACRO_END
  
@@ -58,7 +58,7 @@ index 9005d75..69163df 100644
  /**
   * Sends the log message to a special 'user' log stream designed for messages that
   * the end user may like to see.
-@@ -176,4 +181,6 @@ namespace fc
+@@ -175,4 +180,6 @@ namespace fc
  # define ilog(...) FC_MULTILINE_MACRO_BEGIN FC_MULTILINE_MACRO_END
  # undef dlog
  # define dlog(...) FC_MULTILINE_MACRO_BEGIN FC_MULTILINE_MACRO_END
@@ -67,18 +67,18 @@ index 9005d75..69163df 100644
  #endif
 \ No newline at end of file
 diff --git a/libraries/fc/src/log/appender.cpp b/libraries/fc/src/log/appender.cpp
-index d504cfc..9b0ab7b 100644
+index 643d86a..0e261ed 100644
 --- a/libraries/fc/src/log/appender.cpp
 +++ b/libraries/fc/src/log/appender.cpp
-@@ -3,6 +3,7 @@
+@@ -2,6 +2,7 @@
+ #include <fc/log/logger.hpp>
  #include <unordered_map>
  #include <string>
- #include <fc/log/console_appender.hpp>
 +#include <fc/log/deep_mind_appender.hpp>
- #include <fc/log/file_appender.hpp>
+ #include <fc/log/console_appender.hpp>
  #include <fc/log/gelf_appender.hpp>
  #include <fc/variant.hpp>
-@@ -43,6 +44,7 @@ namespace fc {
+@@ -42,6 +43,7 @@ namespace fc {
     }
  
     static bool reg_console_appender = appender::register_appender<console_appender>( "console" );
@@ -155,7 +155,7 @@ index 0000000..380a1a1
 +   }
 +}
 diff --git a/libraries/fc/src/log/logger_config.cpp b/libraries/fc/src/log/logger_config.cpp
-index 5643f57..0fc986d 100644
+index e6ef923..50eaa06 100644
 --- a/libraries/fc/src/log/logger_config.cpp
 +++ b/libraries/fc/src/log/logger_config.cpp
 @@ -5,6 +5,7 @@
@@ -193,7 +193,7 @@ index 5643f57..0fc986d 100644
 +
        logger_config dlc;
        dlc.name = "default";
-       dlc.level = log_level::debug;
+       dlc.level = log_level::info;
        dlc.appenders.push_back("stderr");
 +
 +      logger_config dmlc;
