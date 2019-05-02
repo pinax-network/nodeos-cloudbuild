@@ -17,7 +17,7 @@ RUN git clone -b $SRCTAG --depth 1 $REPOSITORY --recursive \
     && echo "Installing missing dependencies..." \
     && apt-get update && DEBIAN_FRONTEND=noninteractive apt-get -y install libusb-1.0-0-dev libcurl4-gnutls-dev \
     && ./scripts/eosio_build.sh -s EOS -p / \
-    && mv /opt/eosio /opt/eos
+    && mv /opt/eosio /opt/eos \
     && cp --remove-destination `readlink /usr/lib/x86_64-linux-gnu/libz.so` /usr/lib/x86_64-linux-gnu/libz.so \
     && cp --remove-destination `readlink /usr/lib/x86_64-linux-gnu/libbz2.so` /usr/lib/x86_64-linux-gnu/libbz2.so \
     && cmake --build /tmp/build --target install
