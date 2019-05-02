@@ -79,23 +79,23 @@ steps:
   - name: 'git'
     path: /root/.git
 
-# Disable tests for 1.8.x for now, need to be fully updated
 # Perform the actual build/test step of the project
-# - id: deep-mind-go-tests
-#   name: gcr.io/cloud-builders/go:debian
-#   entrypoint: 'sh'
-#   env:
-#   - CGO_ENABLED=0
-#   args:
-#   - '-cxe'
-#   - |
-#     cd /workspace/deep-mind/compare
-#     go test -v ./...
-#   volumes:
-#   - name: 'ssh'
-#     path: /root/.ssh
-#   - name: 'git'
-#     path: /root/.git
+- id: deep-mind-go-tests
+  name: gcr.io/cloud-builders/go:debian
+  entrypoint: 'sh'
+  env:
+  - CGO_ENABLED=0
+  args:
+  - '-cxe'
+  - |
+    # Disable tests for 1.8.x for now, need to be fully updated
+    #cd /workspace/deep-mind/compare
+    #go test -v ./...
+  volumes:
+  - name: 'ssh'
+    path: /root/.ssh
+  - name: 'git'
+    path: /root/.git
 
 - id: docker-build-prod
   name: gcr.io/cloud-builders/docker
