@@ -1,6 +1,6 @@
-ARG BUILDENV_TAG
+ARG EOSIO_BUILDENV_TAG
 
-FROM gcr.io/eoscanada-shared-services/eosio-nodeos-buildenv:$BUILDENV_TAG as builder
+FROM gcr.io/eoscanada-shared-services/eosio-buildenv:$EOSIO_BUILDENV_TAG as builder
 
 ARG SRCTAG
 ARG PATCHES
@@ -21,5 +21,4 @@ RUN git clone -b $SRCTAG --depth 1 $REPOSITORY --recursive \
     && ln -s /opt/eosio /opt/eos
 
 ENV EOSIO_ROOT=/opt/eosio
-ENV INSTALL_PREFIX /opt/eos
 ENV LD_LIBRARY_PATH /usr/local/lib

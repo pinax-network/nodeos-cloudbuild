@@ -1,8 +1,8 @@
 ### commit and push those values in !
 substitutions:
   _TAG: v1.8.0-rc1
-  # Check available tags via `gcr.io/${PROJECT_ID}/eosio-nodeos-buildenv` images
-  _BUILDENV_TAG: v1.8.0-rc1
+  # Check available tags via `gcr.io/${PROJECT_ID}/eosio-buildenv` images
+  _EOSIO_BUILDENV_TAG: v1.8.0-rc1
   _PATCHES: "deep-mind-v1.8.0-rc1-v9.1.patch deep-mind-logging-v1.8.0-rc1-v9.1.patch"
 
 steps:
@@ -10,18 +10,18 @@ steps:
   name: gcr.io/cloud-builders/docker
   args: [
     'build',
-    '-t', 'gcr.io/${PROJECT_ID}/eosio-nodeos-full:${_TAG}-deep-mind-${SHORT_SHA}',
-    '-t', 'gcr.io/${PROJECT_ID}/eosio-nodeos-full:${_TAG}-deep-mind',
-    '-f', 'Dockerfile-nodeos-full',
-    '--cache-from', 'gcr.io/${PROJECT_ID}/eosio-nodeos-full:${_TAG}-deep-mind',
-    '--build-arg', 'BUILDENV_TAG=${_BUILDENV_TAG}',
+    '-t', 'gcr.io/${PROJECT_ID}/eosio-eos-full:${_TAG}-dm',
+    '-t', 'gcr.io/${PROJECT_ID}/eosio-eos-full:${_TAG}-${SHORT_SHA}-dm',
+    '-f', 'Dockerfile-eos-full',
+    '--cache-from', 'gcr.io/${PROJECT_ID}/eosio-eos-full:${_TAG}-dm',
+    '--build-arg', 'EOSIO_BUILDENV_TAG=${_EOSIO_BUILDENV_TAG}',
     '--build-arg', 'SRCTAG=${_TAG}',
     '--build-arg', 'PATCHES=${_PATCHES}',
     '.'
   ]
 
 - id: deep-mind-tests
-  name: gcr.io/${PROJECT_ID}/eosio-nodeos-full:${_TAG}-deep-mind-${SHORT_SHA}
+  name: gcr.io/${PROJECT_ID}/eosio-eos-full:${_TAG}-${SHORT_SHA}-dm
   dir: /workspace/deep-mind/compare
   env:
   - "SKIP_GO_TESTS=y"
@@ -101,10 +101,10 @@ steps:
   name: gcr.io/cloud-builders/docker
   args: [
     'build',
-    '-t', 'gcr.io/${PROJECT_ID}/eosio-nodeos-prod:${_TAG}-deep-mind-${SHORT_SHA}',
-    '-t', 'gcr.io/${PROJECT_ID}/eosio-nodeos-prod:${_TAG}-deep-mind',
-    '--build-arg', 'NODEOS_FULL_TAG=${_TAG}-deep-mind-${SHORT_SHA}',
-    '-f', 'Dockerfile-nodeos-prod',
+    '-t', 'gcr.io/${PROJECT_ID}/eosio-eos-prod:${_TAG}-dm',
+    '-t', 'gcr.io/${PROJECT_ID}/eosio-eos-prod:${_TAG}-${SHORT_SHA}-dm',
+    '--build-arg', 'EOS_FULL_TAG=${_TAG}-${SHORT_SHA}-dm',
+    '-f', 'Dockerfile-eos-prod',
     '.'
   ]
 
@@ -112,7 +112,7 @@ options:
   machineType: 'N1_HIGHCPU_32'
 
 images:
-- gcr.io/$PROJECT_ID/eosio-nodeos-full:${_TAG}-deep-mind
-- gcr.io/$PROJECT_ID/eosio-nodeos-full:${_TAG}-deep-mind-${SHORT_SHA}
-- gcr.io/$PROJECT_ID/eosio-nodeos-prod:${_TAG}-deep-mind-${SHORT_SHA}
+- gcr.io/$PROJECT_ID/eosio-eos-full:${_TAG}-dm
+- gcr.io/$PROJECT_ID/eosio-eos-full:${_TAG}-${SHORT_SHA}-dm
+- gcr.io/$PROJECT_ID/eosio-eos-prod:${_TAG}-${SHORT_SHA}-dm
 

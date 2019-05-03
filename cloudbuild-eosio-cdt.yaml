@@ -8,7 +8,7 @@ steps:
     '--build-arg', 'EOSIO_CDT_PACKAGE_NAME=${_EOSIO_CDT_PACKAGE_NAME}',
     '-t', 'gcr.io/$PROJECT_ID/eosio-cdt:${_TAG}',
     '-t', 'gcr.io/$PROJECT_ID/eosio-cdt:latest',
-    '-f', 'Dockerfile-cdt',
+    '-f', 'Dockerfile-eosio-cdt',
     '.'
   ]
 
