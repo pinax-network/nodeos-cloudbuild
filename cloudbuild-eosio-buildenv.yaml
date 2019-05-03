@@ -20,3 +20,5 @@ options:
 images:
 - gcr.io/$PROJECT_ID/eosio-buildenv:${_TAG}
 - gcr.io/$PROJECT_ID/eosio-buildenv:${_TAG}-${SHORT_SHA}
+
+timeout: 2h
