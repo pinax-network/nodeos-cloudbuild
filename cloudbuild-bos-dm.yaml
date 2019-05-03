@@ -42,3 +42,4 @@ images:
 - gcr.io/$PROJECT_ID/boscore-bos-full:${_TAG}-${SHORT_SHA}-dm
 - gcr.io/$PROJECT_ID/boscore-bos-prod:${_TAG}-${SHORT_SHA}-dm
 
+timeout: 1h

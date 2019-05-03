@@ -13,12 +13,5 @@ RUN git clone -b $SRCTAG --depth 1 $REPOSITORY --recursive \
     && echo PATCHING... && for patch in $PATCHES; do echo APPLYING PATCH $patch; patch -p1 < /patches/$patch; done && echo PATCHED \
     && echo "$SRCTAG:$(git rev-parse HEAD)" > /etc/eosio-version \
     && echo $REPOSITORY ref $SRCTAG revision `git describe --always --long` > /etc/eosio-build-version \
-    && ./scripts/eosio_build.sh -y -s EOS -p / -P \
-    && ./scripts/eosio_install.sh \
-    # The `eosio_install` installs by default to a fixed child folder named
-    # `eosio`. We want to keep our old convention `/opt/eos`, hence, let's
-    # create a symlink to keep both working.
-    && ln -s /opt/eosio /opt/eos
-
-ENV EOSIO_ROOT=/opt/eosio
-ENV LD_LIBRARY_PATH /usr/local/lib
+    && ./scripts/eosio_build.sh -y -s EOS -p "" -P \
+    && ./scripts/eosio_install.sh
