@@ -155,7 +155,7 @@ index 0000000..380a1a1
 +   }
 +}
 diff --git a/libraries/fc/src/log/logger_config.cpp b/libraries/fc/src/log/logger_config.cpp
-index e6ef923..50eaa06 100644
+index e3ca2f5..3233bd4 100644
 --- a/libraries/fc/src/log/logger_config.cpp
 +++ b/libraries/fc/src/log/logger_config.cpp
 @@ -5,6 +5,7 @@
@@ -193,7 +193,7 @@ index e6ef923..50eaa06 100644
 +
        logger_config dlc;
        dlc.name = "default";
-       dlc.level = log_level::info;
+       dlc.level = log_level::debug;
        dlc.appenders.push_back("stderr");
 +
 +      logger_config dmlc;
