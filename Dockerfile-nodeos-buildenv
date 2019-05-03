@@ -19,7 +19,7 @@ RUN apt-get update \
     # happens at the right location.
     && sed -i 's/cd \$BUILD_DIR/echo "Done"; exit 0/g' ./scripts/eosio_build.sh \
     && echo "Installing the actual build dependencies..." \
-    && ./scripts/eosio_build.sh -y -f -p / -P \
+    && ./scripts/eosio_build.sh -y -f -p "" -P \
     && echo "Performing clean up of unnecessary files..." \
     && cd .. && rm -rf eos \
     && rm -rf /var/lib/apt/lists/*

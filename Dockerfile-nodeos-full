@@ -1,6 +1,6 @@
 ARG BUILDENV_TAG
 
-FROM gcr.io/eoscanada-shared-services/nodeos-buildenv:$BUILDENV_TAG as builder
+FROM gcr.io/eoscanada-shared-services/eosio-nodeos-buildenv:$BUILDENV_TAG as builder
 
 ARG SRCTAG
 ARG PATCHES
@@ -18,8 +18,7 @@ RUN git clone -b $SRCTAG --depth 1 $REPOSITORY --recursive \
     # The `eosio_install` installs by default to a fixed child folder named
     # `eosio`. We want to keep our old convention `/opt/eos`, hence, let's
     # create a symlink to keep both working.
-    && ln -s /opt/eosio /opt/eos \
-    && cmake --build /tmp/build --target install
+    && ln -s /opt/eosio /opt/eos
 
 ENV EOSIO_ROOT=/opt/eosio
 ENV INSTALL_PREFIX /opt/eos
