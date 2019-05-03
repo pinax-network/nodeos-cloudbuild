@@ -2,7 +2,7 @@
 substitutions:
   _TAG: v1.8.0-rc1
   # check appropriate builder tag in https://hub.docker.com/r/eosio/builder/tags
-  _BUILDER_TAG: v1.5.2
+  _BUILDENV_TAG: v1.8.0-rc1
   _PATCHES: ""
 
 steps:
@@ -14,8 +14,8 @@ steps:
     '-t', 'gcr.io/${PROJECT_ID}/eosio-nodeos-full:${_TAG}',
     '-f', 'Dockerfile-nodeos-full',
     '--cache-from', 'gcr.io/${PROJECT_ID}/eosio-nodeos-full:${_TAG}',
+    '--build-arg', 'BUILDENV_TAG=${_BUILDENV_TAG}',
     '--build-arg', 'SRCTAG=${_TAG}',
-    '--build-arg', 'BLDTAG=${_BUILDER_TAG}',
     '--build-arg', 'PATCHES=${_PATCHES}',
     '.'
   ]

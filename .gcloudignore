@@ -1,3 +1,9 @@
+.gcloudignore
+.git
+.gitignore
+#!include:.gitignore
+
+.vscode
 deep-mind/boot/state/
 deep-mind/boot/blocks/reversible/
 deep-mind/compare/state/

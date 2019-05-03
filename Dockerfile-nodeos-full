@@ -1,7 +1,6 @@
-ARG SRCTAG
-ARG BLDTAG
+ARG BUILDENV_TAG
 
-FROM eosio/builder:$BLDTAG as builder
+FROM gcr.io/eoscanada-shared-services/nodeos-buildenv:$BUILDENV_TAG as builder
 
 ARG SRCTAG
 ARG PATCHES
@@ -14,16 +13,14 @@ RUN git clone -b $SRCTAG --depth 1 $REPOSITORY --recursive \
     && echo PATCHING... && for patch in $PATCHES; do echo APPLYING PATCH $patch; patch -p1 < /patches/$patch; done && echo PATCHED \
     && echo "$SRCTAG:$(git rev-parse HEAD)" > /etc/eosio-version \
     && echo $REPOSITORY ref $SRCTAG revision `git describe --always --long` > /etc/eosio-build-version \
-    && echo "Installing missing dependencies..." \
-    && apt-get update && DEBIAN_FRONTEND=noninteractive apt-get -y install libusb-1.0-0-dev libcurl4-gnutls-dev \
-    && ./scripts/eosio_build.sh -y -s EOS -p / \
-    && mv /opt/eosio /opt/eos \
-    && cp --remove-destination `readlink /usr/lib/x86_64-linux-gnu/libz.so` /usr/lib/x86_64-linux-gnu/libz.so \
-    && cp --remove-destination `readlink /usr/lib/x86_64-linux-gnu/libbz2.so` /usr/lib/x86_64-linux-gnu/libbz2.so \
+    && ./scripts/eosio_build.sh -y -s EOS -p / -P \
+    && ./scripts/eosio_install.sh \
+    # The `eosio_install` installs by default to a fixed child folder named
+    # `eosio`. We want to keep our old convention `/opt/eos`, hence, let's
+    # create a symlink to keep both working.
+    && ln -s /opt/eosio /opt/eos \
     && cmake --build /tmp/build --target install
 
-ENV BOOST /usr/local/include
 ENV EOSIO_ROOT=/opt/eosio
 ENV INSTALL_PREFIX /opt/eos
 ENV LD_LIBRARY_PATH /usr/local/lib
-ENV PREFIX /opt
