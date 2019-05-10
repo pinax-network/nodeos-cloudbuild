@@ -88,7 +88,7 @@ eosc tx create battlefield1 dbinstwo '{"account": "battlefield1", "first": 200, 
 sleep 0.6
 
 echo ""
-echo "Create a delayed and cancel it with 'eosio:canceldelay'"
+echo -n "Create a delayed and cancel it with 'eosio:canceldelay'"
 eosc tx create --delay-sec=3600 battlefield1 dbins '{"account": "battlefield1"}' -p battlefield1 --write-transaction /tmp/delayed.json
 ID=`eosc tx id /tmp/delayed.json`
 eosc tx push /tmp/delayed.json
@@ -98,7 +98,7 @@ rm /tmp/delayed.json || true
 sleep 0.6
 
 echo ""
-echo "Create auth structs, updateauth to create, updateauth to modify, deleteauth to test AUTH_OPs"
+echo -n "Create auth structs, updateauth to create, updateauth to modify, deleteauth to test AUTH_OPs"
 eosc system updateauth battlefield2 ops active EOS7f5watu1cLgth3ub1uAnsGkHq1F6PhauScBg6rJGUfe79MgG9Y # random key
 sleep 0.6
 
@@ -115,9 +115,28 @@ eosc system deleteauth battlefield2 ops
 sleep 0.6
 
 echo ""
-echo "Create a creational order different than the execution order"
+echo -n "Create a creational order different than the execution order"
 eosc tx create --force-unique battlefield1 creaorder '{"n1": "notified1", "n2": "notified2", "n3": "notified3", "n4": "notified4", "n5": "notified5"}' -p battlefield1
 sleep 0.6
+
+echo ""
+echo "Activating protocol features"
+curl -X POST "$EOSC_GLOBAL_API_URL/v1/producer/schedule_protocol_feature_activations" -d '{"protocol_features_to_activate": ["0ec7e080177b2c02b278d5088611686b49d739925a92d9bfcacd7fc6b74053bd"]}' > /dev/null
+sleep 1.2
+
+eosc system setcontract eosio contracts/eosio.system.wasm contracts/eosio.system.abi
+sleep 0.6
+
+# Those will triggers RAM correction operations to appears
+echo ""
+echo -n "Activate protocol feature (REPLACE_DEFERRED)"
+eosc tx create eosio activate '{"feature_digest":"ef43112c6543b88db2283a2e077278c315ae2c84719a8b25f25cc88565fbea99"}' -p eosio@active
+sleep 1.2
+
+echo ""
+echo -n "Activate protocol feature (NO_DUPLICATE_DEFERRED_ID)"
+eosc tx create eosio activate '{"feature_digest":"4a90c00d55454dc5b059055ca213579c6ea856967712a56017487886a4d4cc0f"}' -p eosio@active
+sleep 1.2
 
 # TODO: provode a `soft_fail` transaction
 # TODO: provoke an `expired` transaction. How to do that? Too loaded and can't push it through?
@@ -139,52 +158,73 @@ set +ex
 echo ""
 echo "# Statistics"
 printf "## Creation (CREATION_OP): "
-cat $LOG_FILE | grep "CREATION_OP" | wc -l
+cat $LOG_FILE | grep " CREATION_OP" | wc -l
 echo ""
 
-cat $LOG_FILE | grep "CREATION_OP" | cut -f 1,2,3,4 -d ' '
+cat $LOG_FILE | grep " CREATION_OP" | cut -f 1,2,3,4 -d ' '
 echo ""
 
 printf "## Database (DB_OP): "
-cat $LOG_FILE | grep "DB_OP" | wc -l
+cat $LOG_FILE | grep " DB_OP" | wc -l
 echo ""
 
-cat $LOG_FILE | grep "DB_OP" | cut -f 1,2,3,4,5,6,7,8,9 -d ' '
+cat $LOG_FILE | grep " DB_OP" | cut -f 1,2,3,4,5,6,7,8,9 -d ' '
 echo ""
 
 printf "## Deferred (DTRX_OP): "
-cat $LOG_FILE | grep -E "DTRX_OP" | wc -l
+cat $LOG_FILE | grep -E " DTRX_OP" | wc -l
 echo ""
 
-cat $LOG_FILE | grep -E "DTRX_OP" | cut -f 1,2,3,4,5,6,7,8 -d ' '
+cat $LOG_FILE | grep -E " DTRX_OP" | cut -f 1,2,3,4,5,6,7,8 -d ' '
+echo ""
+
+printf "## Features (FEATURE_OP): "
+cat $LOG_FILE | grep " FEATURE_OP" | wc -l
+echo ""
+
+cat $LOG_FILE | grep " FEATURE_OP" | cut -f 1,2,3,4 -d ' '
 echo ""
 
 printf "## Permission (PERM_OP): "
-cat $LOG_FILE | grep "PERM_OP" | wc -l
+cat $LOG_FILE | grep " PERM_OP" | wc -l
 echo ""
 
-cat $LOG_FILE | grep "PERM_OP" | cut -f 1,2,3,4 -d ' '
+cat $LOG_FILE | grep " PERM_OP" | cut -f 1,2,3,4 -d ' '
 echo ""
 
 printf "## Resource Limits (RLIMIT_OP): "
-cat $LOG_FILE | grep "RLIMIT_OP" | wc -l
+cat $LOG_FILE | grep " RLIMIT_OP" | wc -l
 echo ""
 
-cat $LOG_FILE | grep -E "RLIMIT_OP" | cut -f 1,2,3,4 -d ' '
+cat $LOG_FILE | grep -E " RLIMIT_OP" | cut -f 1,2,3,4 -d ' '
 echo ""
 
 printf "## RAM (RAM_OP): "
-cat $LOG_FILE | grep "RAM_OP" | wc -l
+cat $LOG_FILE | grep " RAM_OP" | wc -l
 echo ""
 
-cat $LOG_FILE | grep "RAM_OP" | cut -f 1,2,3,4,5,6,7,8 -d ' '
+cat $LOG_FILE | grep " RAM_OP"
+echo ""
+
+printf "## RAM Correction (RAM_CORRECTION_OP): "
+cat $LOG_FILE | grep " RAM_CORRECTION_OP" | wc -l
+echo ""
+
+cat $LOG_FILE | grep " RAM_CORRECTION_OP"
 echo ""
 
 printf "## Table (TBL_OP): "
-cat $LOG_FILE | grep "TBL_OP" | wc -l
+cat $LOG_FILE | grep " TBL_OP" | wc -l
 echo ""
 
-cat $LOG_FILE | grep "TBL_OP" | cut -f 1,2,3,4,5,6,7,8 -d ' '
+cat $LOG_FILE | grep " TBL_OP" | cut -f 1,2,3,4,5,6,7,8 -d ' '
+echo ""
+
+printf "## Transaction (TRX_OP): "
+cat $LOG_FILE | grep " TRX_OP" | wc -l
+echo ""
+
+cat $LOG_FILE | grep " TRX_OP" | cut -f 1,2,3,4,5 -d ' '
 echo ""
 
 # Print Log Locations

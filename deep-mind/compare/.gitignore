@@ -1,4 +1,5 @@
 blocks/
+protocol_features/
 state/
 diff.log
 diff.patch

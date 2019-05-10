@@ -10,9 +10,10 @@ if [ "$EOS_BIN_OR_DOCKER" == "" ]; then
     exit 1
 fi
 
-rm -rf "$ROOT/blocks/" "$ROOT/state/"
+rm -rf "$ROOT/blocks/" "$ROOT/protocol_features/" "$ROOT/state/"
 cp -av "$ROOT/../boot/blocks" "$ROOT/"
 rm -rf "$ROOT/blocks/reversible"
+cp -av "$ROOT/../boot/protocol_features" "$ROOT/"
 
 if [ -f $EOS_BIN_OR_DOCKER ]; then
     # Execute a local instance
