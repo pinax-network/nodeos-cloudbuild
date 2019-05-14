@@ -33,7 +33,7 @@ func TestReferenceAnalysis_AcceptedBlocks(t *testing.T) {
 
 func TestReferenceAnalysis(t *testing.T) {
 	stats := computeDeepMindStats(readAllBlocks(t, "output.log"))
-	content, _ := json.Marshal(stats)
+	content, _ := json.MarshalIndent(stats, "", "  ")
 	err := ioutil.WriteFile("output.stats.json", content, 0644)
 	require.NoError(t, err)
 
@@ -67,8 +67,8 @@ func assertFileContentEqual(t *testing.T, expectedFile string, actualFile string
 	assert.Truef(t, bytes.Compare(expected, actual) == 0, "%s and %s differ, run 'diff -u %s %s'", expectedFile, actualFile, expectedFile, actualFile)
 }
 
-func readAllBlocks(t *testing.T, nodeosLogFile string) []*hlog.AcceptedBlock {
-	blocks := []*hlog.AcceptedBlock{}
+func readAllBlocks(t *testing.T, nodeosLogFile string) []*hlog.Block {
+	blocks := []*hlog.Block{}
 
 	reader, err := hlog.NewFileConsoleReader(nodeosLogFile)
 	require.NoError(t, err)
@@ -82,7 +82,7 @@ func readAllBlocks(t *testing.T, nodeosLogFile string) []*hlog.AcceptedBlock {
 
 		require.NoError(t, err)
 
-		block, ok := el.(*hlog.AcceptedBlock)
+		block, ok := el.(*hlog.Block)
 		require.True(t, ok, "Type conversion should have been correct")
 
 		blocks = append(blocks, block)
@@ -91,7 +91,7 @@ func readAllBlocks(t *testing.T, nodeosLogFile string) []*hlog.AcceptedBlock {
 	return blocks
 }
 
-func computeDeepMindStats(blocks []*hlog.AcceptedBlock) *ReferenceStats {
+func computeDeepMindStats(blocks []*hlog.Block) *ReferenceStats {
 	stats := &ReferenceStats{}
 	for _, block := range blocks {
 		stats.TransactionCount += int64(len(block.AllTransactionTraces()))
@@ -99,8 +99,10 @@ func computeDeepMindStats(blocks []*hlog.AcceptedBlock) *ReferenceStats {
 		adjustDeepMindCreationTreeStats(block, stats)
 		adjustDeepMindDBOpsStats(block, stats)
 		adjustDeepMindDTrxOpsStats(block, stats)
+		adjustDeepMindFeatureOpsStats(block, stats)
 		adjustDeepMindPermOpsStats(block, stats)
 		adjustDeepMindRAMOpsStats(block, stats)
+		adjustDeepMindRAMCorrectionOpsStats(block, stats)
 		adjustDeepMindRLimitOpsStats(block, stats)
 		adjustDeepMindTableOpsStats(block, stats)
 	}
@@ -108,7 +110,7 @@ func computeDeepMindStats(blocks []*hlog.AcceptedBlock) *ReferenceStats {
 	return stats
 }
 
-func adjustDeepMindCreationTreeStats(block *hlog.AcceptedBlock, stats *ReferenceStats) {
+func adjustDeepMindCreationTreeStats(block *hlog.Block, stats *ReferenceStats) {
 	for _, creationTree := range block.CreationTree {
 		for range creationTree {
 			stats.CreationTreeNodeCount++
@@ -116,7 +118,7 @@ func adjustDeepMindCreationTreeStats(block *hlog.AcceptedBlock, stats *Reference
 	}
 }
 
-func adjustDeepMindDBOpsStats(block *hlog.AcceptedBlock, stats *ReferenceStats) {
+func adjustDeepMindDBOpsStats(block *hlog.Block, stats *ReferenceStats) {
 	for _, ops := range block.DBOps {
 		for _, op := range ops {
 			if strings.Contains(op.NewPayer, "battlefield") || strings.Contains(op.OldPayer, "battlefield") {
@@ -126,7 +128,7 @@ func adjustDeepMindDBOpsStats(block *hlog.AcceptedBlock, stats *ReferenceStats) 
 	}
 }
 
-func adjustDeepMindDTrxOpsStats(block *hlog.AcceptedBlock, stats *ReferenceStats) {
+func adjustDeepMindDTrxOpsStats(block *hlog.Block, stats *ReferenceStats) {
 	for _, ops := range block.DTrxOps {
 		for _, op := range ops {
 			if strings.Contains(op.Payer, "battlefield") {
@@ -136,7 +138,15 @@ func adjustDeepMindDTrxOpsStats(block *hlog.AcceptedBlock, stats *ReferenceStats
 	}
 }
 
-func adjustDeepMindPermOpsStats(block *hlog.AcceptedBlock, stats *ReferenceStats) {
+func adjustDeepMindFeatureOpsStats(block *hlog.Block, stats *ReferenceStats) {
+	for _, ops := range block.FeatureOps {
+		for range ops {
+			stats.FeatureOpCount++
+		}
+	}
+}
+
+func adjustDeepMindPermOpsStats(block *hlog.Block, stats *ReferenceStats) {
 	for _, ops := range block.PermOps {
 		for range ops {
 			stats.PermOpCount++
@@ -144,7 +154,7 @@ func adjustDeepMindPermOpsStats(block *hlog.AcceptedBlock, stats *ReferenceStats
 	}
 }
 
-func adjustDeepMindRAMOpsStats(block *hlog.AcceptedBlock, stats *ReferenceStats) {
+func adjustDeepMindRAMOpsStats(block *hlog.Block, stats *ReferenceStats) {
 	for _, ops := range block.RAMOps {
 		for _, op := range ops {
 			if strings.Contains(op.Payer, "battlefield") {
@@ -154,7 +164,17 @@ func adjustDeepMindRAMOpsStats(block *hlog.AcceptedBlock, stats *ReferenceStats)
 	}
 }
 
-func adjustDeepMindRLimitOpsStats(block *hlog.AcceptedBlock, stats *ReferenceStats) {
+func adjustDeepMindRAMCorrectionOpsStats(block *hlog.Block, stats *ReferenceStats) {
+	for _, ops := range block.RAMCorrectionOps {
+		for _, op := range ops {
+			if strings.Contains(op.Payer, "battlefield") {
+				stats.RAMCorrectionOpCount++
+			}
+		}
+	}
+}
+
+func adjustDeepMindRLimitOpsStats(block *hlog.Block, stats *ReferenceStats) {
 	for _, ops := range block.RLimitOps {
 		for range ops {
 			stats.RLimitOpCount++
@@ -162,7 +182,7 @@ func adjustDeepMindRLimitOpsStats(block *hlog.AcceptedBlock, stats *ReferenceSta
 	}
 }
 
-func adjustDeepMindTableOpsStats(block *hlog.AcceptedBlock, stats *ReferenceStats) {
+func adjustDeepMindTableOpsStats(block *hlog.Block, stats *ReferenceStats) {
 	for _, ops := range block.TableOps {
 		for range ops {
 			stats.TableOpCount++
@@ -170,7 +190,7 @@ func adjustDeepMindTableOpsStats(block *hlog.AcceptedBlock, stats *ReferenceStat
 	}
 }
 
-func getOrderedRAMOps(block *hlog.AcceptedBlock) []*hlog.RAMOp {
+func getOrderedRAMOps(block *hlog.Block) []*hlog.RAMOp {
 	ramOps := []*hlog.RAMOp{}
 	for _, transactionID := range getOrderedTransactionIDs(block) {
 		ramOps = append(ramOps, block.RAMOps[hlog.TransactionID(transactionID)]...)
@@ -179,7 +199,7 @@ func getOrderedRAMOps(block *hlog.AcceptedBlock) []*hlog.RAMOp {
 	return ramOps
 }
 
-func getOrderedTransactionIDs(block *hlog.AcceptedBlock) []string {
+func getOrderedTransactionIDs(block *hlog.Block) []string {
 	return block.TransactionIDs()
 }
 
@@ -188,8 +208,10 @@ type ReferenceStats = struct {
 	CreationTreeNodeCount int64
 	DBOpCount             int64
 	DTrxOpCount           int64
+	FeatureOpCount        int64
 	PermOpCount           int64
 	RAMOpCount            int64
+	RAMCorrectionOpCount  int64
 	RLimitOpCount         int64
 	TableOpCount          int64
 }

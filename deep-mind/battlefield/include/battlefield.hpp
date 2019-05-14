@@ -68,18 +68,33 @@ class [[eosio::contract("battlefield")]] battlefield : public contract {
          *  - c | Context Free Action Inline (send_context_free_inline)
          *  - i | Inline (send_inline)
          *
+         *   Creation Tree
          *   a1
          *   ├── n1
+         *   ├── i2
+         *   |   ├── n4
+         *   |   ├── n5
+         *   |   ├── i3
+         *   |   └── c3
          *   ├── n2
          *   |   ├── i1
          *   |   ├── c1
          *   |   └── n3
+         *   └── c2
+         *
+         *   Execution Tree
+         *   a1
+         *   ├── n1
+         *   ├── n2
+         *   ├── n3
          *   ├── c2
-         *   └── i2
-         *       ├── n4
-         *       ├── n5
-         *       ├── i3
-         *       └── c3
+         *   ├── c1
+         *   ├── i2
+         *   |   ├── n4
+         *   |   ├── n5
+         *   |   ├── c3
+         *   |   └── i3
+         *   └── i1
          * ```
          *
          * Consumer will pass the following information to create the hierarchy:
@@ -103,21 +118,6 @@ class [[eosio::contract("battlefield")]] battlefield : public contract {
          * The i2 will actually `require_recipient(n4)` and
          * `require_recipient(n5)` followed by a `inlineempty` with a tag of
          * `"i3"` and send `c3`
-         *
-         * Actual execution order in the action traces will be:
-         *
-         *   a1
-         *   ├── n1
-         *   ├── n2
-         *   ├── n3
-         *   ├── c2
-         *   ├── c1
-         *   ├── i2
-         *   |   ├── n4
-         *   |   ├── n5
-         *   |   ├── c3
-         *   |   └── i3
-         *   └── i1
          */
         [[eosio::action]]
         void creaorder(name n1, name n2, name n3, name n4, name n5);

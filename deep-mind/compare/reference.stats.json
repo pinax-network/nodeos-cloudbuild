@@ -1,1 +1,12 @@
-{"TransactionCount":100,"CreationTreeNodeCount":25,"DBOpCount":21,"DTrxOpCount":9,"PermOpCount":65,"RAMOpCount":57,"RLimitOpCount":149,"TableOpCount":14}
+{
+  "TransactionCount": 120,
+  "CreationTreeNodeCount": 25,
+  "DBOpCount": 21,
+  "DTrxOpCount": 9,
+  "FeatureOpCount": 5,
+  "PermOpCount": 65,
+  "RAMOpCount": 58,
+  "RAMCorrectionOpCount": 1,
+  "RLimitOpCount": 169,
+  "TableOpCount": 17
+}

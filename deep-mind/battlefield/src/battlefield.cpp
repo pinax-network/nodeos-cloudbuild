@@ -104,13 +104,14 @@ void battlefield::dtrxexec(name account, bool fail, std::string nonce) {
 
 void battlefield::creaorder(name n1, name n2, name n3, name n4, name n5) {
     require_recipient(n1);
+
+    inlinedeep_action i2(_first_receiver, {_self, "active"_n});
+    i2.send(string("i2"), n4, n5, string("i3"), false, string("c3"));
+
     require_recipient(n2);
 
     action c2(std::vector<permission_level>(), "eosio.null"_n, "nonce"_n, std::make_tuple(string("c2")));
     c2.send_context_free();
-
-    inlinedeep_action i2(_first_receiver, {_self, "active"_n});
-    i2.send(string("i2"), n4, n5, string("i3"), false, string("c3"));
 }
 
 void battlefield::on_creaorder(name n1, name n2, name n3, name n4, name n5) {

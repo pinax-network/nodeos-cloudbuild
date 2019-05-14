@@ -88,9 +88,8 @@ steps:
   args:
   - '-cxe'
   - |
-    # Disable tests for 1.8.x for now, need to be fully updated
-    #cd /workspace/deep-mind/compare
-    #go test -v ./...
+    cd /workspace/deep-mind/compare
+    go test -v ./...
   volumes:
   - name: 'ssh'
     path: /root/.ssh

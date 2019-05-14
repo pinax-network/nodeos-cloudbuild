@@ -116,6 +116,8 @@ sleep 0.6
 
 echo ""
 echo -n "Create a creational order different than the execution order"
+## We use the --force-unique flag so a context-free action exist in the transactions traces tree prior our own,
+## creating a multi-root execution traces tree.
 eosc tx create --force-unique battlefield1 creaorder '{"n1": "notified1", "n2": "notified2", "n3": "notified3", "n4": "notified4", "n5": "notified5"}' -p battlefield1
 sleep 0.6
 

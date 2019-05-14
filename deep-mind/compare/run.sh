@@ -20,7 +20,7 @@ if [ -f $EOS_BIN_OR_DOCKER ]; then
     $EOS_BIN_OR_DOCKER --data-dir=$ROOT --config-dir=$ROOT --replay-blockchain > "$ROOT/output.log" &
     PID=$!
 
-    sleep 10
+    sleep 20
     kill $PID
 else
     # Assume it's a Docker image name
@@ -33,12 +33,15 @@ else
         $EOS_BIN_OR_DOCKER \
         /bin/bash -c "/opt/eosio/bin/nodeos --data-dir=/app --config-dir=/app --replay-blockchain > /app/output.log" &
 
-    sleep 10
+    sleep 20
     docker kill $CONTAINER_NAME
 fi
 
-OUTPUT_FILE="$ROOT/output.log"
-REFERENCE_FILE="$ROOT/reference.log"
+OUTPUT_FILE_PATTERN="$ROOT/output"
+REFERENCE_FILE_PATTERN="$ROOT/reference"
+
+OUTPUT_FILE="$OUTPUT_FILE_PATTERN.log"
+REFERENCE_FILE="$REFERENCE_FILE_PATTERN.log"
 DIFF_FILE="$ROOT/diff.patch"
 
 sed -i.bak -e 's/,"elapsed":[0-9]*,"/,"elapsed":0,"/g' "$OUTPUT_FILE"
@@ -64,10 +67,6 @@ if [ "$(cat $DIFF_FILE | wc -l | tr -d ' ')" != "0" ]; then
     echo "You can check differences later on this file:"
     echo "$DIFF_FILE"
 
-    echo ""
-    echo "You can accept the changes by doing the following command:"
-    echo "cp $OUTPUT_FILE $REFERENCE_FILE"
-
     difference_found="true"
 else
     echo "No differences found with this version of the deep-mind instrumentation and the reference log."
@@ -87,5 +86,11 @@ if [[ "$SKIP_GO_TESTS" == "" ]]; then
 fi
 
 if [[ "$difference_found" == "true" ]]; then
+    echo ""
+    echo "You can accept the changes by doing the following command:"
+    echo "cp $OUTPUT_FILE $REFERENCE_FILE"
+    echo "cp $OUTPUT_FILE_PATTERN.jsonl $REFERENCE_FILE_PATTERN.jsonl"
+    echo "cp $OUTPUT_FILE_PATTERN.stats.json $REFERENCE_FILE_PATTERN.stats.json"
+
     exit 1
 fi
