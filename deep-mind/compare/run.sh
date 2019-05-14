@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 EOS_BIN_OR_DOCKER="$1"
@@ -20,6 +22,9 @@ if [ -f $EOS_BIN_OR_DOCKER ]; then
     $EOS_BIN_OR_DOCKER --data-dir=$ROOT --config-dir=$ROOT --replay-blockchain > "$ROOT/output.log" &
     PID=$!
 
+    # Trap exit signal and close `nodeos` instance
+    trap "kill -s TERM $PID || true" EXIT
+
     sleep 20
     kill $PID
 else
@@ -32,6 +37,9 @@ else
         -v $ROOT:/app \
         $EOS_BIN_OR_DOCKER \
         /bin/bash -c "/opt/eosio/bin/nodeos --data-dir=/app --config-dir=/app --replay-blockchain > /app/output.log" &
+
+    # Trap exit signal and close docker image
+    trap "docker kill $CONTAINER_NAME || true" EXIT
 
     sleep 20
     docker kill $CONTAINER_NAME

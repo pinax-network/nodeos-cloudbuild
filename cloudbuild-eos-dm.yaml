@@ -26,7 +26,7 @@ steps:
   env:
   - "SKIP_GO_TESTS=y"
   args: [
-    './run.sh', '/opt/eos/bin/nodeos'
+    './run.sh', '/opt/eosio/bin/nodeos'
   ]
 
 # Download SSH encrypted private key and SSH known hosts file
