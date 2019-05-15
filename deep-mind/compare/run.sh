@@ -12,6 +12,14 @@ if [ "$EOS_BIN_OR_DOCKER" == "" ]; then
     exit 1
 fi
 
+function finish {
+    set +e
+    echo "Cleaning up"
+    [[ $PID != "" ]] && (kill -s TERM $PID || true)
+    [[ $CONTAINER_NAME != "" ]] && (docker kill $CONTAINER_NAME || true)
+    exit 0
+}
+
 rm -rf "$ROOT/blocks/" "$ROOT/protocol_features/" "$ROOT/state/"
 cp -av "$ROOT/../boot/blocks" "$ROOT/"
 rm -rf "$ROOT/blocks/reversible"
@@ -22,8 +30,7 @@ if [ -f $EOS_BIN_OR_DOCKER ]; then
     $EOS_BIN_OR_DOCKER --data-dir=$ROOT --config-dir=$ROOT --replay-blockchain > "$ROOT/output.log" &
     PID=$!
 
-    # Trap exit signal and close `nodeos` instance
-    trap "kill -s TERM $PID || true" EXIT
+    trap finish EXIT
 
     sleep 20
     kill $PID
@@ -38,8 +45,10 @@ else
         $EOS_BIN_OR_DOCKER \
         /bin/bash -c "/opt/eosio/bin/nodeos --data-dir=/app --config-dir=/app --replay-blockchain > /app/output.log" &
 
+    trap finish EXIT
+
     # Trap exit signal and close docker image
-    trap "docker kill $CONTAINER_NAME || true" EXIT
+    trap finish EXIT
 
     sleep 20
     docker kill $CONTAINER_NAME
