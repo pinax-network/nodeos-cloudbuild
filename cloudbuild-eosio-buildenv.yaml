@@ -1,5 +1,5 @@
 substitutions:
-  _TAG: v1.8.0-rc1
+  _TAG: v1.8.0-rc2
 
 steps:
 - id: docker-eosio-buildenv
