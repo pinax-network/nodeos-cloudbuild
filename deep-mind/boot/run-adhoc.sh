@@ -34,33 +34,34 @@ export EOSC_GLOBAL_INSECURE_VAULT_PASSPHRASE=secure
 export EOSC_GLOBAL_API_URL=http://localhost:9898
 export EOSC_GLOBAL_VAULT_FILE="$ROOT/eosc-vault.json"
 
-# Account for commit d8fa7c07ee48e26a1b8e0cf7f098a6a02532922e, which shields from mis-used authority.
-eosc system updateauth notified2 active owner notified2_active_auth.yaml
-
-echo ""
-echo "Create a creational order different than the execution order"
-eosc tx create --force-unique battlefield1 creaorder '{"n1": "notified1", "n2": "notified2", "n3": "notified3", "n4": "notified4", "n5": "notified5"}' -p battlefield1
+echo -n "Setting eosio.code permissions on contract accounts (Account for commit d8fa7c0, which shields from mis-used authority)"
+eosc system updateauth battlefield1 active owner active_auth_battlefield1.yaml
+eosc system updateauth battlefield3 active owner active_auth_battlefield3.yaml
+eosc system updateauth notified2 active owner active_auth_notified2.yaml
 sleep 0.6
 
+eosc tx create battlefield1 dtrx '{"account": "battlefield1", "fail_now": false, "fail_later": false, "fail_later_nested": false, "delay_sec": 1, "nonce": "1"}' -p battlefield1
+
 echo ""
-echo "Activating protocol features"
-curl -X POST "$EOSC_GLOBAL_API_URL/v1/producer/schedule_protocol_feature_activations" -d '{"protocol_features_to_activate": ["0ec7e080177b2c02b278d5088611686b49d739925a92d9bfcacd7fc6b74053bd"]}' > /dev/null
-sleep 1.2
+echo "Waiting for the transaction to execute..."
+sleep 1.1
 
-eosc system setcontract eosio contracts/eosio.system.wasm contracts/eosio.system.abi
-sleep 0.6
+eosc tx create battlefield1 dtrx '{"account": "battlefield1", "fail_now": false, "fail_later": true, "fail_later_nested": false, "delay_sec": 1, "nonce": "1"}' -p battlefield1
 
-echo "Activate protocol feature (REPLACE_DEFERRED)"
-eosc tx create eosio activate '{"feature_digest":"ef43112c6543b88db2283a2e077278c315ae2c84719a8b25f25cc88565fbea99"}' -p eosio@activesleep 1.2
-sleep 1.2
+echo ""
+echo "Waiting for the transaction to fail..."
+sleep 1.1
 
-echo "Activate protocol feature (NO_DUPLICATE_DEFERRED_ID)"
-eosc tx create eosio activate '{"feature_digest":"4a90c00d55454dc5b059055ca213579c6ea856967712a56017487886a4d4cc0f"}' -p eosio@activesleep 1.2
-sleep 1.2
+eosc tx create battlefield1 dtrx '{"account": "battlefield1", "fail_now": false, "fail_later": false, "fail_later_nested": true, "delay_sec": 1, "nonce": "2"}' -p battlefield1
+
+echo ""
+echo "Waiting for the transaction to fail..."
+sleep 1.1
+
 
 echo ""
 echo "Exiting in 1 sec"
-sleep 1000
+sleep 1
 
 kill -s TERM $PID
 sleep 0.5

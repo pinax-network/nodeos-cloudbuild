@@ -39,10 +39,15 @@ contents:
     comment: "~v1.0.2 from github.com/EOS-Mainnet/eos"
 
 ## Custom contracts
-  - name: battlefield.wasm
-    url: ../battlefield/battlefield.wasm
-  - name: battlefield.abi
-    url: ../battlefield/battlefield.abi
+  - name: battlefield-with-handler.wasm
+    url: ../battlefield/battlefield-with-handler.wasm
+  - name: battlefield-with-handler.abi
+    url: ../battlefield/battlefield-with-handler.abi
+
+  - name: battlefield-without-handler.wasm
+    url: ../battlefield/battlefield-without-handler.wasm
+  - name: battlefield-without-handler.abi
+    url: ../battlefield/battlefield-without-handler.abi
 
 ################################# BOOT SEQUENCE ###################################
 boot_sequence:
@@ -140,6 +145,15 @@ boot_sequence:
     new_account: battlefield1
     pubkey: ephemeral
 
+# Account battlefield2 is created manually to test our newaccount instrumentation
+
+- op: system.newaccount
+  label: Create account battlefield3
+  data:
+    creator: eosio
+    new_account: battlefield3
+    pubkey: ephemeral
+
 - op: system.newaccount
   label: Create account notified1
   data:
@@ -175,17 +189,27 @@ boot_sequence:
     new_account: notified5
     pubkey: ephemeral
 
+# Account battlefield1 has no onerror handler (notification when a deferred failed)
 - op: system.setcode
-  label: Setting battlefield code for account battlefield1
+  label: Setting battlefield (without `onerorr` handler) code for account battlefield1
   data:
     account: battlefield1
-    contract_name_ref: battlefield
+    contract_name_ref: battlefield-without-handler
+
+# Account battlefield2 is managed inside `run.sh` directly
+
+# Account battlefield3 has onerror handler (notification when a deferred failed)
+- op: system.setcode
+  label: Setting battlefield (with `onerror` handler) code for account battlefield3
+  data:
+    account: battlefield3
+    contract_name_ref: battlefield-with-handler
 
 - op: system.setcode
   label: Setting battlefield code for account notified2
   data:
     account: notified2
-    contract_name_ref: battlefield
+    contract_name_ref: battlefield-without-handler
 
 - op: system.newaccount
   label: Create zzzzzzzzzzzz account

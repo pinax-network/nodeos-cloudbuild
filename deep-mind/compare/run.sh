@@ -3,6 +3,7 @@
 set -e
 
 ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+CURRENT=`pwd`
 
 EOS_BIN_OR_DOCKER="$1"
 LOG_FILE=${LOG_FILE:-"/tmp/battlefield.log"}
@@ -17,6 +18,9 @@ function finish {
     echo "Cleaning up"
     [[ $PID != "" ]] && (kill -s TERM $PID || true)
     [[ $CONTAINER_NAME != "" ]] && (docker kill $CONTAINER_NAME || true)
+
+    cd $current
+
     exit 0
 }
 
@@ -30,10 +34,12 @@ if [ -f $EOS_BIN_OR_DOCKER ]; then
     $EOS_BIN_OR_DOCKER --data-dir=$ROOT --config-dir=$ROOT --replay-blockchain > "$ROOT/output.log" &
     PID=$!
 
-    trap finish EXIT
+    # Trap exit signal and close nodeos process
+    trap "finish" EXIT
 
+    echo "Giving 20s for nodeos process to fully complete replay"
     sleep 20
-    kill $PID
+    kill $PID || true
 else
     # Assume it's a Docker image name
     CONTAINER_NAME=deep-mind-compare
@@ -45,13 +51,12 @@ else
         $EOS_BIN_OR_DOCKER \
         /bin/bash -c "/opt/eosio/bin/nodeos --data-dir=/app --config-dir=/app --replay-blockchain > /app/output.log" &
 
-    trap finish EXIT
-
     # Trap exit signal and close docker image
-    trap finish EXIT
+    trap "finish" EXIT
 
+    echo "Giving 20s for docker process to fully complete replay"
     sleep 20
-    docker kill $CONTAINER_NAME
+    docker kill $CONTAINER_NAME || true
 fi
 
 OUTPUT_FILE_PATTERN="$ROOT/output"
@@ -68,15 +73,22 @@ sed -i.bak -e 's/\([,{]\)"last_ordinal":[0-9]*,"/\1"last_ordinal":0,"/g' "$OUTPU
 sed -i.bak -e 's/\([,{]\)"last_updated":"[^"]*","/\1"last_updated":"9999-99-99T99:99:99.999","/g' "$OUTPUT_FILE"
 rm -rf "$OUTPUT_FILE.bak"
 
+set +e
+
 diff -u "$REFERENCE_FILE" "$OUTPUT_FILE" > "$DIFF_FILE"
 
+echo "Checking for difference between reference and output files ..."
 difference_found=""
 if [ "$(cat $DIFF_FILE | wc -l | tr -d ' ')" != "0" ]; then
     echo "Some differences found between deep-mind reference log and logs produced by this build"
     printf "Check them right now? (y/N) "
-    read value
+    if [[ $CI == "" ]]; then
+        read value
 
-    if [[ $value == "y" || $value == "yes", || $value == "Y" ]]; then
+        if [[ $value == "y" || $value == "yes", || $value == "Y" ]]; then
+            less $DIFF_FILE
+        fi
+    else
         less $DIFF_FILE
     fi
 
@@ -95,11 +107,14 @@ if [[ "$SKIP_GO_TESTS" == "" ]]; then
 
     current=`pwd`
     trap "cd $current" EXIT
+
     cd "$ROOT"
     go test ./...
     if [[ $? != 0 ]]; then
         difference_found="true"
     fi
+else
+    echo "The go tests are disabled (SKIP_GO_TESTS=true)"
 fi
 
 if [[ "$difference_found" == "true" ]]; then
@@ -110,4 +125,6 @@ if [[ "$difference_found" == "true" ]]; then
     echo "cp $OUTPUT_FILE_PATTERN.stats.json $REFERENCE_FILE_PATTERN.stats.json"
 
     exit 1
+else
+    echo "Everything is right, success."
 fi

@@ -1,5 +1,9 @@
 #pragma once
 
+// #ifndef CONTRACT_NAME
+//     static_assert(false, "The CONTRACT_NAME define should have been set by build system, aborting");
+// #endif
+
 #include <algorithm>
 #include <string>
 
@@ -19,6 +23,7 @@ using eosio::current_time_point;
 using eosio::datastream;
 using eosio::indexed_by;
 using eosio::name;
+using eosio::onerror;
 using eosio::permission_level;
 using eosio::print;
 using eosio::time_point_sec;
@@ -48,6 +53,7 @@ class [[eosio::contract("battlefield")]] battlefield : public contract {
             name account,
             bool fail_now,
             bool fail_later,
+            bool fail_later_nested,
             uint32_t delay_sec,
             string nonce
         );
@@ -56,7 +62,15 @@ class [[eosio::contract("battlefield")]] battlefield : public contract {
         void dtrxcancel(name account);
 
         [[eosio::action]]
-        void dtrxexec(name account, bool fail, string nonce);
+        void dtrxexec(name account, bool fail, bool failNested, string nonce);
+
+        [[eosio::action]]
+        void nestdtrxexec(bool fail);
+
+        #if WITH_ONERROR_HANDLER == 1
+        [[eosio::on_notify("eosio::onerror")]]
+        void onerror(eosio::onerror data);
+        #endif
 
         /**
          * We are going to replicate the following creation order:
@@ -139,6 +153,7 @@ class [[eosio::contract("battlefield")]] battlefield : public contract {
         );
 
         // Inline action wrappers (so we can construct them in code)
+        using nestdtrxexec_action = action_wrapper<"nestdtrxexec"_n, &battlefield::nestdtrxexec>;
         using inlineempty_action = action_wrapper<"inlineempty"_n, &battlefield::inlineempty>;
         using inlinedeep_action = action_wrapper<"inlinedeep"_n, &battlefield::inlinedeep>;
 

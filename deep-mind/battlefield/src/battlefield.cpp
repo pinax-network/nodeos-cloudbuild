@@ -71,6 +71,7 @@ void battlefield::dtrx(
     name account,
     bool fail_now,
     bool fail_later,
+    bool fail_later_nested,
     uint32_t delay_sec,
     string nonce
 ) {
@@ -82,7 +83,7 @@ void battlefield::dtrx(
         permission_level{_self, "active"_n},
         _self,
         "dtrxexec"_n,
-        std::make_tuple(account, fail_later, nonce)
+        std::make_tuple(account, fail_later, fail_later_nested, nonce)
     );
     deferred.delay_sec = delay_sec;
     deferred.send(sender_id, account, true);
@@ -97,10 +98,52 @@ void battlefield::dtrxcancel(name account) {
     cancel_deferred(sender_id);
 }
 
-void battlefield::dtrxexec(name account, bool fail, std::string nonce) {
+void battlefield::dtrxexec(name account, bool fail, bool failNested, std::string nonce) {
   require_auth(account);
   check(!fail, "dtrxexec instructed to fail");
+
+  // FIXME: Unable to use `nestdtrxexec_action` due to https://github.com/EOSIO/eosio.cdt/issues/519
+  eosio::action nested(
+      std::vector<permission_level>({ permission_level(_self, "active"_n) }),
+      account,
+      "nestdtrxexec"_n,
+      std::make_tuple(failNested)
+  );
+  nested.send();
 }
+
+void battlefield::nestdtrxexec(bool fail) {
+  print("Nested inline within dtrxexec");
+
+  check(!fail, "dtrxexec instructed to fail");
+}
+
+#if WITH_ONERROR_HANDLER == 1
+// Must match signature of dtrxexec above
+struct dtrxexec_data {
+    name account;
+    bool fail;
+    bool failNested;
+    std::string nonce;
+};
+
+void battlefield::onerror(eosio::onerror data) {
+    print("Called on error handler");
+
+    eosio::transaction trx = data.unpack_sent_trx();
+    eosio::action action = trx.actions[0];
+
+    auto action_data = action.data_as<dtrxexec_data>();
+    print("Extracted", action_data.nonce);
+
+    // Let's re-use account passed to `dtrxexec` directly
+    inlinedeep_action inline_deep(action_data.account, {_self, "active"_n});
+
+    // FIXME: Unline `creaorder`, `notified4` and `notified5` are hard-coded here, if they
+    //        were pass to `dtrxexec`, we could re-use them here...
+    inline_deep.send(action_data.nonce, "notified4"_n, "notified5"_n, string("i3"), false, string("c3"));
+}
+#endif
 
 void battlefield::creaorder(name n1, name n2, name n3, name n4, name n5) {
     require_recipient(n1);
@@ -121,7 +164,7 @@ void battlefield::on_creaorder(name n1, name n2, name n3, name n4, name n5) {
         return;
     }
 
-    // Deleaing with n2 notification, send i1 and notify n3
+    // Dealing with n2 notification, send i1 and notify n3
     inlineempty_action i1(_first_receiver, {_self, "active"_n});
     i1.send(string("i1"), false);
 
