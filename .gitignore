@@ -1,5 +1,8 @@
 # Docker build directories
 build-*/**
 
+# IDE
+.vscode
+
 # System files
 .DS_Store
