@@ -19,7 +19,6 @@ func TestReferenceAnalysis_AcceptedBlocks(t *testing.T) {
 	defer f.Close()
 
 	enc := json.NewEncoder(f)
-	enc.SetIndent("", " ")
 
 	for _, block := range readAllBlocks(t, "output.log") {
 		require.NoError(t, err)
@@ -27,7 +26,7 @@ func TestReferenceAnalysis_AcceptedBlocks(t *testing.T) {
 	}
 	f.Close()
 
-	assertFileContentEqual(t, "reference.jsonl", "output.jsonl")
+	assertJsonlContentEqual(t, "reference.jsonl", "output.jsonl")
 }
 
 func TestReferenceAnalysis(t *testing.T) {
@@ -60,13 +59,24 @@ func TestRamTraces_RunningUpBalanceChecks(t *testing.T) {
 	}
 }
 
-func assertFileContentEqual(t *testing.T, expectedFile string, actualFile string) {
+func assertJsonlContentEqual(t *testing.T, expectedFile string, actualFile string) {
 	expected, err := ioutil.ReadFile(expectedFile)
 	require.NoError(t, err)
 	actual, err := ioutil.ReadFile(actualFile)
 	require.NoError(t, err)
 
-	assert.Equalf(t, string(expected), string(actual), "%s and %s differ, run 'diff -u %s %s'", expectedFile, actualFile, expectedFile, actualFile)
+	actualString := strings.TrimSpace(string(actual))
+	expectedString := strings.TrimSpace(string(expected))
+
+	actualLines := strings.Split(actualString, "\n")
+	expectedLines := strings.Split(expectedString, "\n")
+
+	for i, expectedLine := range expectedLines {
+		assert.JSONEq(t, expectedLine, actualLines[i], "line #%d differs", i)
+	}
+
+	// We have it at the end to make it more discoverable by being the last failure emitted after (possibily) a long blob of text
+	assert.Equal(t, len(expectedLines), len(actualLines), "lines length differs")
 }
 
 func readAllBlocks(t *testing.T, nodeosLogFile string) []*hlog.Block {
