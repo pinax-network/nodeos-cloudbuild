@@ -1,7 +1,7 @@
 ### commit and push those values in !
 substitutions:
   _TAG: v2.0.3
-  _PATCHES: "bos-deep-mind-logging-v2.0.3-v9.1.patch bos-deep-mind-v2.0.3-v9.1.patch"
+  _PATCHES: "bos-deep-mind-logging-v2.0.3-v10.0.patch bos-deep-mind-v2.0.3-v10.0.patch"
 
 steps:
 - id: docker-build-full
@@ -9,7 +9,7 @@ steps:
   args: [
     'build',
     '-t', 'gcr.io/${PROJECT_ID}/boscore-bos-full:${_TAG}-dm',
-    '-t', 'gcr.io/${PROJECT_ID}/boscore-bos-full:${_TAG}-dm-${SHORT_SHA}',
+    '-t', 'gcr.io/${PROJECT_ID}/boscore-bos-full:${_TAG}-${SHORT_SHA}-dm',
     '-f', 'Dockerfile-bos-full',
     '--cache-from', 'gcr.io/${PROJECT_ID}/boscore-bos-full:${_TAG}-dm',
     '--build-arg', 'SRCTAG=${_TAG}',
