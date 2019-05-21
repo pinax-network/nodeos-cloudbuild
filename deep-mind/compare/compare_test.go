@@ -1,7 +1,6 @@
 package compare
 
 import (
-	"bytes"
 	"encoding/json"
 	"io"
 	"io/ioutil"
@@ -33,11 +32,14 @@ func TestReferenceAnalysis_AcceptedBlocks(t *testing.T) {
 
 func TestReferenceAnalysis(t *testing.T) {
 	stats := computeDeepMindStats(readAllBlocks(t, "output.log"))
-	content, _ := json.MarshalIndent(stats, "", "  ")
-	err := ioutil.WriteFile("output.stats.json", content, 0644)
+	actual, _ := json.MarshalIndent(stats, "", "  ")
+	err := ioutil.WriteFile("output.stats.json", actual, 0644)
 	require.NoError(t, err)
 
-	assertFileContentEqual(t, "reference.stats.json", "output.stats.json")
+	expected, err := ioutil.ReadFile("reference.stats.json")
+	require.NoError(t, err)
+
+	assert.JSONEq(t, string(expected), string(actual), "Reference stats and actual stats differs, run `diff -u output.stats.json reference.stats.json` for details")
 }
 
 func TestRamTraces_RunningUpBalanceChecks(t *testing.T) {
@@ -64,7 +66,7 @@ func assertFileContentEqual(t *testing.T, expectedFile string, actualFile string
 	actual, err := ioutil.ReadFile(actualFile)
 	require.NoError(t, err)
 
-	assert.Truef(t, bytes.Compare(expected, actual) == 0, "%s and %s differ, run 'diff -u %s %s'", expectedFile, actualFile, expectedFile, actualFile)
+	assert.Equalf(t, string(expected), string(actual), "%s and %s differ, run 'diff -u %s %s'", expectedFile, actualFile, expectedFile, actualFile)
 }
 
 func readAllBlocks(t *testing.T, nodeosLogFile string) []*hlog.Block {
