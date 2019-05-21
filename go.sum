@@ -37,6 +37,8 @@ github.com/eoscanada/bstream v1.2.1 h1:+2ObCZzY8fBibZ1wNiMwCVGRfyLNCm4XitXMl8x7K
 github.com/eoscanada/bstream v1.2.1/go.mod h1:xRiso5fne6F/uTjsttHCoKVKeHeOQN0K+CQn5004PiI=
 github.com/eoscanada/bstream v1.5.1-0.20190514192147-b5928422659b h1:XVaCj2XAvgpU7BCDFqjvA0wKXhO4psmVLXlll+/4eW8=
 github.com/eoscanada/bstream v1.5.1-0.20190514192147-b5928422659b/go.mod h1:qPQ57Ss4Vwld080doJGEnV4ffO6wzRojeTfA9zM6+hw=
+github.com/eoscanada/bstream v1.6.0 h1:Ddci0qaCPwG7+lK/w5egbeEiTTk7EeTVPyyARfxdJWY=
+github.com/eoscanada/bstream v1.6.0/go.mod h1:qPQ57Ss4Vwld080doJGEnV4ffO6wzRojeTfA9zM6+hw=
 github.com/eoscanada/eos-go v0.8.5 h1:6A+hf3pEti8hKqkU/yBlj0Zn7JwOSGFhrcYW5h1rRkA=
 github.com/eoscanada/eos-go v0.8.5/go.mod h1:RKrm2XzZEZWxSMTRqH5QOyJ1fb/qKEjs2ix1aQl0sk4=
 github.com/eoscanada/logging v0.1.0/go.mod h1:v5NCmx4tDyHEl+pgqobIiQtkJgDEEO/qshPqeTpm/Fc=
