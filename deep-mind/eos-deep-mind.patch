@@ -1,5 +1,5 @@
 diff --git a/libraries/chain/apply_context.cpp b/libraries/chain/apply_context.cpp
-index dc7687cf0..9079f5a80 100644
+index dc7687cf0..34eed4e84 100644
 --- a/libraries/chain/apply_context.cpp
 +++ b/libraries/chain/apply_context.cpp
 @@ -17,6 +17,10 @@ using boost::container::flat_set;
@@ -93,14 +93,14 @@ index dc7687cf0..9079f5a80 100644
 +                     subjective_block_production_exception,
 +                     "Replacing a deferred transaction is temporarily disabled." );
 +      }
++
++      if (eosio::chain::chain_config::deep_mind_enabled) {
++         event_id = ramEventId("${id}", ("id", ptr->id));
++      }
  
        uint64_t orig_trx_ram_bytes = config::billable_size_v<generated_transaction_object> + ptr->packed_trx.size();
        if( replace_deferred_activated ) {
 -         add_ram_usage( ptr->payer, -static_cast<int64_t>( orig_trx_ram_bytes ) );
-+         if (eosio::chain::chain_config::deep_mind_enabled) {
-+            event_id = ramEventId("${id}", ("id", ptr->id));
-+         }
-+
 +         add_ram_usage( ptr->payer, -static_cast<int64_t>( orig_trx_ram_bytes ), event_id.c_str(), "deferred_trx", "cancel", "deferred_trx_cancel" );
        } else {
 -         control.add_to_ram_correction( ptr->payer, orig_trx_ram_bytes );
