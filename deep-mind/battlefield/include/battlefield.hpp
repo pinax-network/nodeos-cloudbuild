@@ -49,6 +49,9 @@ class [[eosio::contract("battlefield")]] battlefield : public contract {
         void dbrem(name account);
 
         [[eosio::action]]
+        void dbremtwo(name account, uint64_t first, uint64_t second);
+
+        [[eosio::action]]
         void dtrx(
             name account,
             bool fail_now,

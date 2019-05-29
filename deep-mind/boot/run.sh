@@ -35,9 +35,9 @@ export EOSC_GLOBAL_API_URL=http://localhost:9898
 export EOSC_GLOBAL_VAULT_FILE="$ROOT/eosc-vault.json"
 
 echo "Setting eosio.code permissions on contract accounts (Account for commit d8fa7c0, which shields from mis-used authority)"
-eosc system updateauth battlefield1 active owner active_auth_battlefield1.yaml
-eosc system updateauth battlefield3 active owner active_auth_battlefield3.yaml
-eosc system updateauth notified2 active owner active_auth_notified2.yaml
+eosc system updateauth battlefield1 active owner "$ROOT"/active_auth_battlefield1.yaml
+eosc system updateauth battlefield3 active owner "$ROOT"/active_auth_battlefield3.yaml
+eosc system updateauth notified2 active owner "$ROOT"/active_auth_notified2.yaml
 sleep 0.6
 
 eosc transfer eosio battlefield1 100000 --memo "go habs go"

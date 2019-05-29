@@ -5,3 +5,7 @@ deep-mind-adhoc.log
 nodeos.log
 state/
 blocks/reversible/
+blocks-*/
+snapshot-*
+snapshots/
+snapshots-*/

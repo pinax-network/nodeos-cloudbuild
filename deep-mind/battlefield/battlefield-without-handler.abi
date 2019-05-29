@@ -68,6 +68,24 @@
             ]
         },
         {
+            "name": "dbremtwo",
+            "base": "",
+            "fields": [
+                {
+                    "name": "account",
+                    "type": "name"
+                },
+                {
+                    "name": "first",
+                    "type": "uint64"
+                },
+                {
+                    "name": "second",
+                    "type": "uint64"
+                }
+            ]
+        },
+        {
             "name": "dbupd",
             "base": "",
             "fields": [
@@ -222,6 +240,20 @@
                     "type": "bool"
                 }
             ]
+        },
+        {
+            "name": "test_row",
+            "base": "",
+            "fields": [
+                {
+                    "name": "account",
+                    "type": "name"
+                },
+                {
+                    "name": "paused",
+                    "type": "bool"
+                }
+            ]
         }
     ],
     "actions": [
@@ -243,6 +275,11 @@
         {
             "name": "dbrem",
             "type": "dbrem",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "dbremtwo",
+            "type": "dbremtwo",
             "ricardian_contract": ""
         },
         {
@@ -285,6 +322,13 @@
         {
             "name": "member",
             "type": "member_row",
+            "index_type": "i64",
+            "key_names": [],
+            "key_types": []
+        },
+        {
+            "name": "test",
+            "type": "test_row",
             "index_type": "i64",
             "key_names": [],
             "key_types": []

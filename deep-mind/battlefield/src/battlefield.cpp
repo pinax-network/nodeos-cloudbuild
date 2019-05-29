@@ -67,6 +67,15 @@ void battlefield::dbrem(name account) {
     index.erase(index.find("dbupd"_n.value));
 }
 
+void battlefield::dbremtwo(name account, uint64_t first, uint64_t second) {
+    require_auth(account);
+
+    members member_table(_self, _self.value);
+    auto index = member_table.template get_index<"byaccount"_n>();
+    index.erase(index.find(name(first).value));
+    index.erase(index.find(name(second).value));
+}
+
 void battlefield::dtrx(
     name account,
     bool fail_now,
