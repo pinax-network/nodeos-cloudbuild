@@ -12,7 +12,7 @@ index 3e1f2a7..47f86d6 100644
       src/crypto/_digest_common.cpp
 diff --git a/libraries/fc/include/fc/log/deep_mind_appender.hpp b/libraries/fc/include/fc/log/deep_mind_appender.hpp
 new file mode 100644
-index 0000000..111db65
+index 0000000..cdf21e5
 --- /dev/null
 +++ b/libraries/fc/include/fc/log/deep_mind_appender.hpp
 @@ -0,0 +1,26 @@
@@ -29,7 +29,7 @@ index 0000000..111db65
 +            deep_mind_appender( const variant& args );
 +            deep_mind_appender();
 +
-+            ~deep_mind_appender();
++            virtual ~deep_mind_appender();
 +            void initialize( boost::asio::io_service& io_service ) {
 +                 setbuf(stdout, NULL);
 +            }

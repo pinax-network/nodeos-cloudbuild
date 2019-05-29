@@ -541,7 +541,7 @@ index 35c77f832..846884be2 100644
        EOS_ASSERT( target_block_net_usage_pct <= config::percent_100, action_validate_exception,
                    "target block net usage percentage cannot exceed 100%" );
 diff --git a/libraries/chain/controller.cpp b/libraries/chain/controller.cpp
-index 2a438333c..5fccef3a3 100644
+index 2a438333c..6d3dbf0cd 100644
 --- a/libraries/chain/controller.cpp
 +++ b/libraries/chain/controller.cpp
 @@ -30,6 +30,9 @@
@@ -677,7 +677,18 @@ index 2a438333c..5fccef3a3 100644
        }
        trx_context.undo();
  
-@@ -1886,6 +1941,14 @@ struct controller_impl {
+@@ -1488,6 +1543,10 @@ struct controller_impl {
+          }
+ 
+          try {
++            if (eosio::chain::chain_config::deep_mind_enabled) {
++               dmlog("START_BLOCK");
++            }
++
+             auto onbtrx = std::make_shared<transaction_metadata>( get_on_block_transaction() );
+             onbtrx->implicit = true;
+             auto reset_in_trx_requiring_checks = fc::make_scoped_exit([old_value=in_trx_requiring_checks,this](){
+@@ -1886,6 +1945,14 @@ struct controller_impl {
           auto old_head = head;
           ilog("switching forks from ${current_head_id} (block number ${current_head_num}) to ${new_head_id} (block number ${new_head_num})",
                ("current_head_id", head->id)("current_head_num", head->block_num)("new_head_id", new_head->id)("new_head_num", new_head->block_num) );
@@ -692,7 +703,7 @@ index 2a438333c..5fccef3a3 100644
           auto branches = fork_db.fetch_branch_from( new_head->id, head->id );
  
           if( branches.second.size() > 0 ) {
-@@ -2198,6 +2261,14 @@ struct controller_impl {
+@@ -2198,6 +2265,14 @@ struct controller_impl {
           trx.expiration = self.pending_block_time() + fc::microseconds(999'999); // Round up to nearest second to avoid appearing expired
           trx.set_reference_block( self.head_block_id() );
        }
@@ -707,7 +718,7 @@ index 2a438333c..5fccef3a3 100644
        return trx;
     }
  
-@@ -2272,7 +2343,7 @@ chainbase::database& controller::mutable_db()const { return my->db; }
+@@ -2272,7 +2347,7 @@ chainbase::database& controller::mutable_db()const { return my->db; }
  
  const fork_database& controller::fork_db()const { return my->fork_db; }
  
@@ -716,7 +727,7 @@ index 2a438333c..5fccef3a3 100644
     const auto& pfs = my->protocol_features.get_protocol_feature_set();
     auto cur_time = pending_block_time();
  
-@@ -2369,6 +2440,16 @@ void controller::preactivate_feature( const digest_type& feature_digest ) {
+@@ -2369,6 +2444,16 @@ void controller::preactivate_feature( const digest_type& feature_digest ) {
                 ("digest", feature_digest)
     );
  
@@ -733,7 +744,7 @@ index 2a438333c..5fccef3a3 100644
     my->db.modify( pso, [&]( auto& ps ) {
        ps.preactivated_protocol_features.push_back( feature_digest );
     } );
-@@ -3012,17 +3093,31 @@ const flat_set<account_name> &controller::get_resource_greylist() const {
+@@ -3012,17 +3097,31 @@ const flat_set<account_name> &controller::get_resource_greylist() const {
  }
  
  
@@ -766,7 +777,7 @@ index 2a438333c..5fccef3a3 100644
  }
  
  bool controller::all_subjective_mitigations_disabled()const {
-@@ -3068,7 +3163,12 @@ void controller_impl::on_activation<builtin_protocol_feature_t::replace_deferred
+@@ -3068,7 +3167,12 @@ void controller_impl::on_activation<builtin_protocol_feature_t::replace_deferred
                 ("name", itr->name)("adjust", itr->ram_correction)("current", current_ram_usage) );
        }
  
