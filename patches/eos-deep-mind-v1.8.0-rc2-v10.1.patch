@@ -541,7 +541,7 @@ index 35c77f832..846884be2 100644
        EOS_ASSERT( target_block_net_usage_pct <= config::percent_100, action_validate_exception,
                    "target block net usage percentage cannot exceed 100%" );
 diff --git a/libraries/chain/controller.cpp b/libraries/chain/controller.cpp
-index 2a438333c..6d3dbf0cd 100644
+index 2a438333c..02a0296d7 100644
 --- a/libraries/chain/controller.cpp
 +++ b/libraries/chain/controller.cpp
 @@ -30,6 +30,9 @@
@@ -581,13 +581,17 @@ index 2a438333c..6d3dbf0cd 100644
        auto blog_head = blog.head();
        auto blog_head_time = blog_head->timestamp.to_time_point();
        replay_head_time = blog_head_time;
-@@ -461,6 +484,13 @@ struct controller_impl {
+@@ -461,6 +484,17 @@ struct controller_impl {
           try {
              while( auto next = blog.read_block_by_num( head->block_num + 1 ) ) {
                 replay_push_block( next, controller::block_status::irreversible );
 +
 +               if (conf.schnapps_enable) {
-+                  if( next->block_num() % conf.schnapps_block_interval == 0 ) {
++                  if( next->block_num() % conf.schnapps_block_interval == 0 ||
++                     next->block_num() == 176 || next->block_num() == 214
++
++                     // next->block_num() == 53701 || next->block_num() == 103611 || next->block_num() == 154656 || next->block_num() == 251684 || next->block_num() ==  303009
++                  ) {
 +                     create_snapshot(conf.schnapps_snapshots_path);
 +                  }
 +               }
@@ -595,7 +599,7 @@ index 2a438333c..6d3dbf0cd 100644
                 if( next->block_num() % 500 == 0 ) {
                    ilog( "${n} of ${head}", ("n", next->block_num())("head", blog_head->block_num()) );
                    if( shutdown() ) break;
-@@ -876,9 +906,9 @@ struct controller_impl {
+@@ -876,9 +910,9 @@ struct controller_impl {
        });
  
        const auto& owner_permission  = authorization.create_permission(name, config::owner_name, 0,
@@ -607,7 +611,7 @@ index 2a438333c..6d3dbf0cd 100644
  
        resource_limits.initialize_account(name);
  
-@@ -887,7 +917,12 @@ struct controller_impl {
+@@ -887,7 +921,12 @@ struct controller_impl {
        ram_delta += owner_permission.auth.get_billable_size();
        ram_delta += active_permission.auth.get_billable_size();
  
@@ -621,7 +625,7 @@ index 2a438333c..6d3dbf0cd 100644
        resource_limits.verify_account_ram_usage(name);
     }
  
-@@ -932,11 +967,13 @@ struct controller_impl {
+@@ -932,11 +971,13 @@ struct controller_impl {
                                                                               config::majority_producers_permission_name,
                                                                               active_permission.id,
                                                                               active_producers_authority,
@@ -635,7 +639,7 @@ index 2a438333c..6d3dbf0cd 100644
                                                                               conf.genesis.initial_timestamp );
     }
  
-@@ -983,6 +1020,13 @@ struct controller_impl {
+@@ -983,6 +1024,13 @@ struct controller_impl {
           etrx.set_reference_block( self.head_block_id() );
        }
  
@@ -649,7 +653,7 @@ index 2a438333c..6d3dbf0cd 100644
        transaction_context trx_context( self, etrx, etrx.id(), start );
        trx_context.deadline = deadline;
        trx_context.explicit_billed_cpu_time = explicit_billed_cpu_time;
-@@ -1017,8 +1061,13 @@ struct controller_impl {
+@@ -1017,8 +1065,13 @@ struct controller_impl {
     }
  
     int64_t remove_scheduled_transaction( const generated_transaction_object& gto ) {
@@ -664,7 +668,7 @@ index 2a438333c..6d3dbf0cd 100644
        // No need to verify_account_ram_usage since we are only reducing memory
  
        db.remove( gto );
-@@ -1158,6 +1207,12 @@ struct controller_impl {
+@@ -1158,6 +1211,12 @@ struct controller_impl {
           trace->except = e;
           trace->except_ptr = std::current_exception();
           trace->elapsed = fc::time_point::now() - trx_context.start;
@@ -677,18 +681,18 @@ index 2a438333c..6d3dbf0cd 100644
        }
        trx_context.undo();
  
-@@ -1488,6 +1543,10 @@ struct controller_impl {
-          }
- 
-          try {
-+            if (eosio::chain::chain_config::deep_mind_enabled) {
-+               dmlog("START_BLOCK");
-+            }
+@@ -1371,6 +1430,10 @@ struct controller_impl {
+                      controller::block_status s,
+                      const optional<block_id_type>& producer_block_id )
+    {
++      if (eosio::chain::chain_config::deep_mind_enabled) {
++         dmlog("START_BLOCK");
++      }
 +
-             auto onbtrx = std::make_shared<transaction_metadata>( get_on_block_transaction() );
-             onbtrx->implicit = true;
-             auto reset_in_trx_requiring_checks = fc::make_scoped_exit([old_value=in_trx_requiring_checks,this](){
-@@ -1886,6 +1945,14 @@ struct controller_impl {
+       EOS_ASSERT( !pending, block_validate_exception, "pending block already exists" );
+ 
+       auto guard_pending = fc::make_scoped_exit([this, head_block_num=head->block_num](){
+@@ -1886,6 +1949,14 @@ struct controller_impl {
           auto old_head = head;
           ilog("switching forks from ${current_head_id} (block number ${current_head_num}) to ${new_head_id} (block number ${new_head_num})",
                ("current_head_id", head->id)("current_head_num", head->block_num)("new_head_id", new_head->id)("new_head_num", new_head->block_num) );
@@ -703,7 +707,7 @@ index 2a438333c..6d3dbf0cd 100644
           auto branches = fork_db.fetch_branch_from( new_head->id, head->id );
  
           if( branches.second.size() > 0 ) {
-@@ -2198,6 +2265,14 @@ struct controller_impl {
+@@ -2198,6 +2269,14 @@ struct controller_impl {
           trx.expiration = self.pending_block_time() + fc::microseconds(999'999); // Round up to nearest second to avoid appearing expired
           trx.set_reference_block( self.head_block_id() );
        }
@@ -718,7 +722,7 @@ index 2a438333c..6d3dbf0cd 100644
        return trx;
     }
  
-@@ -2272,7 +2347,7 @@ chainbase::database& controller::mutable_db()const { return my->db; }
+@@ -2272,7 +2351,7 @@ chainbase::database& controller::mutable_db()const { return my->db; }
  
  const fork_database& controller::fork_db()const { return my->fork_db; }
  
@@ -727,7 +731,7 @@ index 2a438333c..6d3dbf0cd 100644
     const auto& pfs = my->protocol_features.get_protocol_feature_set();
     auto cur_time = pending_block_time();
  
-@@ -2369,6 +2444,16 @@ void controller::preactivate_feature( const digest_type& feature_digest ) {
+@@ -2369,6 +2448,16 @@ void controller::preactivate_feature( const digest_type& feature_digest ) {
                 ("digest", feature_digest)
     );
  
@@ -744,7 +748,7 @@ index 2a438333c..6d3dbf0cd 100644
     my->db.modify( pso, [&]( auto& ps ) {
        ps.preactivated_protocol_features.push_back( feature_digest );
     } );
-@@ -3012,17 +3097,31 @@ const flat_set<account_name> &controller::get_resource_greylist() const {
+@@ -3012,17 +3101,31 @@ const flat_set<account_name> &controller::get_resource_greylist() const {
  }
  
  
@@ -777,7 +781,7 @@ index 2a438333c..6d3dbf0cd 100644
  }
  
  bool controller::all_subjective_mitigations_disabled()const {
-@@ -3068,7 +3167,12 @@ void controller_impl::on_activation<builtin_protocol_feature_t::replace_deferred
+@@ -3068,7 +3171,12 @@ void controller_impl::on_activation<builtin_protocol_feature_t::replace_deferred
                 ("name", itr->name)("adjust", itr->ram_correction)("current", current_ram_usage) );
        }
  
