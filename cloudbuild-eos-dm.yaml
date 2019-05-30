@@ -3,7 +3,7 @@ substitutions:
   _TAG: v1.8.0-rc2
   # Check available tags via `gcr.io/${PROJECT_ID}/eosio-buildenv` images
   _EOSIO_BUILDENV_TAG: v1.8.0-rc2
-  _PATCHES: "eos-deep-mind-v1.8.0-rc2-v10.1.patch eos-deep-mind-logging-v1.8.0-rc2-v10.1.patch"
+  _PATCHES: "eos-deep-mind-v1.8.0-rc2-v10.1.patch eos-deep-mind-logging-v1.8.0-rc2-v10.1.patch github.com-eosio-eos-91c7912b62eabbf0d42bebf6ecdbba009d15f5f9"
 
 steps:
 - id: docker-build-full
