@@ -13,9 +13,11 @@ RUN git clone -b $SRCTAG --depth 1 $REPOSITORY --recursive \
     && echo PATCHING... && for patch in $PATCHES; do echo APPLYING PATCH $patch; patch -p1 < /patches/$patch; done && echo PATCHED \
     && echo "$SRCTAG:$(git rev-parse HEAD)" > /etc/eosio-version \
     && echo $REPOSITORY ref $SRCTAG revision `git describe --always --long` > /etc/eosio-build-version \
-    && ./scripts/eosio_build.sh -y -s EOS -i "/" -P
+    && ./scripts/eosio_build.sh -y -s EOS -i "/" -P \
 
     ##
-    # Remove temporarly
-    #\
-    #&& ./scripts/eosio_install.sh
+    # Temporary sed fix for issue https://github.com/EOSIO/eos/issues/7627
+    #
+    && sed -i 's/-f \${BUILD_DIR}/! -f ${BUILD_DIR}/g' ./scripts/eosio_install.sh \
+
+    && ./scripts/eosio_install.sh
