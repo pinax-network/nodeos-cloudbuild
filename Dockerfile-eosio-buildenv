@@ -1,6 +1,6 @@
 FROM ubuntu:18.04 as builder
 
-ARG SRCTAG=v1.8.0-rc2
+ARG SRCTAG=v1.8.1
 ARG REPOSITORY=https://github.com/eosio/eos.git
 
 # In a separate layer to improve potential re-use
