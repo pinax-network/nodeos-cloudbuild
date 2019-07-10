@@ -20,7 +20,7 @@ RUN git clone -b $SRCTAG --depth 1 $REPOSITORY --recursive \
     # Needs to be re-checked when build environment is re-built to ensure the sed replacement still
     # happens at the right location.
     #
-    && sed -i 's/cd \$BUILD_DIR/echo "Done"; exit 0/g' ./scripts/eosio_build.sh \
+    && sed -i 's/execute cd \$BUILD_DIR/echo "Done"; exit 0/g' ./scripts/eosio_build.sh \
     ##
     # Performing actual installation of dependencies
     #
