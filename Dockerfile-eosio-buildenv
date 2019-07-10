@@ -27,13 +27,13 @@ RUN git clone -b $SRCTAG --depth 1 $REPOSITORY --recursive \
     # Performing actual installation of dependencies
     #
     && echo "Installing the actual build dependencies..." \
-    && ./scripts/eosio_build.sh -y -i "/" -P \
+    && ./scripts/eosio_build.sh -y -i "/opt/eosio" -P \
 
     ##
     # Clean up of unnecessary files
     #
     && echo "Performing clean up of unnecessary files..." \
     && rm -rf /eos \
-    && rm -rf /src/clang8 /src/llvm /src/cmake-3.13.2 \
-    && cd /src/boost_1_70_0 && rm -rf boost doc libs status more tools \
+    && rm -rf /opt/eosio/src/clang8 /opt/eosio/src/llvm /opt/eosio/src/cmake-3.13.2 \
+    && cd /opt/eosio/src/boost_1_70_0 && rm -rf boost doc libs status more tools \
     && rm -rf /var/lib/apt/lists/*
