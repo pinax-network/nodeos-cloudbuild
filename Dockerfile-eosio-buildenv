@@ -25,7 +25,7 @@ RUN git clone -b $SRCTAG --depth 1 $REPOSITORY --recursive \
     # Performing actual installation of dependencies
     #
     && echo "Installing the actual build dependencies..." \
-    && ./scripts/eosio_build.sh -y -f -p "" -P \
+    && ./scripts/eosio_build.sh -y -i "" -P \
     ##
     # Clean up of unnecessary files
     #

@@ -1,9 +1,8 @@
 ### commit and push those values in !
 substitutions:
-  _TAG: v1.8.0-rc2
+  _TAG: v1.8.1
   # Check available tags via `gcr.io/${PROJECT_ID}/eosio-buildenv` images
   _EOSIO_BUILDENV_TAG: v1.8.0-rc2
-  _PATCHES: "github.com-eosio-eos-91c7912b62eabbf0d42bebf6ecdbba009d15f5f9.patch"
 
 steps:
 - id: docker-eos-full
