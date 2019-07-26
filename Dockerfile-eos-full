@@ -20,4 +20,4 @@ RUN git clone -b $SRCTAG --depth 1 $REPOSITORY --recursive \
     #
     && sed 's/-f \${BUILD_DIR}/! -f ${BUILD_DIR}/g' ./scripts/eosio_install.sh > /tmp/eosio_install.sh \
 
-    && /tmp/eosio_install.sh
+    && /bin/bash /tmp/eosio_install.sh
