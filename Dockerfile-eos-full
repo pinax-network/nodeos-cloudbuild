@@ -18,6 +18,6 @@ RUN git clone -b $SRCTAG --depth 1 $REPOSITORY --recursive \
     ##
     # Temporary sed fix for issue https://github.com/EOSIO/eos/issues/7627
     #
-    && sed -i 's/-f \${BUILD_DIR}/! -f ${BUILD_DIR}/g' ./scripts/eosio_install.sh \
+    && sed 's/-f \${BUILD_DIR}/! -f ${BUILD_DIR}/g' ./scripts/eosio_install.sh > /tmp/eosio_install.sh \
 
-    && ./scripts/eosio_install.sh
+    && /tmp/eosio_install.sh
