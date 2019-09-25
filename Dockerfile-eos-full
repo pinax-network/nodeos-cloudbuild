@@ -14,10 +14,4 @@ RUN git clone -b $SRCTAG --depth 1 $REPOSITORY --recursive \
     && echo "$SRCTAG:$(git rev-parse HEAD)" > /etc/eosio-version \
     && echo $REPOSITORY ref $SRCTAG revision `git describe --always --long` > /etc/eosio-build-version \
     && ./scripts/eosio_build.sh -y -s EOS -i "/opt/eosio/" -P \
-
-    ##
-    # Temporary sed fix for issue https://github.com/EOSIO/eos/issues/7627
-    #
-    && sed 's/-f \${BUILD_DIR}/! -f ${BUILD_DIR}/g' ./scripts/eosio_install.sh > /tmp/eosio_install.sh \
-
     && /bin/bash /tmp/eosio_install.sh
