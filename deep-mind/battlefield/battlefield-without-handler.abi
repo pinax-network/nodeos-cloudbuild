@@ -240,20 +240,6 @@
                     "type": "bool"
                 }
             ]
-        },
-        {
-            "name": "test_row",
-            "base": "",
-            "fields": [
-                {
-                    "name": "account",
-                    "type": "name"
-                },
-                {
-                    "name": "paused",
-                    "type": "bool"
-                }
-            ]
         }
     ],
     "actions": [
@@ -322,13 +308,6 @@
         {
             "name": "member",
             "type": "member_row",
-            "index_type": "i64",
-            "key_names": [],
-            "key_types": []
-        },
-        {
-            "name": "test",
-            "type": "test_row",
             "index_type": "i64",
             "key_names": [],
             "key_types": []
