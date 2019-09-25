@@ -14,4 +14,4 @@ RUN git clone -b $SRCTAG --depth 1 $REPOSITORY --recursive \
     && echo "$SRCTAG:$(git rev-parse HEAD)" > /etc/eosio-version \
     && echo $REPOSITORY ref $SRCTAG revision `git describe --always --long` > /etc/eosio-build-version \
     && ./scripts/eosio_build.sh -y -s EOS -i "/opt/eosio/" -P \
-    && /bin/bash /tmp/eosio_install.sh
+    && ./scripts/eosio_install.sh
