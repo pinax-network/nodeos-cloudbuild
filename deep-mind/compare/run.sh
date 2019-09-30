@@ -67,10 +67,10 @@ REFERENCE_FILE="$REFERENCE_FILE_PATTERN.log"
 DIFF_FILE="$ROOT/diff.patch"
 
 sed -i.bak -e 's/,"elapsed":[0-9]*,"/,"elapsed":0,"/g' "$OUTPUT_FILE"
-sed -i.bak -e 's/"thread_name":"[^"]*","timestamp":"[^"]*"}/"thread_name":"thread-0","timestamp":"9999-99-99T99:99:99.999"}/g' "$OUTPUT_FILE"
+sed -i.bak -e 's/"thread_name":"[^"]*","timestamp":"[^"]*"}/"thread_name":"thread-0","timestamp":"3333-12-31T00:01:02.345"}/g' "$OUTPUT_FILE"
 sed -i.bak -e 's/,"line":[0-9]*,"/,"line":0,"/g' "$OUTPUT_FILE"
 sed -i.bak -e 's/\([,{]\)"last_ordinal":[0-9]*,"/\1"last_ordinal":0,"/g' "$OUTPUT_FILE"
-sed -i.bak -e 's/\([,{]\)"last_updated":"[^"]*","/\1"last_updated":"9999-99-99T99:99:99.999","/g' "$OUTPUT_FILE"
+sed -i.bak -e 's/\([,{]\)"last_updated":"[^"]*","/\1"last_updated":"3333-12-31T00:01:02.345","/g' "$OUTPUT_FILE"
 rm -rf "$OUTPUT_FILE.bak"
 
 set +e

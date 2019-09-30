@@ -8,7 +8,10 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/eoscanada/bstream/hlog"
+	"github.com/eoscanada/bstream/codecs/deos"
+	pbdeos "github.com/eoscanada/bstream/pb/dfuse/codecs/deos"
+	"github.com/eoscanada/jsonpb"
+	"github.com/gogo/protobuf/proto"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -18,15 +21,17 @@ func TestReferenceAnalysis_AcceptedBlocks(t *testing.T) {
 	require.NoError(t, err)
 	defer f.Close()
 
-	enc := json.NewEncoder(f)
+	marshaler := jsonpb.Marshaler{}
 
 	for _, block := range readAllBlocks(t, "output.log") {
+		line, err := marshaler.MarshalToString(block)
 		require.NoError(t, err)
-		enc.Encode(block)
+
+		f.Write([]byte(line + "\n"))
 	}
 	f.Close()
 
-	assertJsonlContentEqual(t, "reference.jsonl", "output.jsonl")
+	assertJsonContentEqual(t, "reference.jsonl", "output.jsonl")
 }
 
 func TestReferenceAnalysis(t *testing.T) {
@@ -44,22 +49,32 @@ func TestReferenceAnalysis(t *testing.T) {
 func TestRamTraces_RunningUpBalanceChecks(t *testing.T) {
 	payerToBalanceMap := map[string]int64{}
 	for _, block := range readAllBlocks(t, "output.log") {
-		for _, ramOp := range getOrderedRAMOps(block) {
-			payer, delta, usage := ramOp.Payer, ramOp.Delta, int64(ramOp.Usage)
-			previousBalance, present := payerToBalanceMap[payer]
+		for _, trxTrace := range block.TransactionTraces {
+			for _, ramOp := range trxTrace.RamOps {
+				payer, delta, usage := ramOp.Payer, ramOp.Delta, int64(ramOp.Usage)
+				previousBalance, present := payerToBalanceMap[payer]
 
-			if !present {
-				assert.Equal(t, delta, usage, "For new account, usage & delta should the same since just created")
-			} else {
-				assert.Equal(t, previousBalance+delta, usage, "Previous balance + delta should equal new usage")
+				if !present {
+					assert.Equal(t, delta, usage, "For new account, usage & delta should the same since just created (%s)", protoToJSON(t, ramOp))
+				} else {
+					assert.Equal(t, previousBalance+delta, usage, "Previous balance + delta should equal new usage (%s)", protoToJSON(t, ramOp))
+				}
+
+				payerToBalanceMap[payer] = usage
 			}
-
-			payerToBalanceMap[payer] = usage
 		}
 	}
 }
 
-func assertJsonlContentEqual(t *testing.T, expectedFile string, actualFile string) {
+func protoToJSON(t *testing.T, message proto.Message) string {
+	marshaler := jsonpb.Marshaler{}
+	content, err := marshaler.MarshalToString(message)
+	require.NoError(t, err)
+
+	return content
+}
+
+func assertJsonContentEqual(t *testing.T, expectedFile string, actualFile string) {
 	expected, err := ioutil.ReadFile(expectedFile)
 	require.NoError(t, err)
 	actual, err := ioutil.ReadFile(actualFile)
@@ -79,151 +94,122 @@ func assertJsonlContentEqual(t *testing.T, expectedFile string, actualFile strin
 	assert.Equal(t, len(expectedLines), len(actualLines), "lines length differs")
 }
 
-func readAllBlocks(t *testing.T, nodeosLogFile string) []*hlog.Block {
-	blocks := []*hlog.Block{}
+func readAllBlocks(t *testing.T, nodeosLogFile string) []*pbdeos.Block {
+	blocks := []*pbdeos.Block{}
 
-	reader, err := hlog.NewFileConsoleReader(nodeosLogFile)
+	file, err := os.Open(nodeosLogFile)
+	require.NoError(t, err)
+	defer file.Close()
+
+	reader, err := deos.NewConsoleReader(file)
 	require.NoError(t, err)
 	defer reader.Close()
 
 	for {
 		el, err := reader.Read()
+		if el != nil && el.(*pbdeos.Block) != nil {
+			block, ok := el.(*pbdeos.Block)
+			require.True(t, ok, "Type conversion should have been correct")
+
+			blocks = append(blocks, block)
+		}
+
 		if err == io.EOF {
 			break
 		}
 
 		require.NoError(t, err)
-
-		block, ok := el.(*hlog.Block)
-		require.True(t, ok, "Type conversion should have been correct")
-
-		blocks = append(blocks, block)
 	}
 
 	return blocks
 }
 
-func computeDeepMindStats(blocks []*hlog.Block) *ReferenceStats {
+func computeDeepMindStats(blocks []*pbdeos.Block) *ReferenceStats {
 	stats := &ReferenceStats{}
 	for _, block := range blocks {
-		stats.TransactionCount += int64(len(block.AllTransactionTraces()))
+		stats.TransactionOpCount += len(block.TrxOps)
+		stats.RLimitOpCount += len(block.RlimitOps)
 
-		adjustDeepMindCreationTreeStats(block, stats)
-		adjustDeepMindDBOpsStats(block, stats)
-		adjustDeepMindDTrxOpsStats(block, stats)
-		adjustDeepMindFeatureOpsStats(block, stats)
-		adjustDeepMindPermOpsStats(block, stats)
-		adjustDeepMindRAMOpsStats(block, stats)
-		adjustDeepMindRAMCorrectionOpsStats(block, stats)
-		adjustDeepMindRLimitOpsStats(block, stats)
-		adjustDeepMindTableOpsStats(block, stats)
+		for _, transactionTrace := range block.TransactionTraces {
+			stats.TransactionCount++
+
+			adjustDeepMindCreationTreeStats(transactionTrace, stats)
+			adjustDeepMindDBOpsStats(transactionTrace, stats)
+			adjustDeepMindDTrxOpsStats(transactionTrace, stats)
+			adjustDeepMindFeatureOpsStats(transactionTrace, stats)
+			adjustDeepMindPermOpsStats(transactionTrace, stats)
+			adjustDeepMindRAMOpsStats(transactionTrace, stats)
+			adjustDeepMindRAMCorrectionOpsStats(transactionTrace, stats)
+			adjustDeepMindRLimitOpsStats(transactionTrace, stats)
+			adjustDeepMindTableOpsStats(transactionTrace, stats)
+		}
 	}
 
 	return stats
 }
 
-func adjustDeepMindCreationTreeStats(block *hlog.Block, stats *ReferenceStats) {
-	for _, creationTree := range block.CreationTree {
-		for range creationTree {
-			stats.CreationTreeNodeCount++
+func adjustDeepMindCreationTreeStats(trxTrace *pbdeos.TransactionTrace, stats *ReferenceStats) {
+	stats.CreationTreeNodeCount += len(trxTrace.CreationTree)
+}
+
+func adjustDeepMindDBOpsStats(trxTrace *pbdeos.TransactionTrace, stats *ReferenceStats) {
+	for _, op := range trxTrace.DbOps {
+		if strings.Contains(op.NewPayer, "battlefield") || strings.Contains(op.OldPayer, "battlefield") {
+			stats.DBOpCount++
 		}
 	}
 }
 
-func adjustDeepMindDBOpsStats(block *hlog.Block, stats *ReferenceStats) {
-	for _, ops := range block.DBOps {
-		for _, op := range ops {
-			if strings.Contains(op.NewPayer, "battlefield") || strings.Contains(op.OldPayer, "battlefield") {
-				stats.DBOpCount++
-			}
+func adjustDeepMindDTrxOpsStats(trxTrace *pbdeos.TransactionTrace, stats *ReferenceStats) {
+	for _, op := range trxTrace.DtrxOps {
+		if strings.Contains(op.Payer, "battlefield") {
+			stats.DTrxOpCount++
 		}
 	}
 }
 
-func adjustDeepMindDTrxOpsStats(block *hlog.Block, stats *ReferenceStats) {
-	for _, ops := range block.DTrxOps {
-		for _, op := range ops {
-			if strings.Contains(op.Payer, "battlefield") {
-				stats.DTrxOpCount++
-			}
+func adjustDeepMindFeatureOpsStats(trxTrace *pbdeos.TransactionTrace, stats *ReferenceStats) {
+	stats.FeatureOpCount += len(trxTrace.FeatureOps)
+}
+
+func adjustDeepMindPermOpsStats(trxTrace *pbdeos.TransactionTrace, stats *ReferenceStats) {
+	stats.PermOpCount += len(trxTrace.PermOps)
+}
+
+func adjustDeepMindRAMOpsStats(trxTrace *pbdeos.TransactionTrace, stats *ReferenceStats) {
+	for _, op := range trxTrace.RamOps {
+		if strings.Contains(op.Payer, "battlefield") {
+			stats.RAMOpCount++
 		}
 	}
 }
 
-func adjustDeepMindFeatureOpsStats(block *hlog.Block, stats *ReferenceStats) {
-	for _, ops := range block.FeatureOps {
-		for range ops {
-			stats.FeatureOpCount++
+func adjustDeepMindRAMCorrectionOpsStats(trxTrace *pbdeos.TransactionTrace, stats *ReferenceStats) {
+	for _, op := range trxTrace.RamCorrectionOps {
+		if strings.Contains(op.Payer, "battlefield") {
+			stats.RAMCorrectionOpCount++
 		}
 	}
 }
 
-func adjustDeepMindPermOpsStats(block *hlog.Block, stats *ReferenceStats) {
-	for _, ops := range block.PermOps {
-		for range ops {
-			stats.PermOpCount++
-		}
-	}
+func adjustDeepMindRLimitOpsStats(trxTrace *pbdeos.TransactionTrace, stats *ReferenceStats) {
+	stats.RLimitOpCount += len(trxTrace.RlimitOps)
 }
 
-func adjustDeepMindRAMOpsStats(block *hlog.Block, stats *ReferenceStats) {
-	for _, ops := range block.RAMOps {
-		for _, op := range ops {
-			if strings.Contains(op.Payer, "battlefield") {
-				stats.RAMOpCount++
-			}
-		}
-	}
-}
-
-func adjustDeepMindRAMCorrectionOpsStats(block *hlog.Block, stats *ReferenceStats) {
-	for _, ops := range block.RAMCorrectionOps {
-		for _, op := range ops {
-			if strings.Contains(op.Payer, "battlefield") {
-				stats.RAMCorrectionOpCount++
-			}
-		}
-	}
-}
-
-func adjustDeepMindRLimitOpsStats(block *hlog.Block, stats *ReferenceStats) {
-	for _, ops := range block.RLimitOps {
-		for range ops {
-			stats.RLimitOpCount++
-		}
-	}
-}
-
-func adjustDeepMindTableOpsStats(block *hlog.Block, stats *ReferenceStats) {
-	for _, ops := range block.TableOps {
-		for range ops {
-			stats.TableOpCount++
-		}
-	}
-}
-
-func getOrderedRAMOps(block *hlog.Block) []*hlog.RAMOp {
-	ramOps := []*hlog.RAMOp{}
-	for _, transactionID := range getOrderedTransactionIDs(block) {
-		ramOps = append(ramOps, block.RAMOps[hlog.TransactionID(transactionID)]...)
-	}
-
-	return ramOps
-}
-
-func getOrderedTransactionIDs(block *hlog.Block) []string {
-	return block.TransactionIDs()
+func adjustDeepMindTableOpsStats(trxTrace *pbdeos.TransactionTrace, stats *ReferenceStats) {
+	stats.TableOpCount += len(trxTrace.TableOps)
 }
 
 type ReferenceStats = struct {
-	TransactionCount      int64
-	CreationTreeNodeCount int64
-	DBOpCount             int64
-	DTrxOpCount           int64
-	FeatureOpCount        int64
-	PermOpCount           int64
-	RAMOpCount            int64
-	RAMCorrectionOpCount  int64
-	RLimitOpCount         int64
-	TableOpCount          int64
+	TransactionCount      int
+	CreationTreeNodeCount int
+	DBOpCount             int
+	DTrxOpCount           int
+	FeatureOpCount        int
+	PermOpCount           int
+	RAMOpCount            int
+	RAMCorrectionOpCount  int
+	RLimitOpCount         int
+	TransactionOpCount    int
+	TableOpCount          int
 }

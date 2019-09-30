@@ -3,7 +3,7 @@ substitutions:
   _TAG: v1.8.4
   # Check available images with `gcloud container images list-tags gcr.io/eoscanada-shared-services/eosio-buildenv`
   _EOSIO_BUILDENV_TAG: v1.8.1
-  _PATCHES: "eos-deep-mind-v1.8.4-v10.1.patch eos-deep-mind-logging-v1.8.4-v10.1.patch"
+  _PATCHES: "eos-deep-mind-v1.8.4-v10.2.patch eos-deep-mind-logging-v1.8.4-v10.2.patch"
 
 steps:
 - id: docker-build-full

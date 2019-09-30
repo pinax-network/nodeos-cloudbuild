@@ -37,6 +37,7 @@ Test `capture:hlog` instrumentation
 -----------------------------------
 
 Run `go test -v` to produce archive logs `output.jsonl` out of the
-`output.log` console logs.
+`output.log` console logs. The archive log being the protobuf Blocks
+(pdeos) written as JSON via `jonspb` library.
 
 The test will compare the generated output to `reference.jsonl`.

@@ -95,18 +95,35 @@ echo ""
 echo "Waiting for the transaction to fail, yet attempt to write to storage"
 sleep 1.1
 
+# This TX will show a delay transaction (deferred) that succeeds
+eosc tx create --delay-sec=1 eosio.token transfer '{"from": "eosio", "to": "battlefield1", "quantity": "1.0000 EOS", "memo":"push delayed trx"}' -p eosio
+echo ""
+echo "Waiting for the transaction to fail, yet attempt to write to storage"
+sleep 1.1
+
 # This is to see how the RAM_USAGE behaves, when a deferred hard_fails. Does it refund the deferred_trx_remove ? What about the other RAM tweaks? Any one them saved?
 eosc tx create battlefield1 dbinstwo '{"account": "battlefield1", "first": 200, "second": 201}' -p battlefield1
 sleep 0.6
 
 echo ""
-echo -n "Create a delayed and cancel it with 'eosio:canceldelay'"
+echo -n "Create a delayed and cancel it (in same block) with 'eosio:canceldelay'"
 eosc tx create --delay-sec=3600 battlefield1 dbins '{"account": "battlefield1"}' -p battlefield1 --write-transaction /tmp/delayed.json
 ID=`eosc tx id /tmp/delayed.json`
 eosc tx push /tmp/delayed.json
 eosc tx cancel battlefield1 $ID
 rm /tmp/delayed.json || true
 
+sleep 0.6
+
+echo ""
+echo -n "Create a delayed and cancel it (in different block) with 'eosio:canceldelay'"
+eosc tx create --delay-sec=3600 battlefield1 dbins '{"account": "battlefield1"}' -p battlefield1 --write-transaction /tmp/delayed.json
+ID=`eosc tx id /tmp/delayed.json`
+eosc tx push /tmp/delayed.json
+sleep 1.1
+
+eosc tx cancel battlefield1 $ID
+rm /tmp/delayed.json || true
 sleep 0.6
 
 echo ""

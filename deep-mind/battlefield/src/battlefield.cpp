@@ -1,19 +1,20 @@
 #include "battlefield.hpp"
 
-void battlefield::dbins(name account) {
+void battlefield::dbins(name account)
+{
     require_auth(account);
 
     print("dbins ran and you're authenticated");
 
     members member_table(_self, _self.value);
-    member_table.emplace(account, [&](auto& row) {
+    member_table.emplace(account, [&](auto &row) {
         row.id = 1;
         row.account = "dbops1"_n;
         row.memo = "inserted billed to calling account";
         row.created_at = time_point_sec(current_time_point());
     });
 
-    member_table.emplace(_self, [&](auto& row) {
+    member_table.emplace(_self, [&](auto &row) {
         row.id = 2;
         row.account = "dbops2"_n;
         row.memo = "inserted billed to self";
@@ -21,18 +22,19 @@ void battlefield::dbins(name account) {
     });
 }
 
-void battlefield::dbinstwo(name account, uint64_t first, uint64_t second) {
+void battlefield::dbinstwo(name account, uint64_t first, uint64_t second)
+{
     require_auth(account);
 
     members member_table(_self, _self.value);
-    member_table.emplace(account, [&](auto& row) {
+    member_table.emplace(account, [&](auto &row) {
         row.id = first;
         row.account = name(first);
         row.memo = "inserted billed to calling account";
         row.created_at = time_point_sec(current_time_point());
     });
 
-    member_table.emplace(_self, [&](auto& row) {
+    member_table.emplace(_self, [&](auto &row) {
         row.id = second;
         row.account = name(second);
         row.memo = "inserted billed to self";
@@ -40,7 +42,8 @@ void battlefield::dbinstwo(name account, uint64_t first, uint64_t second) {
     });
 }
 
-void battlefield::dbupd(name account) {
+void battlefield::dbupd(name account)
+{
     require_auth(account);
 
     members member_table(_self, _self.value);
@@ -48,17 +51,18 @@ void battlefield::dbupd(name account) {
     auto itr1 = index.find("dbops1"_n.value);
     auto itr2 = index.find("dbops2"_n.value);
 
-    index.modify(itr1, _self, [&](auto& row) {
+    index.modify(itr1, _self, [&](auto &row) {
         row.memo = "updated row 1";
     });
 
-    index.modify(itr2, account, [&](auto& row) {
+    index.modify(itr2, account, [&](auto &row) {
         row.account = "dbupd"_n;
         row.memo = "updated row 2";
     });
 }
 
-void battlefield::dbrem(name account) {
+void battlefield::dbrem(name account)
+{
     require_auth(account);
 
     members member_table(_self, _self.value);
@@ -67,7 +71,8 @@ void battlefield::dbrem(name account) {
     index.erase(index.find("dbupd"_n.value));
 }
 
-void battlefield::dbremtwo(name account, uint64_t first, uint64_t second) {
+void battlefield::dbremtwo(name account, uint64_t first, uint64_t second)
+{
     require_auth(account);
 
     members member_table(_self, _self.value);
@@ -82,8 +87,8 @@ void battlefield::dtrx(
     bool fail_later,
     bool fail_later_nested,
     uint32_t delay_sec,
-    string nonce
-) {
+    string nonce)
+{
     require_auth(account);
 
     eosio::transaction deferred;
@@ -92,52 +97,63 @@ void battlefield::dtrx(
         permission_level{_self, "active"_n},
         _self,
         "dtrxexec"_n,
-        std::make_tuple(account, fail_later, fail_later_nested, nonce)
-    );
+        std::make_tuple(account, fail_later, fail_later_nested, nonce));
     deferred.delay_sec = delay_sec;
     deferred.send(sender_id, account, true);
 
     check(!fail_now, "forced fail as requested by action parameters");
 }
 
-void battlefield::dtrxcancel(name account) {
+void battlefield::dtrxcancel(name account)
+{
     require_auth(account);
 
     uint128_t sender_id = (uint128_t(0x1122334455667788) << 64) | uint128_t(0x1122334455667788);
     cancel_deferred(sender_id);
 }
 
-void battlefield::dtrxexec(name account, bool fail, bool failNested, std::string nonce) {
-  require_auth(account);
-  check(!fail, "dtrxexec instructed to fail");
+void battlefield::dtrxexec(name account, bool fail, bool failNested, std::string nonce)
+{
+    require_auth(account);
+    check(!fail, "dtrxexec instructed to fail");
 
-  // FIXME: Unable to use `nestdtrxexec_action` due to https://github.com/EOSIO/eosio.cdt/issues/519
-  eosio::action nested(
-      std::vector<permission_level>({ permission_level(_self, "active"_n) }),
-      account,
-      "nestdtrxexec"_n,
-      std::make_tuple(failNested)
-  );
-  nested.send();
+    // FIXME: Unable to use `nestdtrxexec_action` due to https://github.com/EOSIO/eosio.cdt/issues/519
+    eosio::action nested(
+        std::vector<permission_level>({permission_level(_self, "active"_n)}),
+        account,
+        "nestdtrxexec"_n,
+        std::make_tuple(failNested));
+    nested.send();
 }
 
-void battlefield::nestdtrxexec(bool fail) {
-  print("Nested inline within dtrxexec");
+void battlefield::nestdtrxexec(bool fail)
+{
+    print("Nested inline within dtrxexec");
 
-  check(!fail, "dtrxexec instructed to fail");
+    check(!fail, "dtrxexec instructed to fail");
 }
 
 #if WITH_ONERROR_HANDLER == 1
 // Must match signature of dtrxexec above
-struct dtrxexec_data {
+struct dtrxexec_data
+{
     name account;
     bool fail;
     bool failNested;
     std::string nonce;
 };
 
-void battlefield::onerror(eosio::onerror data) {
+void battlefield::onerror(eosio::onerror data)
+{
     print("Called on error handler");
+
+    members member_table(_self, _self.value);
+    member_table.emplace(_self, [&](auto &row) {
+        row.id = member_table.available_primary_key();
+        row.account = "onerror"_n;
+        row.memo = "from onerror handler";
+        row.created_at = time_point_sec(current_time_point());
+    });
 
     eosio::transaction trx = data.unpack_sent_trx();
     eosio::action action = trx.actions[0];
@@ -154,7 +170,8 @@ void battlefield::onerror(eosio::onerror data) {
 }
 #endif
 
-void battlefield::creaorder(name n1, name n2, name n3, name n4, name n5) {
+void battlefield::creaorder(name n1, name n2, name n3, name n4, name n5)
+{
     require_recipient(n1);
 
     inlinedeep_action i2(_first_receiver, {_self, "active"_n});
@@ -166,10 +183,12 @@ void battlefield::creaorder(name n1, name n2, name n3, name n4, name n5) {
     c2.send_context_free();
 }
 
-void battlefield::on_creaorder(name n1, name n2, name n3, name n4, name n5) {
+void battlefield::on_creaorder(name n1, name n2, name n3, name n4, name n5)
+{
     // TODO: Would a pre_dispatch hook be preferable?
     // We are actually dealing with a notifiction on creaorder, let's allow it only for n2
-    if (_self != n2) {
+    if (_self != n2)
+    {
         return;
     }
 
@@ -183,7 +202,8 @@ void battlefield::on_creaorder(name n1, name n2, name n3, name n4, name n5) {
     require_recipient(n3);
 }
 
-void battlefield::inlineempty(string tag, bool fail) {
+void battlefield::inlineempty(string tag, bool fail)
+{
     check(!fail, "inlineempty instructed to fail");
 }
 
@@ -193,8 +213,8 @@ void battlefield::inlinedeep(
     name n5,
     string nestedInlineTag,
     bool nestedInlineFail,
-    string nestedCfaInlineTag
-) {
+    string nestedCfaInlineTag)
+{
     require_recipient(n4);
     require_recipient(n5);
 
