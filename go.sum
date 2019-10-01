@@ -76,6 +76,10 @@ github.com/eoscanada/bstream v1.6.3-0.20190930194537-fed02ece4631 h1:e7cMlMZBtDb
 github.com/eoscanada/bstream v1.6.3-0.20190930194537-fed02ece4631/go.mod h1:dbmuSrB7FK2eB+gpkC+JXHp0TRabqH+uBS6qJBWzi04=
 github.com/eoscanada/bstream v1.6.3-0.20190930205208-28cbf9512d82 h1:javogBhc5/sMelRfNgR237Of8cMts40shWsuJEjeDE4=
 github.com/eoscanada/bstream v1.6.3-0.20190930205208-28cbf9512d82/go.mod h1:dbmuSrB7FK2eB+gpkC+JXHp0TRabqH+uBS6qJBWzi04=
+github.com/eoscanada/bstream v1.6.3-0.20191001174910-8c18dc2587e6 h1:kgm0XWj8QeLqaVFTjKluNvMlaeJgerY4p9YGzZRYcJo=
+github.com/eoscanada/bstream v1.6.3-0.20191001174910-8c18dc2587e6/go.mod h1:OWVedA1s8vA3zkIo8Cr3KBEhsEWiTHwPoGga1jzd86E=
+github.com/eoscanada/bstream v1.6.3-0.20191001175021-c9bd5e9f672b h1:VVkNO57LbXnz6UVmhyvUqNS4c/rLDl6ESylZy+u+FZg=
+github.com/eoscanada/bstream v1.6.3-0.20191001175021-c9bd5e9f672b/go.mod h1:OWVedA1s8vA3zkIo8Cr3KBEhsEWiTHwPoGga1jzd86E=
 github.com/eoscanada/dbin v0.0.3 h1:dfL+YePZ+5sk1ws+veZAz5hl9QRlAufVKKj8g/yTN4E=
 github.com/eoscanada/dbin v0.0.3/go.mod h1:ZP6Z/CLYWE09J0Z2/a4t0jPmqkLCGmFpvKFRiM8GMjg=
 github.com/eoscanada/dstore v0.0.1 h1:R0RFva+HDcEtiiEdJrrkoq/wMtOCVnCNnKYGH9Gon8o=
