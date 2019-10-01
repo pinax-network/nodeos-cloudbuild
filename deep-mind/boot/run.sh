@@ -80,12 +80,12 @@ sleep 1.1
 
 eosc tx create battlefield3 dtrx '{"account": "battlefield3", "fail_now": false, "fail_later": true, "fail_later_nested": false, "delay_sec": 1, "nonce": "1"}' -p battlefield3
 echo ""
-echo "Waiting for the transaction to fail (with onerror handler)..."
+echo "Waiting for the transaction to fail (with onerror handler that succeed)..."
 sleep 1.1
 
-eosc tx create battlefield3 dtrx '{"account": "battlefield3", "fail_now": false, "fail_later": false, "fail_later_nested": true, "delay_sec": 1, "nonce": "2"}' -p battlefield3
+eosc tx create battlefield3 dtrx '{"account": "battlefield3", "fail_now": false, "fail_later": true, "fail_later_nested": false, "delay_sec": 1, "nonce": "f"}' -p battlefield3
 echo ""
-echo "Waiting for the transaction to fail (with onerror handler)..."
+echo "Waiting for the transaction to fail (with onerror handler that failed)..."
 sleep 1.1
 
 eosc tx create battlefield1 dbinstwo '{"account": "battlefield1", "first": 100, "second": 101}' -p battlefield1

@@ -145,7 +145,7 @@ struct dtrxexec_data
 
 void battlefield::onerror(eosio::onerror data)
 {
-    print("Called on error handler");
+    print("Called on error handler\n");
 
     members member_table(_self, _self.value);
     member_table.emplace(_self, [&](auto &row) {
@@ -159,7 +159,16 @@ void battlefield::onerror(eosio::onerror data)
     eosio::action action = trx.actions[0];
 
     auto action_data = action.data_as<dtrxexec_data>();
-    print("Extracted", action_data.nonce);
+    print("Extracted ", action_data.nonce, " \n");
+
+    if (action_data.nonce == "f")
+    {
+        check(false, "onerror instructed to fail");
+    }
+    else
+    {
+        print("Data nonce was not f", "\n");
+    }
 
     // Let's re-use account passed to `dtrxexec` directly
     inlinedeep_action inline_deep(action_data.account, {_self, "active"_n});
