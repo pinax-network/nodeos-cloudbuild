@@ -5,7 +5,7 @@ FROM gcr.io/eoscanada-shared-services/eosio-buildenv:$EOSIO_BUILDENV_TAG as buil
 ARG REPOSITORY=https://github.com/eosio/eos.git
 ARG SRCTAG
 
-RUN && echo "Currently in '`pwd`', seeing '`ls -al`'" \
+RUN echo "Currently in '`pwd`', seeing '`ls -al`'" \
     && git clone -b $SRCTAG --depth 1 $REPOSITORY --recursive \
     && cd eos \
     && echo "$SRCTAG:$(git rev-parse HEAD)" > /etc/eosio-version \
