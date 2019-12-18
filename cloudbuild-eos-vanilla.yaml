@@ -5,6 +5,20 @@ substitutions:
   _TAG: v1.8.5
 
 steps:
+- id: eos-clone
+  name: gcr.io/cloud-builders/git
+  args: [
+    'clone',
+    '--branch=${_TAG}',
+    '--depth=1',
+    '--recursive',
+    'https://github.com/EOSIO/eos.git',
+    '/git',
+  ]
+  volumes:
+  - name: 'git'
+    path: '/git'
+
 - id: docker-eos-full
   name: gcr.io/cloud-builders/docker
   args: [
@@ -15,8 +29,12 @@ steps:
     '--cache-from', 'gcr.io/${PROJECT_ID}/eosio-eos-full:${_TAG}',
     '--build-arg', 'EOSIO_BUILDENV_TAG=${_EOSIO_BUILDENV_TAG}',
     '--build-arg', 'SRCTAG=${_TAG}',
-    '.'
+    '/git'
   ]
+  volumes:
+  - name: 'git'
+    path: '/git'
+
 - id: docker-eos-prod
   name: gcr.io/cloud-builders/docker
   args: [

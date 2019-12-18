@@ -2,13 +2,14 @@ ARG EOSIO_BUILDENV_TAG
 
 FROM gcr.io/eoscanada-shared-services/eosio-buildenv:$EOSIO_BUILDENV_TAG as builder
 
-ARG REPOSITORY=https://github.com/eosio/eos.git
 ARG SRCTAG
 
-RUN echo "Currently in '`pwd`', seeing '`ls -al`'" \
-    && git clone -b $SRCTAG --depth 1 $REPOSITORY --recursive \
-    && cd eos \
+# Copy the whole context, which was the actual repository to build, into `/git`.
+COPY ./ /git/
+WORKDIR /git
+
+RUN echo "Building $SRCTAG using $EOSIO_BUILDENV_TAG" \
     && echo "$SRCTAG:$(git rev-parse HEAD)" > /etc/eosio-version \
-    && echo $REPOSITORY ref $SRCTAG revision `git describe --always --long` > /etc/eosio-build-version \
+    && echo `git config --get remote.origin.url` ref $SRCTAG revision `git describe --always --long` > /etc/eosio-build-version \
     && ./scripts/eosio_build.sh -y -s EOS -i "/opt/eosio/" -P \
     && ./scripts/eosio_install.sh
