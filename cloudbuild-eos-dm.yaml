@@ -53,7 +53,25 @@ steps:
   volumes:
   - name: 'ssh'
     path: /root/.ssh
+  - name: 'git_home'
+    path: /root/.git
+
+- id: eos-dfuse-clone
+  name: gcr.io/cloud-builders/git
+  args: [
+    'clone',
+    '--branch=${_TAG}',
+    '--depth=1',
+    '--recursive',
+    '${_REPOSITORY}',
+    '/git',
+  ]
+  volumes:
   - name: 'git'
+    path: '/git'
+  - name: 'ssh'
+    path: /root/.ssh
+  - name: 'git_home'
     path: /root/.git
 
 - id: docker-build-full
@@ -65,15 +83,12 @@ steps:
     '-f', 'Dockerfile-eos-full',
     '--cache-from', 'gcr.io/${PROJECT_ID}/eosio-eos-full:${_TAG}',
     '--build-arg', 'EOSIO_BUILDENV_TAG=${_EOSIO_BUILDENV_TAG}',
-    '--build-arg', 'REPOSITORY=${_REPOSITORY}',
     '--build-arg', 'SRCTAG=${_TAG}',
-    '.'
+    '/git'
   ]
   volumes:
-  - name: 'ssh'
-    path: /root/.ssh
   - name: 'git'
-    path: /root/.git
+    path: '/git'
 
 - id: deep-mind-tests
   name: gcr.io/${PROJECT_ID}/eosio-eos-full:${_TAG}-${SHORT_SHA}
@@ -98,7 +113,7 @@ steps:
   volumes:
   - name: 'ssh'
     path: /root/.ssh
-  - name: 'git'
+  - name: 'git_home'
     path: /root/.git
 
 - id: docker-build-prod

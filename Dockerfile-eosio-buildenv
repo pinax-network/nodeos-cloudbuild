@@ -34,6 +34,6 @@ RUN git clone -b $SRCTAG --depth 1 $REPOSITORY --recursive \
     #
     && echo "Performing clean up of unnecessary files..." \
     && rm -rf /eos \
-    && rm -rf /opt/eosio/src/clang8 /opt/eosio/src/llvm /opt/eosio/src/cmake-3.13.2 \
-    && cd /opt/eosio/src/boost_1_70_0 && rm -rf boost doc libs status more tools \
+    # && rm -rf /opt/eosio/src/clang8 /opt/eosio/src/llvm /opt/eosio/src/cmake-3.13.2 \
+    # && cd /opt/eosio/src/boost_1_71_0 && rm -rf boost doc libs status more tools \
     && rm -rf /var/lib/apt/lists/*

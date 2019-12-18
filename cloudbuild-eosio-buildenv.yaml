@@ -1,5 +1,6 @@
 substitutions:
-  _TAG: v1.8.1
+  _TAG: v2.0.0
+  _PULL_TAG: v2.0.0-rc3
 
 steps:
 - id: docker-eosio-buildenv
@@ -10,7 +11,7 @@ steps:
     '-t', 'gcr.io/${PROJECT_ID}/eosio-buildenv:${_TAG}-${SHORT_SHA}',
     '-f', 'Dockerfile-eosio-buildenv',
     '--cache-from', 'gcr.io/${PROJECT_ID}/eosio-buildenv:${_TAG}',
-    '--build-arg', 'SRCTAG=${_TAG}',
+    '--build-arg', 'SRCTAG=${_PULL_TAG}',
     '.'
   ]
 
