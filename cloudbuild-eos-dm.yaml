@@ -3,7 +3,7 @@ substitutions:
   # Check available images with `gcloud container images list-tags gcr.io/eoscanada-shared-services/eosio-buildenv`
   _EOSIO_BUILDENV_TAG: v1.8.1
   _REPOSITORY: "git@github.com:eoscanada/eosio-eos-private.git"
-  _TAG: v1.8.8-dm-v10.2
+  _TAG: v1.8.8-dm-v10.3
 
 steps:
 # Download SSH encrypted private key and SSH known hosts file
