@@ -21,13 +21,8 @@ func TestReferenceAnalysis_AcceptedBlocks(t *testing.T) {
 	require.NoError(t, err)
 	defer f.Close()
 
-	marshaler := jsonpb.Marshaler{}
-
 	for _, block := range readAllBlocks(t, "output.log") {
-		line, err := marshaler.MarshalToString(block)
-		require.NoError(t, err)
-
-		f.Write([]byte(line + "\n"))
+		f.Write([]byte(protoToJSON(t, block) + "\n"))
 	}
 	f.Close()
 

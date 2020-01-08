@@ -114,6 +114,8 @@ void battlefield::dtrxcancel(name account)
 
 void battlefield::dtrxexec(name account, bool fail, bool failNested, std::string nonce)
 {
+    print("dtrxexec start console log, before failing");
+
     require_auth(account);
     check(!fail, "dtrxexec instructed to fail");
 
