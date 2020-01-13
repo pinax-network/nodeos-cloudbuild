@@ -62,7 +62,7 @@ steps:
   args: [
     'clone',
     '--branch=${_BRANCH}',
-    '--depth=1',
+    #    '--depth=1', # this prevents the 'describe' command from finding the tag
     '--recursive',
     '${_REPOSITORY}',
     '/git',
