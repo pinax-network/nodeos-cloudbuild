@@ -50,7 +50,7 @@ steps:
     Hostname github.com
     IdentityFile /root/.ssh/id_rsa
     EOF
-    git config --global --add url."git@github.com:".insteadOf "https://github.com/"
+    git config --global --add url."git@github.com/eoscanada:".insteadOf "https://github.com/eoscanada"
   volumes:
   - name: 'ssh'
     path: /root/.ssh
