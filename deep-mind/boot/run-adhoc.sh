@@ -4,60 +4,75 @@ set -e
 
 ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-EOS_BIN="$1"
-LOG_FILE=${LOG_FILE:-"$ROOT/deep-mind-adhoc.log"}
-NODEOS_FILE=${NODEOS_FILE:-"$ROOT/nodeos.log"}
-BIOS_BOOT_FILE=${BIOS_BOOT_FILE:-"$ROOT/bios-boot.log"}
+nodeos_pid=""
+current_dir=`pwd`
 
-if [[ ! -f $EOS_BIN ]]; then
+function cleanup {
+    if [[ $nodeos_pid != "" ]]; then
+      echo "Closing nodeos process"
+      kill -s TERM $nodeos_pid &> /dev/null || true
+    fi
+
+    cd $current_dir
+    exit 0
+}
+
+function main() {
+  eos_bin="$1"
+
+  if [[ ! -f $eos_bin ]]; then
     echo "The 'nodeos' binary received does not exist, check first provided argument."
     exit 1
-fi
+  fi
 
-rm -rf "$ROOT/blocks/" "$ROOT/state/"
+  # Trap exit signal and clean up
+  trap cleanup EXIT
 
-($EOS_BIN --data-dir="$ROOT" --config-dir="$ROOT" --genesis-json="$ROOT/genesis.json" 1> $LOG_FILE 2> $NODEOS_FILE) &
-PID=$!
+  pushd $ROOT &> /dev/null
 
-# Trap exit signal and closes all `nodeos` instances when exiting
-trap "kill -s TERM $PID || true" EXIT
+  deep_mind_log_file="./deep-mind-adhoc.dmlog"
+  nodeos_log_file="./nodeos.log"
+  eosc_boot_log_file="./eosc-boot.log"
 
-pushd $ROOT &> /dev/null
-echo "Booting $1 node with smart contracts ..."
-eos-bios boot bootseq.yaml --reuse-genesis --api-url http://localhost:9898
-mv output.log ${BIOS_BOOT_FILE}
-popd
+  rm -rf "$ROOT/blocks/" "$ROOT/state/"
 
-echo "Booting completed, launching test cases..."
+  ($eos_bin --data-dir="$ROOT" --config-dir="$ROOT" --genesis-json="$ROOT/genesis.json" 1> $deep_mind_log_file 2> $nodeos_log_file) &
+  nodeos_pid=$!
 
-export EOSC_GLOBAL_INSECURE_VAULT_PASSPHRASE=secure
-export EOSC_GLOBAL_API_URL=http://localhost:9898
-export EOSC_GLOBAL_VAULT_FILE="$ROOT/eosc-vault.json"
+  echo "Booting $1 node with smart contracts ..."
+  eosc boot bootseq.yaml --reuse-genesis --api-url http://localhost:9898 1> /dev/null
+  mv output.log ${eosc_boot_log_file}
+  popd 1> /dev/null
 
-echo -n "Setting eosio.code permissions on contract accounts (Account for commit d8fa7c0, which shields from mis-used authority)"
-eosc system updateauth battlefield1 active owner "$ROOT"/active_auth_battlefield1.yaml
-eosc system updateauth battlefield3 active owner "$ROOT"/active_auth_battlefield3.yaml
-eosc system updateauth notified2 active owner "$ROOT"/active_auth_notified2.yaml
-sleep 0.6
+  echo "Booting completed, launching test cases..."
 
-eosc tx create battlefield1 dbins '{"account": "battlefield1"}' -p battlefield1
-sleep 0.6
+  export EOSC_GLOBAL_INSECURE_VAULT_PASSPHRASE=secure
+  export EOSC_GLOBAL_API_URL=http://localhost:9898
+  export EOSC_GLOBAL_VAULT_FILE="$ROOT/eosc-vault.json"
 
-echo ""
-echo "Exiting in 1 sec"
-sleep 1
+  echo "Setting eosio.code permissions on contract accounts (Account for commit d8fa7c0, which shields from mis-used authority)"
+  eosc system updateauth battlefield1 active owner "$ROOT"/active_auth_battlefield1.yaml
+  eosc system updateauth battlefield3 active owner "$ROOT"/active_auth_battlefield3.yaml
+  eosc system updateauth notified2 active owner "$ROOT"/active_auth_notified2.yaml
+  sleep 0.6
 
-kill -s TERM $PID
-sleep 0.5
+  # Add your ad hoc transactions here
 
-# Print Log Locations
+  echo ""
+  echo "Exiting in 1 sec"
+  sleep 1
 
-set +ex
-echo ""
-echo "# Logs"
-echo ""
-echo "- Deep mind: ${LOG_FILE}"
-echo "- Nodeos: ${NODEOS_FILE}"
-echo "- EOS BIOS: ${BIOS_BOOT_FILE}"
-echo ""
+  if [[ $nodeos_pid != "" ]]; then
+    kill -s TERM $nodeos_pid &> /dev/null || true
+    sleep 0.5
+  fi
 
+  # Print Log Files
+  echo "Inspect log files"
+  echo " Deep Mind logs: cat $deep_mind_log_file"
+  echo " Nodeos logs: cat $nodeos_log_file"
+  echo " eosc boot logs: cat $eosc_boot_log_file"
+  echo ""
+}
+
+main $@

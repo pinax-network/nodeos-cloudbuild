@@ -3,40 +3,24 @@ keys:
 
 contents:
   - name: eosio.bios.abi
-    url: https://abourget.keybase.pub/eos-bios-mainnet-data/eosio.bios.abi
-    hash: b7314143acff25f700466824d23ce44d71e278400109c052b48dc51bb86e0290
-    comment: "~v1.0.2 from github.com/EOS-Mainnet/eos"
+    url: ./contracts/eosio.bios-1.0.2.abi
   - name: eosio.bios.wasm
-    url: https://abourget.keybase.pub/eos-bios-mainnet-data/eosio.bios.wasm
-    hash: 5e8e655a05b34e782467684d7148244404b591a6c1ec2687eacb268926a37e59
-    comment: "~v1.0.2 from github.com/EOS-Mainnet/eos"
+    url: ./contracts/eosio.bios-1.0.2.wasm
 
   - name: eosio.system.abi
-    url: https://abourget.keybase.pub/eos-bios-mainnet-data/eosio.system.abi
-    hash: d660fbe58c601588c765cd598a11116c5473c3cce52a08877b40e2e70364fa94
-    comment: "EOS-Mainnet/governance 7df7104d96b71c0878c95a53caa2704033f357b7."
+    url: ./contracts/eosio.system-1.0.2.abi
   - name: eosio.system.wasm
-    url: https://abourget.keybase.pub/eos-bios-mainnet-data/eosio.system.wasm
-    hash: 254247a18af399e237f47ea63e7b5970a8f9d6819150efe443d8e711895915ed
-    comment: "~v1.0.2 from github.com/EOS-Mainnet/eos"
+    url: ./contracts/eosio.system-1.0.2.wasm
 
   - name: eosio.msig.abi
-    url: https://abourget.keybase.pub/eos-bios-mainnet-data/eosio.msig.abi
-    hash: 20c608dbd1bb3674e5eee9498b3648bf39528158d91d35fc71628e6fbca8c390
-    comment: "~v1.0.2 from github.com/EOS-Mainnet/eos"
+    url: ./contracts/eosio.msig-1.0.2.abi
   - name: eosio.msig.wasm
-    url: https://abourget.keybase.pub/eos-bios-mainnet-data/eosio.msig.wasm
-    hash: 5cf017909547b2d69cee5f01c53fe90f3ab193c57108f81a17f0716a4c83f9c0
-    comment: "~v1.0.2 from github.com/EOS-Mainnet/eos"
+    url: ./contracts/eosio.msig-1.0.2.wasm
 
   - name: eosio.token.abi
-    url: https://abourget.keybase.pub/eos-bios-mainnet-data/eosio.token.abi
-    hash: 804533704bfa098d2399808a806cb37cc4256da3ce9b0d9a777b3ab21c4fe778
-    comment: "EOS-Mainnet/governance 7f05ea2134dc47617b2b799f5bed8cc2fa9c794e"
+    url: ./contracts/eosio.token-1.0.2.abi
   - name: eosio.token.wasm
-    url: https://abourget.keybase.pub/eos-bios-mainnet-data/eosio.token.wasm
-    hash: 3e0cf4172ab025f9fff5f1db11ee8a34d44779492e1d668ae1dc2d129e865348
-    comment: "~v1.0.2 from github.com/EOS-Mainnet/eos"
+    url: ./contracts/eosio.token-1.0.2.wasm
 
 ## Custom contracts
   - name: battlefield-with-handler.wasm
