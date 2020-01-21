@@ -25,11 +25,6 @@ function main() {
     exit 1
   fi
 
-  ## All this is manual currently, you first need to do `cd webauthn_signer && ./prepare.sh && yarn generate`
-  export WEBAUTHN_PUBLIC_KEY="PUB_WA_5hyixc7vkMbKiThWi1TnFtXw7HTDcHfjREj2SzxCtgw3jQGepa5T9VHEy1Tunjzzj"
-  # Until eosc supports PUB_WA_ keys, cleos is needed ...
-  cleos wallet unlock || true
-
   # Trap exit signal and clean up
   trap cleanup EXIT
 
@@ -54,7 +49,6 @@ function main() {
   export EOSC_GLOBAL_INSECURE_VAULT_PASSPHRASE=secure
   export EOSC_GLOBAL_API_URL=http://localhost:9898
   export EOSC_GLOBAL_VAULT_FILE="$ROOT/eosc-vault.json"
-
 
   echo "Setting eosio.code permissions on contract accounts (Account for commit d8fa7c0, which shields from mis-used authority)"
   eosc system updateauth battlefield1 active owner "$ROOT"/active_auth_battlefield1.yaml
@@ -172,86 +166,127 @@ function main() {
   eosc tx create --force-unique battlefield1 creaorder '{"n1": "notified1", "n2": "notified2", "n3": "notified3", "n4": "notified4", "n5": "notified5"}' -p battlefield1
   sleep 0.6
 
-  if [[ $SKIP_EOS_PROTOCOL_FEATURES == "" ]]; then
-    echo ""
-    echo "Available protocol features"
-    curl -s "$EOSC_GLOBAL_API_URL/v1/producer/get_supported_protocol_features" | jq -r '.[] | "- \(.specification[].value) (Digest \(.feature_digest))"'
+  #
+  ## Producer Schedule Change
+  #
 
-    echo ""
-    echo "Activating protocol features"
-    curl -s -X POST "$EOSC_GLOBAL_API_URL/v1/producer/schedule_protocol_feature_activations" -d '{"protocol_features_to_activate": ["0ec7e080177b2c02b278d5088611686b49d739925a92d9bfcacd7fc6b74053bd"]}' > /dev/null
-    sleep 1.2
+  echo ""
+  echo -n "Using eosio.bios contract temporarly to set producers"
+  eosc system setcontract eosio contracts/eosio.bios-1.5.2.wasm contracts/eosio.bios-1.5.2.abi
+  sleep 0.6
 
-    eosc system setcontract eosio contracts/eosio.system-1.7.0-rc1.wasm contracts/eosio.system-1.7.0-rc1.abi
-    sleep 0.6
+  echo ""
+  echo -n "Updating producers"
+  eosc tx create eosio setprods '{"schedule": [{"producer_name": "eosio2", "block_signing_key":"EOS5MHPYyhjBjnQZejzZHqHewPWhGTfQWSVTWYEhDmJu4SXkzgweP"}]}' -p eosio@active
+  sleep 1.8
 
-    # Those will triggers RAM correction operations to appears, we give higher sleep to produce 2 blocks here (updates happens on the following `eosio:onblock`)
-    echo ""
-    echo -n "Activate protocol feature (REPLACE_DEFERRED)"
-    eosc tx create eosio activate '{"feature_digest":"ef43112c6543b88db2283a2e077278c315ae2c84719a8b25f25cc88565fbea99"}' -p eosio@active
-    sleep 1.2
+  echo ""
+  echo -n "Returning eosio contract to standard eosio.system contract"
+  eosc system setcontract eosio contracts/eosio.system-1.5.2.wasm contracts/eosio.system-1.5.2.abi
+  sleep 0.6
 
-    echo ""
-    echo -n "Activate protocol feature (NO_DUPLICATE_DEFERRED_ID)"
-    eosc tx create eosio activate '{"feature_digest":"4a90c00d55454dc5b059055ca213579c6ea856967712a56017487886a4d4cc0f"}' -p eosio@active
-    sleep 0.6
+  #
+  ## Protocol Features
+  #
 
-    # EOSIO 2.0 protocol features (WEBAUTHN_KEY + WTMSIG_BLOCK_SIGNATURES)
-    echo ""
-    echo -n "Activate protocol feature (WEBAUTHN_KEY)"
-    eosc tx create eosio activate '{"feature_digest":"4fca8bd82bbd181e714e283f83e1b45d95ca5af40fb89ad3977b653c448f78c2"}' -p eosio@active
-    sleep 1.2
+  known_features=`curl -s "$EOSC_GLOBAL_API_URL/v1/producer/get_supported_protocol_features" | jq -cr '.[]'`
 
-    ## WebAuthN Generation
-    #
-    # The WebAuthN key generation involves a Browser. We have a quick Node.js server that
-    # perform the general logic of getting a WebAuthN public/private key pair and signed and
-    # hard-coded transaction for us.
-    #
-    # This requires first to have call the `yarn generate` key to generate a key (you will
-    # need your YubiKey also to generate the key material).
-    #
-    # Once you have your publick key (it gets copied to the clipboard on the generation),
-    # the following snippets will work.
-    #
-    # For now, `cleos` is required because updating auth with eosc to a WebAuthN key does not work.
-    cleos -u $EOSC_GLOBAL_API_URL system newaccount eosio battlefield4 $WEBAUTHN_PUBLIC_KEY $WEBAUTHN_PUBLIC_KEY -p eosio --stake-net "0.1 EOS" --stake-cpu "0.1 EOS" --buy-ram "0.1 EOS"
-    eosc transfer eosio battlefield4 "200.0000 EOS"
-    sleep 1.2
+  echo ""
+  echo "Available protocol features"
+  echo $known_features | jq -r '. | "- \(.specification[].value) (Digest \(.feature_digest))"'
 
-    ## WebAuthN Signing
-    #
-    # Based on your previously generated public key, this will open a Browser, ask
-    # and ask him to sign a transaction and send it to our local node, effectively
-    # creating a transaction signed with a WebAuthN key
-    #
-    echo ""
-    echo "About to push a WebAuthN signed tranasaction"
-    cd webauthn_signer
-    yarn transfer || true
-    sleep 0.6
-    cd ..
+  echo ""
+  echo "Activating protocol features"
+  curl -s -X POST "$EOSC_GLOBAL_API_URL/v1/producer/schedule_protocol_feature_activations" -d '{"protocol_features_to_activate": ["0ec7e080177b2c02b278d5088611686b49d739925a92d9bfcacd7fc6b74053bd"]}' > /dev/null
+  eosc system setcontract eosio contracts/eosio.system-1.7.0-rc1.wasm contracts/eosio.system-1.7.0-rc1.abi
+  sleep 1.8
 
-    echo ""
-    echo -n "Activate protocol feature (WTMSIG_BLOCK_SIGNATURES)"
-    eosc tx create eosio activate '{"feature_digest":"299dcb6af692324b899b39f16d5a530a33062804e41f09dc97e9f156b4476707"}' -p eosio@active
-    sleep 1.2
+  # This activates all known protocol features (RAM correction operations, WebAuthN keys, WTMSIG blocks, etc)
+  echo ""
+  echo "Activating all protocol features"
+  for feature in `echo $known_features | jq -c . | grep -v "0ec7e080177b2c02b278d5088611686b49d739925a92d9bfcacd7fc6b74053bd"`; do
+    digest=`echo "$feature" | jq -cr .feature_digest`
+    eosc tx create eosio activate "{\"feature_digest\":\"$digest\"}" -p eosio@active
+  done
 
-    # Not required yet and often lead to transaction max execution time reached, so will need some tweaks to config I guess...
-    # echo ""
-    # echo "Updating to latest system contracts"
-    # eosc system setcontract eosio contracts/eosio.system-1.9.0.wasm contracts/eosio.system-1.9.0.abi
-    # sleep 0.6
-  fi
+  # Activating all protocol features requires around 6 blocks to complete, so let's give 7 for a small buffer
+  sleep 3.6
 
-  # TODO: provode a `soft_fail` transaction
+  #
+  ## WebAuthN keys
+  #
+
+  ## WebAuthN Generation
+  #
+  # The WebAuthN key generation involves a Browser. We have a quick Node.js server that
+  # perform the general logic of getting a WebAuthN public/private key pair and signed and
+  # hard-coded transaction for us.
+  #
+  # This requires first to have call the `yarn generate` key to generate a key (you will
+  # need your YubiKey also to generate the key material).
+  #
+  # Once you have your publick key (it gets copied to the clipboard on the generation),
+  # the following snippets will work.
+  WEBAUTHN_PUBLIC_KEY="PUB_WA_7qjMn38M4Q6s8wamMcakZSXLm4vDpHcLqcehnWKb8TJJUMzpEZNw41pTLk6Uhqp7p"
+
+  eosc system newaccount eosio battlefield4 --auth-key $WEBAUTHN_PUBLIC_KEY --stake-cpu 1 --stake-net 1 --transfer
+  eosc transfer eosio battlefield4 "200.0000 EOS"
+  sleep 0.6
+
+  ## WebAuthN Signing
+  #
+  # Based on your previously generated public key, this will open a Browser, ask
+  # and ask him to sign a transaction and send it to our local node, effectively
+  # creating a transaction signed with a WebAuthN key
+  #
+  echo ""
+  echo "About to push a WebAuthN signed transaction"
+  cd webauthn_signer
+  yarn -s run transfer || true
+  sleep 0.6
+  cd ..
+
+  #
+  ## WTMSIG blocks (EOSIO 2.0 protocol feature WTMSIG_BLOCK_SIGNATURES)
+  #
+
+  ## Producer Schedule
+  #
+  # A change to producer schedule was reported as a `NewProducers` field on the
+  # the `BlockHeader` in EOSIO 1.x. In EOSIO 2.x, when feature `WTMSIG_BLOCK_SIGNATURES`
+  # is activated, the `NewProducers` field is not present anymore and the schedule change
+  # is reported through a `BlockHeaderExtension` on the the `BlockHeader` struct.
+  #
+  # Here, we simulate such change
+  echo ""
+  echo "About to test WTMSIG_BLOCK_SIGNATURES protocol feature"
+  echo -n "Using eosio.bios contract temporarly to set producers"
+  eosc system setcontract eosio contracts/eosio.bios-1.5.2.wasm contracts/eosio.bios-1.5.2.abi
+  sleep 0.6
+
+  echo ""
+  echo -n "Updating producers"
+  eosc tx create eosio setprods '{"schedule": [{"producer_name": "eosio", "block_signing_key":"EOS5MHPYyhjBjnQZejzZHqHewPWhGTfQWSVTWYEhDmJu4SXkzgweP"}]}' -p eosio@active
+  sleep 1.8
+
+  echo ""
+  echo -n "Returning eosio contract to standard eosio.system contract"
+  eosc system setcontract eosio contracts/eosio.system-1.7.0-rc1.wasm contracts/eosio.system-1.7.0-rc1.abi
+  sleep 0.6
+
+  # Not required yet, but often leads to transaction max execution time reached, so will need some tweaks to config I guess...
+  # echo ""
+  # echo "Updating to latest system contracts"
+  # eosc system setcontract eosio contracts/eosio.system-1.9.0.wasm contracts/eosio.system-1.9.0.abi
+  # sleep 0.6
+
+  # TODO: provoke a `soft_fail` transaction
   # TODO: provoke an `expired` transaction. How to do that? Too loaded and can't push it through?
 
   # Kill `nodeos` process
-
   echo ""
-  echo "Exiting in 3 sec"
-  sleep 3
+  echo "Exiting in 1 sec"
+  sleep 1
 
   if [[ $nodeos_pid != "" ]]; then
     kill -s TERM $nodeos_pid &> /dev/null || true

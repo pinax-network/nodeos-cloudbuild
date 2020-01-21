@@ -5,7 +5,8 @@
   "main": "src/index.js",
   "scripts": {
     "generate": "concurrently 'ts-node src/index.ts' 'sleep 5s; open https://localhost:8443/generate.html'",
-    "transfer": "ts-node src/index.ts transfer"
+    "transfer": "ts-node src/index.ts transfer",
+    "doctor": "ts-node src/index.ts doctor"
   },
   "keywords": [],
   "author": "",

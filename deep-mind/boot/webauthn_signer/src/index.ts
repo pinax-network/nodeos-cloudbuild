@@ -86,16 +86,60 @@ async function main() {
   });
 
   server.listen(8443);
-  if (process.argv.length > 2 && process.argv[2] === 'transfer') {
+
+  const lastArgumentIndex = process.argv.length - 1;
+  if (process.argv[lastArgumentIndex] === 'transfer') {
     if (keys.length < 1) {
       console.log(
         "No previously generated WebAuthM public key found, please perform the '/generate.html' flow first",
       );
-      process.exit(0);
+      process.exit(1);
     }
 
     await pushTransaction();
+
+    if (pushError != null) {
+      console.log(`Unable to correctly pushed transaction: ${pushError}`);
+      process.exit(1);
+    }
   }
+
+  if (process.argv[lastArgumentIndex] === 'doctor') {
+    if (keys.length < 1) {
+      console.log(
+        "No previously generated WebAuthM public key found, please perform the '/generate.html' flow first",
+      );
+      process.exit(1);
+    }
+
+    const key = keys[0].key;
+    const keyMaterial = key.replace('PUB_WA_', '');
+
+    console.log(`Public Key: ${key}`);
+    console.log(`Public Key Material: ${keyMaterial}`);
+
+    const decodeKeyMaterial = Numeric.base58ToBinary(0, key.replace('PUB_WA_', ''));
+    console.log(`Decoded Key Material: ${Serialize.arrayToHex(decodeKeyMaterial)}`);
+
+    const serializeBuffer = newSerialBuffer();
+    serializeBuffer.pushPublicKey(key);
+
+    const encodedKey = serializeBuffer.asUint8Array();
+    console.log(`EOSIO ABI Encoded HEX: ${Serialize.arrayToHex(encodedKey)}`);
+
+    const deserializeBuffer = newSerialBuffer(encodedKey);
+    const deserializedKey = deserializeBuffer.getPublicKey();
+    console.log(`EOSIO ABI Decoded HEX: ${deserializedKey}`);
+
+    process.exit(0);
+  }
+
+  debug(
+    'Arguments %o',
+    process.argv[lastArgumentIndex],
+    process.argv[lastArgumentIndex] === 'transfer',
+  );
+  console.log('No command received, listening on :8443 (Ctrl-C to quit)');
 }
 
 async function pushTransaction() {
@@ -135,6 +179,7 @@ async function pushTransaction() {
 
     debug('Transaction push response %O', response);
   } catch (error) {
+    debug('Push error occurred %O', error);
     pushError = error;
   }
 
@@ -201,11 +246,8 @@ async function decodeKey(keyRequest: AddKeyRequest) {
   const x = pubKey.get(-2);
   const y = pubKey.get(-3);
   if (x.length !== 32 || y.length !== 32) throw new Error('Public key has invalid X or Y size');
-  const ser = new Serialize.SerialBuffer({
-    textEncoder: new util.TextEncoder(),
-    textDecoder: new util.TextDecoder(),
-  });
 
+  const ser = newSerialBuffer();
   ser.push(y[31] & 1 ? 3 : 2);
   ser.pushArray(x);
   ser.push(flagsToPresence(flags));
@@ -273,6 +315,14 @@ function pipeFile(filePath: string) {
   return (req: any, res: ServerResponse) => {
     fs.createReadStream(filePath).pipe(res);
   };
+}
+
+export function newSerialBuffer(array?: Uint8Array) {
+  return new Serialize.SerialBuffer({
+    textDecoder: new TextDecoder(),
+    textEncoder: new TextEncoder(),
+    array,
+  });
 }
 
 main().catch(error => {

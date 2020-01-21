@@ -40,6 +40,14 @@ boot_sequence:
   data:
     account: eosio
     contract_name_ref: eosio.bios
+
+- op: system.newaccount
+  label: Create account eosio2
+  data:
+    creator: eosio
+    new_account: eosio2
+    pubkey: ephemeral
+
 - op: system.newaccount
   label: Create account eosio.msig (on-chain multi-signature helper)
   data:

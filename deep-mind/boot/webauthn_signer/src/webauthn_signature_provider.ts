@@ -3,9 +3,8 @@ import { ec } from 'elliptic';
 import crypto, { BinaryLike } from 'crypto';
 import { PushTransactionArgs } from 'eosjs/dist/eosjs-rpc-interfaces';
 import { hexToUint8Array, arrayToHex } from 'eosjs/dist/eosjs-serialize';
-import { Key } from '.';
+import { Key, newSerialBuffer } from '.';
 import open from 'open';
-import { TextDecoder, TextEncoder } from 'util';
 import debugFactory from 'debug';
 
 const debug = debugFactory('webauthn:provider');
@@ -36,6 +35,7 @@ export class WaSignatureProvider implements ApiInterfaces.SignatureProvider {
     signBuf.pushArray(serializedTransaction);
     signBuf.pushArray(new Uint8Array(32));
     const digest = sha256(signBuf.asUint8Array());
+    debug('Digest to sign %s', Serialize.arrayToHex(digest));
 
     const signatures = [] as string[];
     for (const requiredKey of requiredKeys) {
@@ -126,19 +126,4 @@ function sha256(input: BinaryLike) {
       .update(input)
       .digest(),
   );
-}
-
-function hexToByteArray(input: string) {
-  // @ts-ignore
-  const toHex = () => input.match(/[\da-f]{2}/gi).map(x => parseInt(x, 16));
-
-  return new Uint8Array(toHex());
-}
-
-function newSerialBuffer(array?: Uint8Array) {
-  return new Serialize.SerialBuffer({
-    textDecoder: new TextDecoder(),
-    textEncoder: new TextEncoder(),
-    array,
-  });
 }
