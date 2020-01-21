@@ -47,6 +47,12 @@ boot_sequence:
     creator: eosio
     new_account: eosio2
     pubkey: ephemeral
+- op: system.newaccount
+  label: Create account eosio3
+  data:
+    creator: eosio
+    new_account: eosio3
+    pubkey: ephemeral
 
 - op: system.newaccount
   label: Create account eosio.msig (on-chain multi-signature helper)

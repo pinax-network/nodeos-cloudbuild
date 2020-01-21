@@ -266,7 +266,7 @@ function main() {
 
   echo ""
   echo -n "Updating producers"
-  eosc tx create eosio setprods '{"schedule": [{"producer_name": "eosio", "block_signing_key":"EOS5MHPYyhjBjnQZejzZHqHewPWhGTfQWSVTWYEhDmJu4SXkzgweP"}]}' -p eosio@active
+  eosc tx create eosio setprods '{"schedule": [{"producer_name": "eosio3", "block_signing_key":"EOS5MHPYyhjBjnQZejzZHqHewPWhGTfQWSVTWYEhDmJu4SXkzgweP"}]}' -p eosio@active
   sleep 1.8
 
   echo ""
