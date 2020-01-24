@@ -106,6 +106,7 @@ steps:
   entrypoint: 'sh'
   env:
   - CGO_ENABLED=1
+  - GOPRIVATE=github.com/eoscanada/*
   args:
   - '-cxe'
   - |
