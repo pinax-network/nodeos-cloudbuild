@@ -50,7 +50,7 @@ steps:
     Hostname github.com
     IdentityFile /root/.ssh/id_rsa
     EOF
-    git config --global --add url."git@github.com/eoscanada".insteadOf "https://github.com/eoscanada"
+    git config --global --add url."git@github.com:eoscanada/".insteadOf "https://github.com/eoscanada/"
   volumes:
   - name: 'ssh'
     path: /root/.ssh
@@ -91,6 +91,7 @@ steps:
   - name: 'git'
     path: '/git'
 
+# Perform the actual build/test step of the project
 - id: deep-mind-tests
   name: gcr.io/${PROJECT_ID}/eosio-eos-full:${_TAG}-${SHORT_SHA}
   dir: /workspace/deep-mind/compare
@@ -100,7 +101,6 @@ steps:
     './run.sh', '/opt/eosio/bin/nodeos'
   ]
 
-# Perform the actual build/test step of the project
 - id: deep-mind-go-tests
   name: gcr.io/cloud-builders/go:debian
   entrypoint: 'sh'

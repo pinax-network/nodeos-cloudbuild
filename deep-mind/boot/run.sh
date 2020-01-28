@@ -104,6 +104,11 @@ function main() {
   echo "Waiting for the transaction to fail (with onerror handler that failed)..."
   sleep 1.1
 
+  eosc tx create battlefield3 dtrx '{"account": "battlefield3", "fail_now": false, "fail_later": true, "fail_later_nested": false, "delay_sec": 1, "nonce": "nf"}' -p battlefield3
+  echo ""
+  echo "Waiting for the transaction to fail (with onerror handler that failed inside a nested action)..."
+  sleep 1.1
+
   eosc tx create battlefield1 dbinstwo '{"account": "battlefield1", "first": 100, "second": 101}' -p battlefield1
   # This TX will do one DB_OPERATION for writing, and the second will fail. We want our instrumentation NOT to keep that DB_OPERATION.
   eosc tx create --delay-sec=1 battlefield1 dbinstwo '{"account": "battlefield1", "first": 102, "second": 100}' -p battlefield1

@@ -1,13 +1,13 @@
 {
-  "TransactionCount": 203,
-  "CreationTreeNodeCount": 267,
-  "DBOpCount": 32,
+  "TransactionCount": 225,
+  "CreationTreeNodeCount": 289,
+  "DBOpCount": 33,
   "DTrxOpCount": 15,
   "FeatureOpCount": 25,
   "PermOpCount": 74,
-  "RAMOpCount": 79,
-  "RAMCorrectionOpCount": 2,
-  "RLimitOpCount": 483,
-  "TransactionOpCount": 115,
+  "RAMOpCount": 84,
+  "RAMCorrectionOpCount": 1,
+  "RLimitOpCount": 540,
+  "TransactionOpCount": 134,
   "TableOpCount": 21
 }

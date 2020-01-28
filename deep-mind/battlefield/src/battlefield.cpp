@@ -135,6 +135,21 @@ void battlefield::nestdtrxexec(bool fail)
     check(!fail, "dtrxexec instructed to fail");
 }
 
+void battlefield::nestonerror(bool fail)
+{
+    print("Nested inline within onerror handler");
+
+    members member_table(_self, _self.value);
+    member_table.emplace(_self, [&](auto &row) {
+        row.id = member_table.available_primary_key();
+        row.account = "nestonerror"_n;
+        row.memo = "from nested onerror handler";
+        row.created_at = time_point_sec(current_time_point());
+    });
+
+    check(!fail, "nestonerror instructed to fail");
+}
+
 #if WITH_ONERROR_HANDLER == 1
 // Must match signature of dtrxexec above
 struct dtrxexec_data
@@ -173,11 +188,31 @@ void battlefield::onerror(eosio::onerror data)
     }
 
     // Let's re-use account passed to `dtrxexec` directly
-    inlinedeep_action inline_deep(action_data.account, {_self, "active"_n});
-
+    //
     // FIXME: Unline `creaorder`, `notified4` and `notified5` are hard-coded here, if they
     //        were pass to `dtrxexec`, we could re-use them here...
+    inlinedeep_action inline_deep(action_data.account, {_self, "active"_n});
+
     inline_deep.send(action_data.nonce, "notified4"_n, "notified5"_n, string("i3"), false, string("c3"));
+
+    // FIXME: Unable to use `nestonerror_action` due to https://github.com/EOSIO/eosio.cdt/issues/519
+    eosio::action nestedSuccess(
+        std::vector<permission_level>({permission_level(_self, "active"_n)}),
+        action_data.account,
+        "nestonerror"_n,
+        std::make_tuple(false));
+    nestedSuccess.send();
+
+    if (action_data.nonce == "nf")
+    {
+        // FIXME: Unable to use `nestonerror_action` due to https://github.com/EOSIO/eosio.cdt/issues/519
+        eosio::action nestedFail(
+            std::vector<permission_level>({permission_level(_self, "active"_n)}),
+            action_data.account,
+            "nestonerror"_n,
+            std::make_tuple(true));
+        nestedFail.send();
+    }
 }
 #endif
 

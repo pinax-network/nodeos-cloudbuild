@@ -30,52 +30,44 @@ using eosio::time_point_sec;
 using std::function;
 using std::string;
 
-class [[eosio::contract("battlefield")]] battlefield : public contract {
-    public:
-        battlefield(name receiver, name code, datastream<const char*> ds)
-        :contract(receiver, code, ds)
-        {}
+class[[eosio::contract("battlefield")]] battlefield : public contract
+{
+public:
+    battlefield(name receiver, name code, datastream<const char *> ds)
+        : contract(receiver, code, ds){}
 
-        [[eosio::action]]
-        void dbins(name account);
+              [[eosio::action]] void
+              dbins(name account);
 
-        [[eosio::action]]
-        void dbinstwo(name account, uint64_t first, uint64_t second);
+    [[eosio::action]] void dbinstwo(name account, uint64_t first, uint64_t second);
 
-        [[eosio::action]]
-        void dbupd(name account);
+    [[eosio::action]] void dbupd(name account);
 
-        [[eosio::action]]
-        void dbrem(name account);
+    [[eosio::action]] void dbrem(name account);
 
-        [[eosio::action]]
-        void dbremtwo(name account, uint64_t first, uint64_t second);
+    [[eosio::action]] void dbremtwo(name account, uint64_t first, uint64_t second);
 
-        [[eosio::action]]
-        void dtrx(
-            name account,
-            bool fail_now,
-            bool fail_later,
-            bool fail_later_nested,
-            uint32_t delay_sec,
-            string nonce
-        );
+    [[eosio::action]] void dtrx(
+        name account,
+        bool fail_now,
+        bool fail_later,
+        bool fail_later_nested,
+        uint32_t delay_sec,
+        string nonce);
 
-        [[eosio::action]]
-        void dtrxcancel(name account);
+    [[eosio::action]] void dtrxcancel(name account);
 
-        [[eosio::action]]
-        void dtrxexec(name account, bool fail, bool failNested, string nonce);
+    [[eosio::action]] void dtrxexec(name account, bool fail, bool failNested, string nonce);
 
-        [[eosio::action]]
-        void nestdtrxexec(bool fail);
+    [[eosio::action]] void nestdtrxexec(bool fail);
 
-        #if WITH_ONERROR_HANDLER == 1
-        [[eosio::on_notify("eosio::onerror")]]
-        void onerror(eosio::onerror data);
-        #endif
+    [[eosio::action]] void nestonerror(bool fail);
 
-        /**
+#if WITH_ONERROR_HANDLER == 1
+    [[eosio::on_notify("eosio::onerror")]] void onerror(eosio::onerror data);
+#endif
+
+    /**
          * We are going to replicate the following creation order:
          *
          * ```
@@ -136,46 +128,42 @@ class [[eosio::contract("battlefield")]] battlefield : public contract {
          * `require_recipient(n5)` followed by a `inlineempty` with a tag of
          * `"i3"` and send `c3`
          */
-        [[eosio::action]]
-        void creaorder(name n1, name n2, name n3, name n4, name n5);
+    [[eosio::action]] void creaorder(name n1, name n2, name n3, name n4, name n5);
 
-        [[eosio::on_notify("battlefield1::creaorder")]]
-        void on_creaorder(name n1, name n2, name n3, name n4, name n5);
+    [[eosio::on_notify("battlefield1::creaorder")]] void on_creaorder(name n1, name n2, name n3, name n4, name n5);
 
-        [[eosio::action]]
-        void inlineempty(string tag, bool fail);
+    [[eosio::action]] void inlineempty(string tag, bool fail);
 
-        [[eosio::action]]
-        void inlinedeep(
-            string tag,
-            name n4,
-            name n5,
-            string nestedInlineTag,
-            bool nestedInlineFail,
-            string nestedCfaInlineTag
-        );
+    [[eosio::action]] void inlinedeep(
+        string tag,
+        name n4,
+        name n5,
+        string nestedInlineTag,
+        bool nestedInlineFail,
+        string nestedCfaInlineTag);
 
-        // Inline action wrappers (so we can construct them in code)
-        using nestdtrxexec_action = action_wrapper<"nestdtrxexec"_n, &battlefield::nestdtrxexec>;
-        using inlineempty_action = action_wrapper<"inlineempty"_n, &battlefield::inlineempty>;
-        using inlinedeep_action = action_wrapper<"inlinedeep"_n, &battlefield::inlinedeep>;
+    // Inline action wrappers (so we can construct them in code)
+    using nestdtrxexec_action = action_wrapper<"nestdtrxexec"_n, &battlefield::nestdtrxexec>;
+    using nestonerror_action = action_wrapper<"nestonerror"_n, &battlefield::nestonerror>;
+    using inlineempty_action = action_wrapper<"inlineempty"_n, &battlefield::inlineempty>;
+    using inlinedeep_action = action_wrapper<"inlinedeep"_n, &battlefield::inlinedeep>;
 
-    private:
+private:
+    struct[[eosio::table]] member_row
+    {
+        uint64_t id;
+        name account;
+        asset amount;
+        string memo;
+        time_point_sec created_at;
+        time_point_sec expires_at;
 
-        struct [[eosio::table]] member_row {
-            uint64_t id;
-            name account;
-            asset amount;
-            string memo;
-            time_point_sec created_at;
-            time_point_sec expires_at;
+        auto primary_key() const { return id; }
+        uint64_t by_account() const { return account.value; }
+    };
 
-            auto primary_key()const { return id; }
-            uint64_t by_account() const { return account.value; }
-        };
-
-        typedef eosio::multi_index<
-            "member"_n, member_row,
-            indexed_by<"byaccount"_n, const_mem_fun<member_row, uint64_t, &member_row::by_account>>
-        > members;
+    typedef eosio::multi_index<
+        "member"_n, member_row,
+        indexed_by<"byaccount"_n, const_mem_fun<member_row, uint64_t, &member_row::by_account>>>
+        members;
 };
