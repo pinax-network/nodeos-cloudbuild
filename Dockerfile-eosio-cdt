@@ -1,13 +1,13 @@
 FROM ubuntu:18.04
 
-ARG EOSIO_CDT_PACKAGE_NAME
-ARG EOSIO_CDT_VERSION
+ARG VERSION
+ARG PACKAGE_URL
 
 WORKDIR /workspace
 
 LABEL description="Image containing the eosio.cdt development toolchain for EOS Blockchains" \
-      version="${EOSIO_CDT_VERSION}" \
-      packageName="${EOSIO_CDT_PACKAGE_NAME}"
+      version="${VERSION}" \
+      packageName="eosio-cdt"
 
 LABEL maintainer="Alexandre Bourget <alex@eoscanada.com>" \
       maintainer="Francois Proulx <francois@eoscanada.com>" \
@@ -19,6 +19,6 @@ RUN echo 'APT::Install-Recommends 0;' >> /etc/apt/apt.conf.d/01norecommends \
   && DEBIAN_FRONTEND=noninteractive apt-get install -y make cmake g++ openssl ca-certificates wget \
   && rm -rf /var/lib/apt/lists/*
 
-RUN wget "https://github.com/eosio/eosio.cdt/releases/download/v${EOSIO_CDT_VERSION}/${EOSIO_CDT_PACKAGE_NAME}" \
-  && DEBIAN_FRONTEND=noninteractive apt-get install -y ./${EOSIO_CDT_PACKAGE_NAME} \
-  && rm -rf ./${EOSIO_CDT_PACKAGE_NAME}
+RUN wget -O eosio-cdt-${VERSION}.deb "${PACKAGE_URL}" \
+  && DEBIAN_FRONTEND=noninteractive apt-get install -y ./eosio-cdt-${VERSION}.deb \
+  && rm -rf ./eosio-cdt-${VERSION}.deb

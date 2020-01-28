@@ -1,9 +1,10 @@
 ### commit and push those values in !
 substitutions:
   # Check available images with `gcloud container images list-tags gcr.io/eoscanada-shared-services/eosio-buildenv`
-  _EOSIO_BUILDENV_TAG: v1.8.1
+  _EOSIO_BUILDENV_TAG: v2.0.0
   _REPOSITORY: "git@github.com:eoscanada/eosio-eos-private.git"
-  _TAG: v1.8.10-dm-v10.4
+  _TAG: v2.0.1-dm-v10.4
+  _BRANCH: v2.0.1-dm-v10.4 # Can be either a tag or a branch, branch can be used when "testing" stuff out
 
 steps:
 # Download SSH encrypted private key and SSH known hosts file
@@ -49,7 +50,7 @@ steps:
     Hostname github.com
     IdentityFile /root/.ssh/id_rsa
     EOF
-    git config --global --add url."git@github.com:".insteadOf "https://github.com/"
+    git config --global --add url."git@github.com:eoscanada/".insteadOf "https://github.com/eoscanada/"
   volumes:
   - name: 'ssh'
     path: /root/.ssh
@@ -60,8 +61,8 @@ steps:
   name: gcr.io/cloud-builders/git
   args: [
     'clone',
-    '--branch=${_TAG}',
-    '--depth=1',
+    '--branch=${_BRANCH}',
+    #    '--depth=1', # this prevents the 'describe' command from finding the tag
     '--recursive',
     '${_REPOSITORY}',
     '/git',
@@ -90,6 +91,7 @@ steps:
   - name: 'git'
     path: '/git'
 
+# Perform the actual build/test step of the project
 - id: deep-mind-tests
   name: gcr.io/${PROJECT_ID}/eosio-eos-full:${_TAG}-${SHORT_SHA}
   dir: /workspace/deep-mind/compare
@@ -99,12 +101,12 @@ steps:
     './run.sh', '/opt/eosio/bin/nodeos'
   ]
 
-# Perform the actual build/test step of the project
 - id: deep-mind-go-tests
   name: gcr.io/cloud-builders/go:debian
   entrypoint: 'sh'
   env:
   - CGO_ENABLED=1
+  - GOPRIVATE=github.com/eoscanada/*
   args:
   - '-cxe'
   - |

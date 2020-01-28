@@ -240,6 +240,16 @@
                     "type": "bool"
                 }
             ]
+        },
+        {
+            "name": "nestonerror",
+            "base": "",
+            "fields": [
+                {
+                    "name": "fail",
+                    "type": "bool"
+                }
+            ]
         }
     ],
     "actions": [
@@ -301,6 +311,11 @@
         {
             "name": "nestdtrxexec",
             "type": "nestdtrxexec",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "nestonerror",
+            "type": "nestonerror",
             "ricardian_contract": ""
         }
     ],

@@ -1,11 +1,15 @@
-steps:
+substitutions:
+  _TAG: v1.7.0
+  # Copy the `*.deb` file of the release you want to build from 'https://github.com/EOSIO/eosio.cdt/releases'
+  _PACKAGE_URL: "https://github.com/EOSIO/eosio.cdt/releases/download/v1.7.0/eosio.cdt_1.7.0-1-ubuntu-18.04_amd64.deb"
 
+steps:
 - id: docker-build
   name: gcr.io/cloud-builders/docker
   args: [
     'build',
-    '--build-arg', 'EOSIO_CDT_VERSION=${_EOSIO_CDT_VERSION}',
-    '--build-arg', 'EOSIO_CDT_PACKAGE_NAME=${_EOSIO_CDT_PACKAGE_NAME}',
+    '--build-arg', 'VERSION=${_TAG}',
+    '--build-arg', 'PACKAGE_URL=${_PACKAGE_URL}',
     '-t', 'gcr.io/$PROJECT_ID/eosio-cdt:${_TAG}',
     '-t', 'gcr.io/$PROJECT_ID/eosio-cdt:latest',
     '-f', 'Dockerfile-eosio-cdt',
