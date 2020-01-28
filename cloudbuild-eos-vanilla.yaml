@@ -3,7 +3,7 @@ substitutions:
   # Check available images with `gcloud container images list-tags gcr.io/eoscanada-shared-services/eosio-buildenv`
   _EOSIO_BUILDENV_TAG: v1.8.1
   _REPOSITORY: "https://github.com/EOSIO/eos.git"
-  _TAG: v1.8.9
+  _TAG: v1.8.10
 
 steps:
 - id: eos-clone
