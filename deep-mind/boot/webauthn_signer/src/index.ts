@@ -88,7 +88,11 @@ async function main() {
   server.listen(8443);
 
   const lastArgumentIndex = process.argv.length - 1;
+  let unknownCommand = true;
+
   if (process.argv[lastArgumentIndex] === 'transfer') {
+    unknownCommand = false;
+
     if (keys.length < 1) {
       console.log(
         "No previously generated WebAuthM public key found, please perform the '/generate.html' flow first",
@@ -102,6 +106,8 @@ async function main() {
       console.log(`Unable to correctly pushed transaction: ${pushError}`);
       process.exit(1);
     }
+
+    // Do not exit yet, the browser is going to call back us with the final notification that everything is good
   }
 
   if (process.argv[lastArgumentIndex] === 'doctor') {
@@ -134,12 +140,14 @@ async function main() {
     process.exit(0);
   }
 
-  debug(
-    'Arguments %o',
-    process.argv[lastArgumentIndex],
-    process.argv[lastArgumentIndex] === 'transfer',
-  );
-  console.log('No command received, listening on :8443 (Ctrl-C to quit)');
+  if (unknownCommand) {
+    debug(
+      'Arguments %o',
+      process.argv[lastArgumentIndex],
+      process.argv[lastArgumentIndex] === 'transfer',
+    );
+    console.log('No command received, listening on :8443 (Ctrl-C to quit)');
+  }
 }
 
 async function pushTransaction() {
