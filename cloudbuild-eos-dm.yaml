@@ -3,8 +3,8 @@ substitutions:
   # Check available images with `gcloud container images list-tags gcr.io/eoscanada-shared-services/eosio-buildenv`
   _EOSIO_BUILDENV_TAG: v2.0.0
   _REPOSITORY: "git@github.com:eoscanada/eosio-eos-private.git"
-  _TAG: v2.0.1-dm-v10.4
-  _BRANCH: v2.0.1-dm-v10.4 # Can be either a tag or a branch, branch can be used when "testing" stuff out
+  _TAG: v2.0.3-dm-v10.4
+  _BRANCH: v2.0.3-dm-v10.4 # Can be either a tag or a branch, branch can be used when "testing" stuff out
 
 steps:
 # Download SSH encrypted private key and SSH known hosts file
