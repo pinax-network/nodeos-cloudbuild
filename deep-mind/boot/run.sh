@@ -39,6 +39,10 @@ function main() {
   ($eos_bin --data-dir="$ROOT" --config-dir="$ROOT" --genesis-json="$ROOT/genesis.json" 1> $deep_mind_log_file 2> $nodeos_log_file) &
   nodeos_pid=$!
 
+  export EOSC_GLOBAL_INSECURE_VAULT_PASSPHRASE=secure
+  export EOSC_GLOBAL_API_URL=http://localhost:9898
+  export EOSC_GLOBAL_VAULT_FILE="$ROOT/eosc-vault.json"
+
   echo "Booting $1 node with smart contracts ..."
   eosc boot bootseq.yaml --reuse-genesis --api-url http://localhost:9898 1> /dev/null
   mv output.log ${eosc_boot_log_file}
@@ -46,9 +50,6 @@ function main() {
 
   echo "Booting completed, launching test cases..."
 
-  export EOSC_GLOBAL_INSECURE_VAULT_PASSPHRASE=secure
-  export EOSC_GLOBAL_API_URL=http://localhost:9898
-  export EOSC_GLOBAL_VAULT_FILE="$ROOT/eosc-vault.json"
 
   echo "Setting eosio.code permissions on contract accounts (Account for commit d8fa7c0, which shields from mis-used authority)"
   eosc system updateauth battlefield1 active owner "$ROOT"/active_auth_battlefield1.yaml
@@ -138,7 +139,10 @@ function main() {
   #
   # Once you have your publick key (it gets copied to the clipboard on the generation),
   # the following snippets will work.
-  WEBAUTHN_PUBLIC_KEY="PUB_WA_7qjMn38M4Q6s8wamMcakZSXLm4vDpHcLqcehnWKb8TJJUMzpEZNw41pTLk6Uhqp7p"
+  # @matt
+  # WEBAUTHN_PUBLIC_KEY="PUB_WA_7qjMn38M4Q6s8wamMcakZSXLm4vDpHcLqcehnWKb8TJJUMzpEZNw41pTLk6Uhqp7p"
+  # @stepd
+  WEBAUTHN_PUBLIC_KEY="PUB_WA_6GDu4dfQvfgGgKWvF51pS1HxewFf3e7LQeVh7GqKbX5P5ZrzN4gtBajXBdj6R9kDk"
 
   eosc system newaccount eosio battlefield4 --auth-key $WEBAUTHN_PUBLIC_KEY --stake-cpu 1 --stake-net 1 --transfer
   eosc transfer eosio battlefield4 "200.0000 EOS"
@@ -197,7 +201,7 @@ function main() {
   # Kill `nodeos` process
   echo ""
   echo "Exiting in 1 sec"
-  sleep 500000
+  sleep 1
 
   if [[ $nodeos_pid != "" ]]; then
     kill -s TERM $nodeos_pid &> /dev/null || true
