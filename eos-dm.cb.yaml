@@ -2,7 +2,7 @@
 substitutions:
   _REPOSITORY: "git@github.com:eoscanada/eosio-eos-private.git"
   _BRANCH: v2.0.3-dm-v10.4-2 # Can be either a tag or a branch, branch can be used when "testing" stuff out
-  _VERSION: v2.0.3-dm-v10.4-1
+  _VERSION: v2.0.3-dm-v10.4-2
   _IMAGE_TAG: ubuntu-18.04
   _OS: ubuntu-18.04
   _PKGTYPE: deb
