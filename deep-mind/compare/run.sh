@@ -71,6 +71,10 @@ sed -i.bak -e 's/"thread_name":"[^"]*","timestamp":"[^"]*"}/"thread_name":"threa
 sed -i.bak -e 's/,"line":[0-9]*,"/,"line":0,"/g' "$OUTPUT_FILE"
 sed -i.bak -e 's/\([,{]\)"last_ordinal":[0-9]*,"/\1"last_ordinal":0,"/g' "$OUTPUT_FILE"
 sed -i.bak -e 's/\([,{]\)"last_updated":"[^"]*","/\1"last_updated":"3333-12-31T00:01:02.345","/g' "$OUTPUT_FILE"
+
+# Only needed in `develop` branch of `nodeos` for now, since it's now different since generated set didn't had `return_value`
+sed -i.bak -e 's/,"return_value":""//g' "$OUTPUT_FILE"
+
 rm -rf "$OUTPUT_FILE.bak"
 
 set +e
