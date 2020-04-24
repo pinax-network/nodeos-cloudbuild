@@ -18,8 +18,6 @@ function main() {
   fi
   shift
 
-  protocol="$1"
-
   # Trap exit signal and clean up
   trap cleanup EXIT
   pushd $ROOT &> /dev/null
@@ -103,7 +101,7 @@ function main() {
   eosc tx create battlefield1 dbremtwo '{"account": "battlefield1", "first": 200, "second": 201}' -p battlefield1
 
   echo ""
-  echo -n "Create a delayed and cancel it (in same block) with 'eosio:canceldelay'"
+  echo "Create a delayed and cancel it (in same block) with 'eosio:canceldelay'"
   eosc tx create --delay-sec=3600 battlefield1 dbins '{"account": "battlefield1"}' -p battlefield1 --write-transaction /tmp/delayed.json
   ID=`eosc tx id /tmp/delayed.json`
   eosc tx push /tmp/delayed.json
@@ -113,7 +111,7 @@ function main() {
   sleep 0.6
 
   echo ""
-  echo -n "Create a delayed and cancel it (in different block) with 'eosio:canceldelay'"
+  echo "Create a delayed and cancel it (in different block) with 'eosio:canceldelay'"
   eosc tx create --delay-sec=3600 battlefield1 dbins '{"account": "battlefield1"}' -p battlefield1 --write-transaction /tmp/delayed.json
   ID=`eosc tx id /tmp/delayed.json`
   eosc tx push /tmp/delayed.json

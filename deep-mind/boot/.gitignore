@@ -1,0 +1,9 @@
+blocks/reversible/
+state/
+snapshots/
+
+*.dmlog
+eosc-boot.log
+nodeos.log
+output.log
+webauthn_keys_db.json

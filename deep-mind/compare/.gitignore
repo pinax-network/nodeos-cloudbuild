@@ -1,0 +1,7 @@
+/blocks/
+/protocol_features/
+/state/
+/diff.patch
+/output.jsonl
+/output.log
+/output.stats.json
