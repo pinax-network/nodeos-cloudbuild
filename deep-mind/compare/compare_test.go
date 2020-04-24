@@ -37,7 +37,7 @@ func TestReferenceAnalysis_AcceptedBlocks(t *testing.T) {
 	}
 	f.Close()
 
-	assertJsonContentEqual(t, "reference.jsonl", "output.jsonl")
+	assertJSONContentEqual(t, "reference.jsonl", "output.jsonl")
 }
 
 func TestReferenceAnalysis(t *testing.T) {
@@ -49,7 +49,7 @@ func TestReferenceAnalysis(t *testing.T) {
 	expected, err := ioutil.ReadFile(filepath.Join(target, "reference.stats.json"))
 	require.NoError(t, err)
 
-	assert.JSONEq(t, string(expected), string(actual), "Reference stats and actual stats differs, run `diff -u output.stats.json reference.stats.json` for details")
+	assert.JSONEq(t, string(expected), string(actual), fmt.Sprintf("Reference stats and actual stats differs, run `diff -u %s/output.stats.json %s/reference.stats.json` for details", target, target))
 }
 
 func TestRamTraces_RunningUpBalanceChecks(t *testing.T) {
@@ -80,7 +80,7 @@ func protoToJSON(t *testing.T, message proto.Message) string {
 	return content
 }
 
-func assertJsonContentEqual(t *testing.T, expectedFile string, actualFile string) {
+func assertJSONContentEqual(t *testing.T, expectedFile string, actualFile string) {
 	expected, err := ioutil.ReadFile(filepath.Join(target, expectedFile))
 	require.NoError(t, err)
 	actual, err := ioutil.ReadFile(filepath.Join(target, actualFile))
@@ -93,6 +93,11 @@ func assertJsonContentEqual(t *testing.T, expectedFile string, actualFile string
 	expectedLines := strings.Split(expectedString, "\n")
 
 	for i, expectedLine := range expectedLines {
+		// Actual might have less line than expected, it's check later, but to avoid a panic, let's end right now
+		if i >= len(actualLines) {
+			break
+		}
+
 		assert.JSONEq(t, expectedLine, actualLines[i], "line #%d differs", i)
 	}
 

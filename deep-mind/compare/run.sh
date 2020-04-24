@@ -5,10 +5,15 @@ set -e
 ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 CURRENT=`pwd`
 
-EOS_BIN_OR_DOCKER="$1"
-LOG_FILE=${LOG_FILE:-"/tmp/battlefield.log"}
+target="$1"
+eos_bin_or_docker="$2"
 
-if [ "$EOS_BIN_OR_DOCKER" == "" ]; then
+if [[ ! -d "$ROOT/$target" ]]; then
+    echo "The target dirctory '$ROOT/$target' does not exist, check first provided argument."
+    exit 1
+fi
+
+if [[ "$eos_bin_or_docker" == "" ]]; then
     echo "Specify the path to nodeos, or a nodeos Docker image"
     exit 1
 fi
@@ -24,14 +29,14 @@ function finish {
     exit 0
 }
 
-rm -rf "$ROOT/blocks/" "$ROOT/protocol_features/" "$ROOT/state/"
-cp -av "$ROOT/../boot/blocks" "$ROOT/"
-rm -rf "$ROOT/blocks/reversible"
-cp -av "$ROOT/../boot/protocol_features" "$ROOT/"
+rm -rf "$ROOT/$target/blocks/" "$ROOT/$target/protocol_features/" "$ROOT/$target/state/"
+cp -av "$ROOT/../boot/$target/blocks" "$ROOT/$target/"
+rm -rf "$ROOT/$target/blocks/reversible"
+cp -av "$ROOT/../boot/$target/protocol_features" "$ROOT/$target/"
 
-if [ -f $EOS_BIN_OR_DOCKER ]; then
+if [ -f $eos_bin_or_docker ]; then
     # Execute a local instance
-    $EOS_BIN_OR_DOCKER --data-dir=$ROOT --config-dir=$ROOT --replay-blockchain > "$ROOT/output.log" &
+    $eos_bin_or_docker --data-dir=$ROOT/$target --config-dir=$ROOT/$target --replay-blockchain > "$ROOT/$target/output.log" &
     PID=$!
 
     # Trap exit signal and close nodeos process
@@ -47,8 +52,8 @@ else
     docker run \
         --rm \
         --name $CONTAINER_NAME \
-        -v $ROOT:/app \
-        $EOS_BIN_OR_DOCKER \
+        -v $ROOT/$target:/app \
+        $eos_bin_or_docker \
         /bin/bash -c "/opt/eosio/bin/nodeos --data-dir=/app --config-dir=/app --replay-blockchain > /app/output.log" &
 
     # Trap exit signal and close docker image
@@ -59,8 +64,8 @@ else
     docker kill $CONTAINER_NAME || true
 fi
 
-OUTPUT_FILE_PATTERN="$ROOT/output"
-REFERENCE_FILE_PATTERN="$ROOT/reference"
+OUTPUT_FILE_PATTERN="$ROOT/$target/output"
+REFERENCE_FILE_PATTERN="$ROOT/$target/reference"
 
 OUTPUT_FILE="$OUTPUT_FILE_PATTERN.log"
 REFERENCE_FILE="$REFERENCE_FILE_PATTERN.log"
@@ -113,7 +118,7 @@ if [[ "$SKIP_GO_TESTS" == "" ]]; then
     trap "cd $current" EXIT
 
     cd "$ROOT"
-    go test ./...
+    TARGET="$target" go test ./...
     if [[ $? != 0 ]]; then
         difference_found="true"
     fi

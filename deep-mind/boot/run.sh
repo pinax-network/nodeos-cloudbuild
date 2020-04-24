@@ -143,7 +143,7 @@ function main() {
   # This requires first to have call the `yarn generate` key to generate a key (you will
   # need your YubiKey also to generate the key material).
   #
-  # Once you have your publick key (it gets copied to the clipboard on the generation),
+  # Once you have your public key (it gets copied to the clipboard on the generation),
   # the following snippets will work.
   #
   # @matt
