@@ -2,9 +2,11 @@ package compare
 
 import (
 	"encoding/json"
+	"fmt"
 	"io"
 	"io/ioutil"
 	"os"
+	"path/filepath"
 	"strings"
 	"testing"
 
@@ -16,8 +18,17 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+var target = os.Getenv("TARGET")
+
+func init() {
+	if target == "" {
+		fmt.Println("The TARGET enviornment variable should have been set")
+		os.Exit(1)
+	}
+}
+
 func TestReferenceAnalysis_AcceptedBlocks(t *testing.T) {
-	f, err := os.Create("output.jsonl")
+	f, err := os.Create(filepath.Join(target, "output.jsonl"))
 	require.NoError(t, err)
 	defer f.Close()
 
@@ -32,10 +43,10 @@ func TestReferenceAnalysis_AcceptedBlocks(t *testing.T) {
 func TestReferenceAnalysis(t *testing.T) {
 	stats := computeDeepMindStats(readAllBlocks(t, "output.log"))
 	actual, _ := json.MarshalIndent(stats, "", "  ")
-	err := ioutil.WriteFile("output.stats.json", actual, 0644)
+	err := ioutil.WriteFile(filepath.Join(target, "output.stats.json"), actual, 0644)
 	require.NoError(t, err)
 
-	expected, err := ioutil.ReadFile("reference.stats.json")
+	expected, err := ioutil.ReadFile(filepath.Join(target, "reference.stats.json"))
 	require.NoError(t, err)
 
 	assert.JSONEq(t, string(expected), string(actual), "Reference stats and actual stats differs, run `diff -u output.stats.json reference.stats.json` for details")
@@ -70,9 +81,9 @@ func protoToJSON(t *testing.T, message proto.Message) string {
 }
 
 func assertJsonContentEqual(t *testing.T, expectedFile string, actualFile string) {
-	expected, err := ioutil.ReadFile(expectedFile)
+	expected, err := ioutil.ReadFile(filepath.Join(target, expectedFile))
 	require.NoError(t, err)
-	actual, err := ioutil.ReadFile(actualFile)
+	actual, err := ioutil.ReadFile(filepath.Join(target, actualFile))
 	require.NoError(t, err)
 
 	actualString := strings.TrimSpace(string(actual))
@@ -92,7 +103,7 @@ func assertJsonContentEqual(t *testing.T, expectedFile string, actualFile string
 func readAllBlocks(t *testing.T, nodeosLogFile string) []*pbdeos.Block {
 	blocks := []*pbdeos.Block{}
 
-	file, err := os.Open(nodeosLogFile)
+	file, err := os.Open(filepath.Join(target, nodeosLogFile))
 	require.NoError(t, err)
 	defer file.Close()
 
