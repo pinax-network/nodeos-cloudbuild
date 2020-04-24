@@ -1,4 +1,33 @@
+##
+# **Important**
+#
+# You might tempted to move some of those inside their respective sub-folder,
+# but do NOT do that! Keep everything in this top-level `.gitignore` because it
+# is used by `gcloud` command (specially in `.gcloudignore` here) to ignore
+# files.
+#
+# And if you modified this `.gitignore`, please also check that the `gcloud`
+# is not including big files.
+#
+# Check with `gcloud meta list-files-for-upload | xargs -n1 du -sh`
+#
+
 .DS_Store
 .envrc
 .vscode
 node_modules
+
+reversible/
+state/
+snapshots/
+deep-mind/compare/*/blocks
+deep-mind/compare/*/protocol_features
+
+deep-mind.dmlog
+diff.patch
+eosc-boot.log
+nodeos.log
+output.jsonl
+output.log
+output.stats.json
+webauthn_keys_db.json
