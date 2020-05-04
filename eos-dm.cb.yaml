@@ -1,8 +1,8 @@
 ### Commit and push those values in!
 substitutions:
-  _REPOSITORY: "git@github.com:eoscanada/eosio-eos-private.git"
-  _BRANCH: v2.0.5-dm-v11.0 # Can be either a tag or a branch, branch can be used when "testing" stuff out
-  _VERSION: v2.0.5-dm-v11.0
+  _REPOSITORY: "git@github.com:dfuse-io/eos"
+  _BRANCH: feature/offchain-abi-serializer-fc-encoded # Can be either a tag or a branch, branch can be used when "testing" stuff out
+  _VERSION: v2.0.5-dm-v12.0
   _IMAGE_TAG: ubuntu-18.04
   _OS: ubuntu-18.04
   _PKGTYPE: deb
@@ -130,6 +130,28 @@ steps:
   volumes:
   - name: 'git'
     path: '/git'
+
+- id: docker-tag-untested
+  name: gcr.io/cloud-builders/docker
+  args: [
+    'tag',
+    'gcr.io/$PROJECT_ID/eosio-eos-prod:${_VERSION}-${_OS}',
+    'gcr.io/$PROJECT_ID/eosio-eos-prod:${_VERSION}-${_OS}-untested',
+  ]
+  volumes:
+  - name: 'git'
+    path: '/git'
+
+- id: docker-push-untested
+  name: gcr.io/cloud-builders/docker
+  args: [
+    'push',
+    'gcr.io/$PROJECT_ID/eosio-eos-prod:${_VERSION}-${_OS}-untested',
+  ]
+  volumes:
+  - name: 'git'
+    path: '/git'
+
 
 # Perform the actual build/test step of the project
 - id: deep-mind-nodeos-tests
