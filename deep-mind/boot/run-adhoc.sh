@@ -18,10 +18,16 @@ function cleanup {
 }
 
 function main() {
-  eos_bin="$1"
+  target="$1"
+  eos_bin="$2"
+
+  if [[ ! -d "$ROOT/$target" ]]; then
+    echo "The target dirctory '$ROOT/$target' does not exist, check first provided argument."
+    exit 1
+  fi
 
   if [[ ! -f $eos_bin ]]; then
-    echo "The 'nodeos' binary received does not exist, check first provided argument."
+    echo "The 'nodeos' binary received does not exist, check second provided argument."
     exit 1
   fi
 
@@ -30,25 +36,26 @@ function main() {
 
   pushd $ROOT &> /dev/null
 
-  deep_mind_log_file="./deep-mind-adhoc.dmlog"
-  nodeos_log_file="./nodeos.log"
-  eosc_boot_log_file="./eosc-boot.log"
+  deep_mind_log_file="./$target/deep-mind.dmlog"
+  nodeos_log_file="./$target/nodeos.log"
+  eosc_boot_log_file="eosc-boot.log"
 
-  rm -rf "$ROOT/blocks/" "$ROOT/state/"
+  rm -rf "$ROOT/$target/blocks/" "$ROOT/$target/state/"
 
-  ($eos_bin --data-dir="$ROOT" --config-dir="$ROOT" --genesis-json="$ROOT/genesis.json" 1> $deep_mind_log_file 2> $nodeos_log_file) &
+  ($eos_bin --data-dir="$ROOT/$target" --config-dir="$ROOT/$target" --genesis-json="$ROOT/$target/genesis.json" 1> $deep_mind_log_file 2> $nodeos_log_file) &
   nodeos_pid=$!
-
-  echo "Booting $1 node with smart contracts ..."
-  eosc boot bootseq.yaml --reuse-genesis --api-url http://localhost:9898 1> /dev/null
-  mv output.log ${eosc_boot_log_file}
-  popd 1> /dev/null
-
-  echo "Booting completed, launching test cases..."
 
   export EOSC_GLOBAL_INSECURE_VAULT_PASSPHRASE=secure
   export EOSC_GLOBAL_API_URL=http://localhost:9898
   export EOSC_GLOBAL_VAULT_FILE="$ROOT/eosc-vault.json"
+
+  echo "Booting $1 node with smart contracts ..."
+  pushd $target
+  eosc boot ../bootseq.yaml --reuse-genesis --api-url http://localhost:9898 1> /dev/null
+  mv output.log ${eosc_boot_log_file}
+  popd 1> /dev/null
+
+  echo "Booting completed, launching test cases..."
 
   # echo "Setting eosio.code permissions on contract accounts (Account for commit d8fa7c0, which shields from mis-used authority)"
   # eosc system updateauth battlefield1 active owner "$ROOT"/active_auth_battlefield1.yaml
