@@ -1,8 +1,8 @@
 ### Commit and push those values in!
 substitutions:
-  _REPOSITORY: "git@github.com:eoscanada/eosio-eos-private.git"
-  _BRANCH: release/wax/2.0.x-dm # Can be either a tag or a branch, branch can be used when "testing" stuff out
-  _VERSION: v2.0.5wax01-dm-v11.0
+  _REPOSITORY: "git@github.com:dfuse-io/eos.git"
+  _BRANCH: v2.0.5wax01-dm-12.0 # Can be either a tag or a branch, branch can be used when "testing" stuff out
+  _VERSION: v2.0.5wax01-dm-12.0
   _IMAGE_TAG: ubuntu-18.04
   _OS: ubuntu-18.04
   _PKGTYPE: deb
@@ -131,36 +131,57 @@ steps:
   - name: 'git'
     path: '/git'
 
-# Perform the actual build/test step of the project
-- id: deep-mind-nodeos-tests
-  name: gcr.io/$PROJECT_ID/eosio-wax-prod:${_VERSION}-${_OS}
-  entrypoint: bash
-  args:
-  - '-cxe'
-  - |
-    if [[ "${_VERSION}" =~ "dm" ]]; then
-      cd /workspace/deep-mind/compare
-      SKIP_GO_TESTS=y ./run.sh wax-2.x /usr/bin/nodeos
-    fi
-
-- id: deep-mind-go-tests
-  name: gcr.io/cloud-builders/go:debian
-  entrypoint: 'bash'
-  env:
-  - CGO_ENABLED=1
-  - GOPRIVATE=github.com/eoscanada/*,github.com/dfuse-io/*
-  args:
-  - '-cxe'
-  - |
-    if [[ "${_VERSION}" =~ "dm" ]]; then
-      cd /workspace/deep-mind/compare
-      TARGET=wax-2.x go test -v ./...
-    fi
+- id: docker-tag-untested
+  name: gcr.io/cloud-builders/docker
+  args: [
+    'tag',
+    'gcr.io/$PROJECT_ID/eosio-wax-prod:${_VERSION}-${_OS}',
+    'gcr.io/$PROJECT_ID/eosio-wax-prod:${_VERSION}-${_OS}-untested',
+  ]
   volumes:
-  - name: 'ssh'
-    path: /root/.ssh
-  - name: 'git_home'
-    path: /root/.git
+  - name: 'git'
+    path: '/git'
+
+- id: docker-push-untested
+  name: gcr.io/cloud-builders/docker
+  args: [
+    'push',
+    'gcr.io/$PROJECT_ID/eosio-wax-prod:${_VERSION}-${_OS}-untested',
+  ]
+  volumes:
+  - name: 'git'
+    path: '/git'
+
+# Perform the actual build/test step of the project
+# - id: deep-mind-nodeos-tests
+#   name: gcr.io/$PROJECT_ID/eosio-wax-prod:${_VERSION}-${_OS}
+#   entrypoint: bash
+#   args:
+#   - '-cxe'
+#   - |
+#     if [[ "${_VERSION}" =~ "dm" ]]; then
+#       cd /workspace/deep-mind/compare
+#       SKIP_GO_TESTS=y ./run.sh wax-2.x /usr/bin/nodeos
+#     fi
+
+# - id: deep-mind-go-tests
+#   name: gcr.io/cloud-builders/go:debian
+#   entrypoint: 'bash'
+#   env:
+#   - CGO_ENABLED=1
+#   - GOPRIVATE=github.com/eoscanada/*,github.com/dfuse-io/*
+#   args:
+#   - '-cxe'
+#   - |
+#     if [[ "${_VERSION}" =~ "dm" ]]; then
+#       cd /workspace/deep-mind/compare
+#       TARGET=wax-2.x go test -v ./...
+#     fi
+#   volumes:
+#   - name: 'ssh'
+#     path: /root/.ssh
+#   - name: 'git_home'
+#     path: /root/.git
 
 - id: package copy to bucket
   name: gcr.io/cloud-builders/gsutil
