@@ -270,3 +270,16 @@ void battlefield::inlinedeep(
     action cfaNested(std::vector<permission_level>(), "eosio.null"_n, "nonce"_n, std::make_tuple(nestedCfaInlineTag));
     cfaNested.send_context_free();
 }
+
+void battlefield::varianttest(varying value)
+{
+    print("Called on error handler", std::get<uint16_t>(value), "\n");
+
+    tests test_table(_self, _self.value);
+    test_table.emplace("eosio"_n, [&](auto &row) {
+        row.id = 1;
+        row.account = "dbops1"_n;
+        row.memo = "inserted billed to calling account";
+        row.created_at = time_point_sec(current_time_point());
+    });
+}
