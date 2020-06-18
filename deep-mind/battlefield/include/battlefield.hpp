@@ -6,6 +6,7 @@
 
 #include <algorithm>
 #include <string>
+#include <variant>
 
 #include <eosio/eosio.hpp>
 #include <eosio/asset.hpp>
@@ -17,8 +18,8 @@ using eosio::action_wrapper;
 using eosio::asset;
 using eosio::cancel_deferred;
 using eosio::check;
-using eosio::contract;
 using eosio::const_mem_fun;
+using eosio::contract;
 using eosio::current_time_point;
 using eosio::datastream;
 using eosio::indexed_by;
@@ -30,14 +31,16 @@ using eosio::time_point_sec;
 using std::function;
 using std::string;
 
-class[[eosio::contract("battlefield")]] battlefield : public contract
+class [[eosio::contract("battlefield")]] battlefield : public contract
 {
 public:
-    battlefield(name receiver, name code, datastream<const char *> ds)
-        : contract(receiver, code, ds){}
+    typedef std::variant<uint16_t, string> varying;
 
-              [[eosio::action]] void
-              dbins(name account);
+    battlefield(name receiver, name code, datastream<const char *> ds)
+        : contract(receiver, code, ds) {}
+
+    [[eosio::action]] void
+    dbins(name account);
 
     [[eosio::action]] void dbinstwo(name account, uint64_t first, uint64_t second);
 
@@ -62,6 +65,8 @@ public:
     [[eosio::action]] void nestdtrxexec(bool fail);
 
     [[eosio::action]] void nestonerror(bool fail);
+
+    [[eosio::action]] void varianttest(varying value);
 
 #if WITH_ONERROR_HANDLER == 1
     [[eosio::on_notify("eosio::onerror")]] void onerror(eosio::onerror data);
@@ -149,9 +154,38 @@ public:
     using inlinedeep_action = action_wrapper<"inlinedeep"_n, &battlefield::inlinedeep>;
 
 private:
-    struct[[eosio::table]] member_row
+    struct [[eosio::table]] member_row
     {
         uint64_t id;
+        name account;
+        std::variant<int8_t, uint16_t, uint32_t, int32_t> variant_field;
+        asset amount;
+        string memo;
+        time_point_sec created_at;
+        time_point_sec expires_at;
+
+        auto primary_key() const { return id; }
+        uint64_t by_account() const { return account.value; }
+
+        // std::variant<int8_t, uint16_t, uint32_t, int32_t> get_variant_field() const
+        // {
+        //     return std::visit(
+        //         [](auto &&arg) -> std::variant<int8_t, uint16_t, uint32_t, int32_t> {
+        //             return arg;
+        //         },
+        //         variant_field);
+        // }
+    };
+
+    typedef eosio::multi_index<
+        "member"_n, member_row,
+        indexed_by<"byaccount"_n, const_mem_fun<member_row, uint64_t, &member_row::by_account>>>
+        members;
+
+    struct [[eosio::table]] test_row
+    {
+        uint64_t id;
+        std::variant<int8_t, uint16_t, uint32_t, int32_t> variant_field;
         name account;
         asset amount;
         string memo;
@@ -163,7 +197,7 @@ private:
     };
 
     typedef eosio::multi_index<
-        "member"_n, member_row,
-        indexed_by<"byaccount"_n, const_mem_fun<member_row, uint64_t, &member_row::by_account>>>
-        members;
+        "member"_n, test_row,
+        indexed_by<"byaccount"_n, const_mem_fun<test_row, uint64_t, &test_row::by_account>>>
+        tests;
 };
