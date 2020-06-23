@@ -95,28 +95,9 @@ function main() {
     sleep 3.6
   fi
 
-  eosc tx create battlefield1 sktest '{"action":"insert"}' -p battlefield1
-  sleep 0.6
-
-  eosc tx create battlefield1 sktest '{"action":"update.sk"}' -p battlefield1
-  sleep 0.6
-
-  eosc tx create battlefield1 sktest '{"action":"update.ot"}' -p battlefield1
-  sleep 0.6
-
-  eosc tx create battlefield1 sktest '{"action":"remove"}' -p battlefield1
-  sleep 0.6
-
-  # eosc tx create battlefield1 varianttest '{"value":["uint16",12]}' -p battlefield1
-  # eosc tx create battlefield1 varianttest '{"value":["string","this is a long value"]}' -p battlefield1
-  # sleep 1.2
-
   # This takes a lot of time just to complete, and we need around 10s to let it complete fully
   # create_100k_rows
   # sleep 10
-
-
-
 
   # echo -n "Activate protocol feature (WEBAUTHN_KEY)"
   # eosc tx create eosio activate '{"feature_digest":"4fca8bd82bbd181e714e283f83e1b45d95ca5af40fb89ad3977b653c448f78c2"}' -p eosio@active
