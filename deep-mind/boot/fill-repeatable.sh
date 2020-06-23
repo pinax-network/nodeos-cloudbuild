@@ -144,6 +144,26 @@ function main() {
   ## creating a multi-root execution traces tree.
   eosc tx create --force-unique battlefield1 creaorder '{"n1": "notified1", "n2": "notified2", "n3": "notified3", "n4": "notified4", "n5": "notified5"}' -p battlefield1
   sleep 0.6
+
+  ## Series of test for variant support
+
+  eosc tx create battlefield1 varianttest '{"value":["uint16",12]}' -p battlefield1
+  eosc tx create battlefield1 varianttest '{"value":["string","this is a long value"]}' -p battlefield1
+  sleep 0.6
+
+  ## Series of test for secondary keys
+
+  eosc tx create battlefield1 sktest '{"action":"insert"}' -p battlefield1
+  sleep 0.6
+
+  eosc tx create battlefield1 sktest '{"action":"update.sk"}' -p battlefield1
+  sleep 0.6
+
+  eosc tx create battlefield1 sktest '{"action":"update.ot"}' -p battlefield1
+  sleep 0.6
+
+  eosc tx create battlefield1 sktest '{"action":"remove"}' -p battlefield1
+  sleep 0.6
 }
 
 main "$@"

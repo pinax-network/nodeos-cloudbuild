@@ -9,6 +9,7 @@
 #include <variant>
 
 #include <eosio/eosio.hpp>
+#include <eosio/crypto.hpp>
 #include <eosio/asset.hpp>
 #include <eosio/time.hpp>
 #include <eosio/transaction.hpp>
@@ -18,6 +19,7 @@ using eosio::action_wrapper;
 using eosio::asset;
 using eosio::cancel_deferred;
 using eosio::check;
+using eosio::checksum256;
 using eosio::const_mem_fun;
 using eosio::contract;
 using eosio::current_time_point;
@@ -34,7 +36,7 @@ using std::string;
 class [[eosio::contract("battlefield")]] battlefield : public contract
 {
 public:
-    typedef std::variant<uint16_t, string> varying;
+    typedef std::variant<uint16_t, string> varying_action;
 
     battlefield(name receiver, name code, datastream<const char *> ds)
         : contract(receiver, code, ds) {}
@@ -66,7 +68,11 @@ public:
 
     [[eosio::action]] void nestonerror(bool fail);
 
-    [[eosio::action]] void varianttest(varying value);
+    [[eosio::action]] void varianttest(varying_action value);
+
+    [[eosio::action]] void producerows(uint64_t row_count);
+
+    [[eosio::action]] void sktest(name action);
 
 #if WITH_ONERROR_HANDLER == 1
     [[eosio::on_notify("eosio::onerror")]] void onerror(eosio::onerror data);
@@ -158,7 +164,6 @@ private:
     {
         uint64_t id;
         name account;
-        std::variant<int8_t, uint16_t, uint32_t, int32_t> variant_field;
         asset amount;
         string memo;
         time_point_sec created_at;
@@ -166,15 +171,6 @@ private:
 
         auto primary_key() const { return id; }
         uint64_t by_account() const { return account.value; }
-
-        // std::variant<int8_t, uint16_t, uint32_t, int32_t> get_variant_field() const
-        // {
-        //     return std::visit(
-        //         [](auto &&arg) -> std::variant<int8_t, uint16_t, uint32_t, int32_t> {
-        //             return arg;
-        //         },
-        //         variant_field);
-        // }
     };
 
     typedef eosio::multi_index<
@@ -182,22 +178,51 @@ private:
         indexed_by<"byaccount"_n, const_mem_fun<member_row, uint64_t, &member_row::by_account>>>
         members;
 
-    struct [[eosio::table]] test_row
+    struct [[eosio::table]] variant_row
     {
         uint64_t id;
         std::variant<int8_t, uint16_t, uint32_t, int32_t> variant_field;
-        name account;
-        asset amount;
-        string memo;
-        time_point_sec created_at;
-        time_point_sec expires_at;
+        uint64_t creation_number;
 
         auto primary_key() const { return id; }
-        uint64_t by_account() const { return account.value; }
     };
 
-    typedef eosio::multi_index<
-        "member"_n, test_row,
-        indexed_by<"byaccount"_n, const_mem_fun<test_row, uint64_t, &test_row::by_account>>>
-        tests;
+    typedef eosio::multi_index<"variant"_n, variant_row> variers;
+
+    // condary_index_db_functions< double >
+    // struct secondary_index_db_functions< eosio::fixed_bytes< 32 > >
+    // struct secondary_index_db_functions< long double >
+    // struct secondary_index_db_functions< uint128_t >
+    // struct secondary_index_db_functions< uint64_t >
+
+    struct [[eosio::table]] sk_row
+    {
+        uint64_t id;
+        uint64_t i64;
+        uint128_t i128;
+        double d64;
+        long double d128;
+        checksum256 c256;
+        uint64_t unrelated;
+
+        auto primary_key() const { return id; }
+        uint64_t by_i64() const { return i64; }
+        uint128_t by_i128() const { return i128; }
+        double by_d64() const { return d64; }
+        long double by_d128() const { return d128; }
+        checksum256 by_c256() const { return c256; }
+    };
+
+    typedef eosio::multi_index<"sk.i"_n, sk_row, indexed_by<"i"_n, const_mem_fun<sk_row, uint64_t, &sk_row::by_i64>>> sk_i64;
+    typedef eosio::multi_index<"sk.ii"_n, sk_row, indexed_by<"ii"_n, const_mem_fun<sk_row, uint128_t, &sk_row::by_i128>>> sk_i128;
+    typedef eosio::multi_index<"sk.d"_n, sk_row, indexed_by<"d"_n, const_mem_fun<sk_row, double, &sk_row::by_d64>>> sk_d64;
+    typedef eosio::multi_index<"sk.dd"_n, sk_row, indexed_by<"dd"_n, const_mem_fun<sk_row, long double, &sk_row::by_d128>>> sk_d128;
+    typedef eosio::multi_index<"sk.c"_n, sk_row, indexed_by<"c"_n, const_mem_fun<sk_row, checksum256, &sk_row::by_c256>>> sk_c256;
+
+    typedef eosio::multi_index<"sk.multi"_n, sk_row,
+                               indexed_by<"i"_n, const_mem_fun<sk_row, uint64_t, &sk_row::by_i64>>,
+                               indexed_by<"ii"_n, const_mem_fun<sk_row, uint128_t, &sk_row::by_i128>>,
+                               indexed_by<"d"_n, const_mem_fun<sk_row, double, &sk_row::by_d64>>,
+                               indexed_by<"dd"_n, const_mem_fun<sk_row, long double, &sk_row::by_d128>>>
+        sk_multi;
 };

@@ -3,7 +3,7 @@
     "version": "eosio::abi/1.1",
     "types": [
         {
-            "new_type_name": "varying",
+            "new_type_name": "varying_action",
             "type": "variant_uint16_string"
         }
     ],
@@ -219,10 +219,6 @@
                     "type": "name"
                 },
                 {
-                    "name": "variant_field",
-                    "type": "variant_int8_uint16_uint32_int32"
-                },
-                {
                     "name": "amount",
                     "type": "asset"
                 },
@@ -261,7 +257,61 @@
             ]
         },
         {
-            "name": "test_row",
+            "name": "producerows",
+            "base": "",
+            "fields": [
+                {
+                    "name": "row_count",
+                    "type": "uint64"
+                }
+            ]
+        },
+        {
+            "name": "sk_row",
+            "base": "",
+            "fields": [
+                {
+                    "name": "id",
+                    "type": "uint64"
+                },
+                {
+                    "name": "i64",
+                    "type": "uint64"
+                },
+                {
+                    "name": "i128",
+                    "type": "uint128"
+                },
+                {
+                    "name": "d64",
+                    "type": "float64"
+                },
+                {
+                    "name": "d128",
+                    "type": "float128"
+                },
+                {
+                    "name": "c256",
+                    "type": "checksum256"
+                },
+                {
+                    "name": "unrelated",
+                    "type": "uint64"
+                }
+            ]
+        },
+        {
+            "name": "sktest",
+            "base": "",
+            "fields": [
+                {
+                    "name": "action",
+                    "type": "name"
+                }
+            ]
+        },
+        {
+            "name": "variant_row",
             "base": "",
             "fields": [
                 {
@@ -273,24 +323,8 @@
                     "type": "variant_int8_uint16_uint32_int32"
                 },
                 {
-                    "name": "account",
-                    "type": "name"
-                },
-                {
-                    "name": "amount",
-                    "type": "asset"
-                },
-                {
-                    "name": "memo",
-                    "type": "string"
-                },
-                {
-                    "name": "created_at",
-                    "type": "time_point_sec"
-                },
-                {
-                    "name": "expires_at",
-                    "type": "time_point_sec"
+                    "name": "creation_number",
+                    "type": "uint64"
                 }
             ]
         },
@@ -300,7 +334,7 @@
             "fields": [
                 {
                     "name": "value",
-                    "type": "varying"
+                    "type": "varying_action"
                 }
             ]
         }
@@ -372,6 +406,16 @@
             "ricardian_contract": ""
         },
         {
+            "name": "producerows",
+            "type": "producerows",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "sktest",
+            "type": "sktest",
+            "ricardian_contract": ""
+        },
+        {
             "name": "varianttest",
             "type": "varianttest",
             "ricardian_contract": ""
@@ -386,8 +430,50 @@
             "key_types": []
         },
         {
-            "name": "test_row",
-            "type": "test_row",
+            "name": "sk.c",
+            "type": "sk_row",
+            "index_type": "i64",
+            "key_names": [],
+            "key_types": []
+        },
+        {
+            "name": "sk.d",
+            "type": "sk_row",
+            "index_type": "i64",
+            "key_names": [],
+            "key_types": []
+        },
+        {
+            "name": "sk.dd",
+            "type": "sk_row",
+            "index_type": "i64",
+            "key_names": [],
+            "key_types": []
+        },
+        {
+            "name": "sk.i",
+            "type": "sk_row",
+            "index_type": "i64",
+            "key_names": [],
+            "key_types": []
+        },
+        {
+            "name": "sk.ii",
+            "type": "sk_row",
+            "index_type": "i64",
+            "key_names": [],
+            "key_types": []
+        },
+        {
+            "name": "sk.multi",
+            "type": "sk_row",
+            "index_type": "i64",
+            "key_names": [],
+            "key_types": []
+        },
+        {
+            "name": "variant",
+            "type": "variant_row",
             "index_type": "i64",
             "key_names": [],
             "key_types": []

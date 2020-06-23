@@ -42,7 +42,12 @@ function main() {
 
   rm -rf "$ROOT/$target/blocks/" "$ROOT/$target/state/"
 
-  ($eos_bin --data-dir="$ROOT/$target" --config-dir="$ROOT/$target" --genesis-json="$ROOT/$target/genesis.json" 1> $deep_mind_log_file 2> $nodeos_log_file) &
+  extra_args=
+  if [[ $DEEP_MIND == "true" ]]; then
+    extra_args="--deep-mind"
+  fi
+
+  ($eos_bin $extra_args --data-dir="$ROOT/$target" --config-dir="$ROOT/$target" --genesis-json="$ROOT/$target/genesis.json" 1> $deep_mind_log_file 2> $nodeos_log_file) &
   nodeos_pid=$!
 
   export EOSC_GLOBAL_INSECURE_VAULT_PASSPHRASE=secure
@@ -63,28 +68,55 @@ function main() {
   # eosc system updateauth notified2 active owner "$ROOT"/active_auth_notified2.yaml
   # sleep 0.6
 
-  known_features=`curl -s "$EOSC_GLOBAL_API_URL/v1/producer/get_supported_protocol_features" | jq -cr '.[]'`
+  if [[ $SKIP_FEATURES != "true" ]]; then
+    echo "Updating all protocol features..."
 
-  echo ""
-  echo "Available protocol features"
-  echo $known_features | jq -r '. | "- \(.specification[].value) (Digest \(.feature_digest))"'
+    known_features=`curl -s "$EOSC_GLOBAL_API_URL/v1/producer/get_supported_protocol_features" | jq -cr '.[]'`
 
-  echo ""
-  echo "Activating protocol features"
-  curl -s -X POST "$EOSC_GLOBAL_API_URL/v1/producer/schedule_protocol_feature_activations" -d '{"protocol_features_to_activate": ["0ec7e080177b2c02b278d5088611686b49d739925a92d9bfcacd7fc6b74053bd"]}' > /dev/null
-  eosc system setcontract eosio contracts/eosio.system-1.7.0-rc1.wasm contracts/eosio.system-1.7.0-rc1.abi
-  sleep 1.8
+    echo ""
+    echo "Available protocol features"
+    echo $known_features | jq -r '. | "- \(.specification[].value) (Digest \(.feature_digest))"'
 
-  # This activates all known protocol features (RAM correction operations, WebAuthN keys, WTMSIG blocks, etc)
-  echo ""
-  echo "Activating all protocol features"
-  for feature in `echo $known_features | jq -c . | grep -v "0ec7e080177b2c02b278d5088611686b49d739925a92d9bfcacd7fc6b74053bd"`; do
-    digest=`echo "$feature" | jq -cr .feature_digest`
-    eosc tx create eosio activate "{\"feature_digest\":\"$digest\"}" -p eosio@active
-  done
+    echo ""
+    echo "Activating protocol features"
+    curl -s -X POST "$EOSC_GLOBAL_API_URL/v1/producer/schedule_protocol_feature_activations" -d '{"protocol_features_to_activate": ["0ec7e080177b2c02b278d5088611686b49d739925a92d9bfcacd7fc6b74053bd"]}' > /dev/null
+    eosc system setcontract eosio contracts/eosio.system-1.7.0-rc1.wasm contracts/eosio.system-1.7.0-rc1.abi
+    sleep 1.8
 
-  # Activating all protocol features requires around 6 blocks to complete, so let's give 7 for a small buffer
-  sleep 3.6
+    # This activates all known protocol features (RAM correction operations, WebAuthN keys, WTMSIG blocks, etc)
+    echo ""
+    echo "Activating all protocol features"
+    for feature in `echo $known_features | jq -c . | grep -v "0ec7e080177b2c02b278d5088611686b49d739925a92d9bfcacd7fc6b74053bd"`; do
+      digest=`echo "$feature" | jq -cr .feature_digest`
+      eosc tx create eosio activate "{\"feature_digest\":\"$digest\"}" -p eosio@active
+    done
+
+    # Activating all protocol features requires around 6 blocks to complete, so let's give 7 for a small buffer
+    sleep 3.6
+  fi
+
+  eosc tx create battlefield1 sktest '{"action":"insert"}' -p battlefield1
+  sleep 0.6
+
+  eosc tx create battlefield1 sktest '{"action":"update.sk"}' -p battlefield1
+  sleep 0.6
+
+  eosc tx create battlefield1 sktest '{"action":"update.ot"}' -p battlefield1
+  sleep 0.6
+
+  eosc tx create battlefield1 sktest '{"action":"remove"}' -p battlefield1
+  sleep 0.6
+
+  # eosc tx create battlefield1 varianttest '{"value":["uint16",12]}' -p battlefield1
+  # eosc tx create battlefield1 varianttest '{"value":["string","this is a long value"]}' -p battlefield1
+  # sleep 1.2
+
+  # This takes a lot of time just to complete, and we need around 10s to let it complete fully
+  # create_100k_rows
+  # sleep 10
+
+
+
 
   # echo -n "Activate protocol feature (WEBAUTHN_KEY)"
   # eosc tx create eosio activate '{"feature_digest":"4fca8bd82bbd181e714e283f83e1b45d95ca5af40fb89ad3977b653c448f78c2"}' -p eosio@active
@@ -163,10 +195,18 @@ function main() {
 
   # Print Log Files
   echo "Inspect log files"
-  echo " Deep Mind logs: cat $deep_mind_log_file"
+  if [[ $DEEP_MIND == "true" ]]; then
+    echo " Deep Mind logs: cat $deep_mind_log_file"
+  fi
   echo " Nodeos logs: cat $nodeos_log_file"
   echo " eosc boot logs: cat $eosc_boot_log_file"
   echo ""
+}
+
+create_100k_rows() {
+  for ((i=1;i<=400;i++)); do
+    eosc tx create -f battlefield1 producerows '{"row_count":250}' -p battlefield1
+  done
 }
 
 main $@
