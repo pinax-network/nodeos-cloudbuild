@@ -62,11 +62,18 @@ function main() {
 
   echo "Booting completed, launching test cases..."
 
-  # echo "Setting eosio.code permissions on contract accounts (Account for commit d8fa7c0, which shields from mis-used authority)"
-  # eosc system updateauth battlefield1 active owner "$ROOT"/active_auth_battlefield1.yaml
-  # eosc system updateauth battlefield3 active owner "$ROOT"/active_auth_battlefield3.yaml
-  # eosc system updateauth notified2 active owner "$ROOT"/active_auth_notified2.yaml
-  # sleep 0.6
+  echo "Setting eosio.code permissions on contract accounts (Account for commit d8fa7c0, which shields from mis-used authority)"
+  eosc system updateauth battlefield1 active owner "$ROOT"/perms/battlefield1_active_auth.yaml
+  eosc system updateauth battlefield3 active owner "$ROOT"/perms/battlefield3_active_auth.yaml
+  eosc system updateauth battlefield4 active owner "$ROOT"/perms/battlefield4_active_auth.yaml
+  eosc system updateauth battlefield5 active owner "$ROOT"/perms/battlefield5_active_auth.yaml
+  eosc system updateauth battlefield5 claimer active "$ROOT"/perms/battlefield5_claimer_auth.yaml
+  eosc system updateauth battlefield5 day2day active "$ROOT"/perms/battlefield5_day2day_auth.yaml
+  eosc system updateauth notified2 active owner "$ROOT"/perms/notified2_active_auth.yaml
+  eosc system linkauth battlefield5 eosio regproducer day2day -p battlefield5@active
+  eosc system linkauth battlefield5 eosio unregprod day2day -p battlefield5@active
+  eosc system linkauth battlefield5 eosio claimrewards day2day -p battlefield5@active
+  sleep 0.6
 
   if [[ $SKIP_FEATURES != "true" ]]; then
     echo "Updating all protocol features..."

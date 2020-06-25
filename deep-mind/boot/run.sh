@@ -63,9 +63,16 @@ function main() {
   echo "Booting completed, launching test cases..."
 
   echo "Setting eosio.code permissions on contract accounts (Account for commit d8fa7c0, which shields from mis-used authority)"
-  eosc system updateauth battlefield1 active owner "$ROOT"/active_auth_battlefield1.yaml
-  eosc system updateauth battlefield3 active owner "$ROOT"/active_auth_battlefield3.yaml
-  eosc system updateauth notified2 active owner "$ROOT"/active_auth_notified2.yaml
+  eosc system updateauth battlefield1 active owner "$ROOT"/perms/battlefield1_active_auth.yaml
+  eosc system updateauth battlefield3 active owner "$ROOT"/perms/battlefield3_active_auth.yaml
+  eosc system updateauth notified2 active owner "$ROOT"/perms/notified2_active_auth.yaml
+  eosc system updateauth battlefield4 active owner "$ROOT"/perms/battlefield4_active_auth.yaml
+  eosc system updateauth battlefield5 active owner "$ROOT"/perms/battlefield5_active_auth.yaml
+  eosc system updateauth battlefield5 claimer active "$ROOT"/perms/battlefield5_claimer_auth.yaml
+  eosc system updateauth battlefield5 day2day active "$ROOT"/perms/battlefield5_day2day_auth.yaml
+  eosc system linkauth battlefield5 eosio regproducer day2day -p battlefield5@active
+  eosc system linkauth battlefield5 eosio unregprod day2day -p battlefield5@active
+  eosc system linkauth battlefield5 eosio claimrewards day2day -p battlefield5@active
   sleep 0.6
 
   eosc transfer eosio battlefield1 12345678 --memo "battlefield boot"
@@ -152,12 +159,16 @@ function main() {
   # the following snippets will work.
   #
   # @matt
-  WEBAUTHN_PUBLIC_KEY="PUB_WA_7qjMn38M4Q6s8wamMcakZSXLm4vDpHcLqcehnWKb8TJJUMzpEZNw41pTLk6Uhqp7p"
+  # WEBAUTHN_PUBLIC_KEY="PUB_WA_7qjMn38M4Q6s8wamMcakZSXLm4vDpHcLqcehnWKb8TJJUMzpEZNw41pTLk6Uhqp7p"
   # @stepd
-  #WEBAUTHN_PUBLIC_KEY="PUB_WA_6GDu4dfQvfgGgKWvF51pS1HxewFf3e7LQeVh7GqKbX5P5ZrzN4gtBajXBdj6R9kDk"
+  # WEBAUTHN_PUBLIC_KEY="PUB_WA_6GDu4dfQvfgGgKWvF51pS1HxewFf3e7LQeVh7GqKbX5P5ZrzN4gtBajXBdj6R9kDk"
+  # @julien
+  WEBAUTHN_PUBLIC_KEY="PUB_WA_69UgrAmzcfTKUvJ5vbQ41GsdPMjopig6kgo6nhgntzp9QZEziFsUVGVCu2m9Q1L5D"
 
-  eosc system newaccount eosio battlefield4 --auth-key $WEBAUTHN_PUBLIC_KEY --stake-cpu 1 --stake-net 1 --transfer
-  eosc transfer eosio battlefield4 "200.0000 EOS"
+
+  # if the account name change, it needs to be reflected in webauthn_signer/src/index.ts
+  eosc system newaccount eosio battlefeeld4 --auth-key $WEBAUTHN_PUBLIC_KEY --stake-cpu 1 --stake-net 1 --transfer
+  eosc transfer eosio battlefeeld4 "200.0000 EOS"
   sleep 0.6
 
   ## WebAuthN Signing
@@ -169,7 +180,7 @@ function main() {
   echo ""
   echo "About to push a WebAuthN signed transaction"
   cd webauthn_signer
-  yarn -s run transfer || true
+  yarn -s run transfer
   sleep 0.6
   cd ..
 

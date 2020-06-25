@@ -154,6 +154,27 @@ boot_sequence:
     pubkey: ephemeral
 
 - op: system.newaccount
+  label: Create account battlefield4
+  data:
+    creator: eosio
+    new_account: battlefield4
+    pubkey: ephemeral
+
+- op: system.newaccount
+  label: Create account battlefield5
+  data:
+    creator: eosio
+    new_account: battlefield5
+    pubkey: ephemeral
+
+- op: system.newaccount
+  label: Create account battlefield6
+  data:
+    creator: eosio
+    new_account: battlefield6
+    pubkey: ephemeral
+
+- op: system.newaccount
   label: Create account notified1
   data:
     creator: eosio
