@@ -27,7 +27,10 @@ deep-mind.dmlog
 diff.patch
 eosc-boot.log
 nodeos.log
-output.jsonl
 output.log
+reference.log
+output.jsonl
 output.stats.json
+actual.dmlog
+actual.json
 webauthn_keys_db.json

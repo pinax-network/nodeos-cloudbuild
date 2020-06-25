@@ -152,36 +152,35 @@ steps:
   - name: 'git'
     path: '/git'
 
-# Perform the actual build/test step of the project
-# - id: deep-mind-nodeos-tests
-#   name: gcr.io/$PROJECT_ID/eosio-eos-prod:${_VERSION}-${_OS}
-#   entrypoint: bash
-#   args:
-#   - '-cxe'
-#   - |
-#     if [[ "${_VERSION}" =~ "dm" ]]; then
-#       cd /workspace/deep-mind/compare
-#       SKIP_GO_TESTS=y ./run.sh eos-2.x /usr/bin/nodeos
-#     fi
+- id: deep-mind-nodeos-tests
+  name: gcr.io/$PROJECT_ID/eosio-eos-prod:${_VERSION}-${_OS}
+  entrypoint: bash
+  args:
+  - '-cxe'
+  - |
+    if [[ "${_VERSION}" =~ "dm" ]]; then
+      cd /workspace/deep-mind/compare
+      RUN_MODE=only_generate ./run.sh eos-2.x /usr/bin/nodeos
+    fi
 
-# - id: deep-mind-go-tests
-#   name: gcr.io/cloud-builders/go:debian
-#   entrypoint: 'bash'
-#   env:
-#   - CGO_ENABLED=1
-#   - GOPRIVATE=github.com/eoscanada/*,github.com/dfuse-io/*
-#   args:
-#   - '-cxe'
-#   - |
-#     if [[ "${_VERSION}" =~ "dm" ]]; then
-#       cd /workspace/deep-mind/compare
-#       TARGET=eos-2.x go test -v ./...
-#     fi
-#   volumes:
-#   - name: 'ssh'
-#     path: /root/.ssh
-#   - name: 'git_home'
-#     path: /root/.git
+- id: deep-mind-go-tests
+  name: gcr.io/cloud-builders/go:debian
+  entrypoint: 'bash'
+  env:
+  - CGO_ENABLED=1
+  - GOPRIVATE=github.com/eoscanada/*,github.com/dfuse-io/*
+  args:
+  - '-cxe'
+  - |
+    if [[ "${_VERSION}" =~ "dm" ]]; then
+      cd /workspace/deep-mind/compare
+      RUN_MODE=only_compare ./run.sh eos-2.x
+    fi
+  volumes:
+  - name: 'ssh'
+    path: /root/.ssh
+  - name: 'git_home'
+    path: /root/.git
 
 - id: package copy to bucket
   name: gcr.io/cloud-builders/gsutil
