@@ -7,7 +7,6 @@ CURRENT=`pwd`
 PID=
 CONTAINER_NAME=
 
-
 finish() {
     set +e
     echo "Cleaning up"
