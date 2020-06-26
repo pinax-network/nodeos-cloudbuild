@@ -58,7 +58,7 @@ func main() {
 		os.Exit(0)
 	}
 
-	cmd := exec.Command("bash", "-c", fmt.Sprintf("diff -C 5 %s %s | less", actualJSONFile, expectedJSONFile))
+	cmd := exec.Command("bash", "-c", fmt.Sprintf("diff -C 5 %s %s | less", expectedJSONFile, actualJSONFile))
 
 	showDiff, wasAnswered := askQuestion(`File %q and %q differs, do you want to see the difference now`, expectedJSONFile, actualJSONFile)
 	if wasAnswered && showDiff {
