@@ -23,6 +23,11 @@ main() {
       exit 1
   fi
 
+  # We have two modes because in the Cloudbuild tests, we need two different container images
+  # to actually run the tests. We first need the newly built EOSIO image which contains the nodeos
+  # binary. But this image does not contain Golang, so we need a second step that uses Golang
+  # container to actual run the Go code that compares the generated dmlog with the expected
+  # element.
   run_mode=${RUN_MODE:-"all"}
 
   if [[ ${run_mode} == "all" || ${run_mode} == "only_generate" ]]; then

@@ -18,6 +18,7 @@ import (
 	"github.com/dfuse-io/logging"
 	"github.com/golang/protobuf/ptypes"
 	pbts "github.com/golang/protobuf/ptypes/timestamp"
+	"github.com/klauspost/compress/zstd"
 	"github.com/lithammer/dedent"
 	"github.com/manifoldco/promptui"
 	"github.com/stretchr/testify/assert"
@@ -46,6 +47,9 @@ func main() {
 	actualDmlogFile := filepath.Join(target, "actual.dmlog")
 	actualJSONFile := filepath.Join(target, "actual.json")
 	expectedJSONFile := filepath.Join(target, "expected.json")
+
+	err := uncompressFile(expectedJSONFile)
+	noError(err, "unable to uncompress file")
 
 	actualBlocks := readActualBlocks(actualDmlogFile)
 	zlog.Info("read all blocks from dmlog file", zap.Int("block_count", len(actualBlocks)), zap.String("file", actualDmlogFile))
@@ -86,11 +90,15 @@ func main() {
 		_, err = io.Copy(outFile, inFile)
 		noError(err, "Unable to copy file %q to %q", actualJSONFile, expectedJSONFile)
 
+		err = compressFile(expectedJSONFile)
+		noError(err, "Unable to compress file %q", expectedJSONFile)
+
 		fmt.Printf("The file %q is now the new expected file\n", actualJSONFile)
 	} else {
 		fmt.Printf("You can make actual file %q the new expected file manually by doing:\n", actualJSONFile)
 		fmt.Println("")
 		fmt.Printf("    cp %s %s\n", actualJSONFile, expectedJSONFile)
+		fmt.Printf("    zstd %s\n", expectedJSONFile)
 		fmt.Println("")
 	}
 
@@ -276,6 +284,35 @@ func askQuestion(label string, args ...interface{}) (answeredYes bool, wasAnswer
 	wasAnswered = true
 	answeredYes = strings.ToLower(result) == "y" || strings.ToLower(result) == "yes"
 	return
+}
+
+func compressFile(file string) error {
+	compressedFile := file + ".zst"
+	encoder, _ := zstd.NewWriter(nil)
+
+	content, err := ioutil.ReadFile(file)
+	if err != nil {
+		return fmt.Errorf("unable to read file %q: %w", file, err)
+	}
+
+	return ioutil.WriteFile(compressedFile, encoder.EncodeAll(content, nil), os.ModePerm)
+}
+
+func uncompressFile(file string) error {
+	compressedFile := file + ".zst"
+	decoder, _ := zstd.NewReader(nil)
+
+	content, err := ioutil.ReadFile(compressedFile)
+	if err != nil {
+		return fmt.Errorf("unable to read file %q: %w", compressedFile, err)
+	}
+
+	buf, err := decoder.DecodeAll(content, make([]byte, 0, len(content)))
+	if err != nil {
+		return fmt.Errorf("unable to decode file %q: %w", compressedFile, err)
+	}
+
+	return ioutil.WriteFile(file, buf, os.ModePerm)
 }
 
 func fileExists(path string) bool {
