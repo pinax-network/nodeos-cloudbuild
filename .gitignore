@@ -33,4 +33,7 @@ output.jsonl
 output.stats.json
 actual.dmlog
 actual.json
+expected.json
+expected.dmlog
+expected.dmlog.zst
 webauthn_keys_db.json
