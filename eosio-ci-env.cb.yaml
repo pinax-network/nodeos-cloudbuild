@@ -86,7 +86,9 @@ steps:
   - PLATFORM_TYPE=pinned
   - IMAGE_TAG=${_IMAGE_TAG}-pinned
   - FORCE_BASE_IMAGE=true
-  - IMAGE_NAME=gcr.io/${PROJECT_ID}/eosio-ci
+  # Supports for both <= 2.0.7 and >= 2.0.8
+  - IMAGE_NAME=gcr.io/${PROJECT_ID}/eosio-ci        # Used by <= 2.0.7
+  - MIRROR_REGISTRY=gcr.io/${PROJECT_ID}/eosio-ci   # Used by >= 2.0.8
   args:
   - '-cxe'
   - |

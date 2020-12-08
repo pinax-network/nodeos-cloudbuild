@@ -82,9 +82,12 @@ steps:
   env:
   # The ARGS is used for `docker run <ARGS>` part, and in CloudBuild, the source mount volume must be the volume name not the path! See `volumes`
   - ARGS=--rm --init -v git:/workdir
+  - MOUNTED_DIR=/workdir
   - PLATFORM_TYPE=pinned
   - IMAGE_TAG=${_IMAGE_TAG}-pinned
-  - IMAGE_NAME=gcr.io/${PROJECT_ID}/eosio-ci
+  # Supports for both <= 2.0.7 and >= 2.0.8
+  - IMAGE_NAME=gcr.io/${PROJECT_ID}/eosio-ci        # Used by <= 2.0.7
+  - MIRROR_REGISTRY=gcr.io/${PROJECT_ID}/eosio-ci   # Used by >= 2.0.8
   args:
   - '-cxe'
   - |
@@ -102,11 +105,14 @@ steps:
   env:
   # The ARGS is used for `docker run <ARGS>` part, and in CloudBuild, the source mount volume must be the volume name not the path! See `volumes`
   - ARGS=--rm --init -v git:/workdir
+  - MOUNTED_DIR=/workdir
   - PLATFORM_TYPE=pinned
   - IMAGE_TAG=${_IMAGE_TAG}-pinned
   - OS=${_OS}
   - PKGTYPE=${_PKGTYPE}
-  - IMAGE_NAME=gcr.io/${PROJECT_ID}/eosio-ci
+  # Supports for both <= 2.0.7 and >= 2.0.8
+  - IMAGE_NAME=gcr.io/${PROJECT_ID}/eosio-ci        # Used by <= 2.0.7
+  - MIRROR_REGISTRY=gcr.io/${PROJECT_ID}/eosio-ci   # Used by >= 2.0.8
   args:
   - '-cxe'
   - |
