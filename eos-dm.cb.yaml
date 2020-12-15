@@ -168,7 +168,7 @@ steps:
   args:
   - '-cxe'
   - |
-    if [[ "${_VERSION}" =~ "dm" && ! "${_VERSION}" =~ "dm.13" ]]; then
+    if [[ "${_VERSION}" =~ "dm" && ! "${_VERSION}" =~ "dm.13" && ! "${_VERSION}" =~ "v2.1." ]]; then
       cd /workspace/deep-mind/compare
       RUN_MODE=only_generate ./run.sh eos-2.x /usr/bin/nodeos
     fi
@@ -182,7 +182,7 @@ steps:
   args:
   - '-cxe'
   - |
-    if [[ "${_VERSION}" =~ "dm" && ! "${_VERSION}" =~ "dm.13" ]]; then
+    if [[ "${_VERSION}" =~ "dm" && ! "${_VERSION}" =~ "dm.13" && ! "${_VERSION}" =~ "v2.1." ]]; then
       cd /workspace/deep-mind/compare
       RUN_MODE=only_compare ./run.sh eos-2.x
     fi

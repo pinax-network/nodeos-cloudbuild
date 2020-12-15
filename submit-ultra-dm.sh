@@ -6,12 +6,13 @@ export CLOUDSDK_CORE_PROJECT=eoscanada-shared-services
 
 # CentOS 7.7
 if [[ $BUILD_ALL == true ]]; then
-    gcloud builds submit . \
-        --config ultra-dm.cb.yaml \
-        --substitutions _IMAGE_TAG=centos-7.7,_OS=el7,_PKGTYPE=rpm \
-        --timeout 1h \
-        --machine-type=n1-highcpu-32 \
-        --async
+    echo "CentOS 7 base image broken, build disabled, librdkafka does not properly compiled in it, see details in file 'submit-ultra-ci-env.sh'"
+    # gcloud builds submit . \
+    #     --config ultra-dm.cb.yaml \
+    #     --substitutions _IMAGE_TAG=centos-7.7,_OS=el7,_PKGTYPE=rpm \
+    #     --timeout 1h \
+    #     --machine-type=n1-highcpu-32 \
+    #     --async
 fi
 
 # Ubuntu 16.04

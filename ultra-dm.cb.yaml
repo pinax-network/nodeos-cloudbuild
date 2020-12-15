@@ -52,6 +52,9 @@ steps:
 
     git config --global --add url."git@github.com:dfuse-io/".insteadOf "https://github.com/dfuse-io/"
     git config --global --add url."git@github.com:eoscanada/".insteadOf "https://github.com/eoscanada/"
+
+    # Use our own fork of ultra-fc for now since CloubBuild credentials doesn't have access to this ...
+    git config --global --add url."git@github.com:dfuse-io/eosio-fc-private".insteadOf "git@github.com:ultraio/ultra-fc"
   volumes:
   - name: 'ssh'
     path: /root/.ssh
@@ -99,6 +102,33 @@ steps:
   - name: 'git'
     path: '/git'
 
+- id: extract librdkafka.so libraries
+  name: gcr.io/cloud-builders/docker
+  entrypoint: 'bash'
+  env:
+  # FIXME: Building 2.0.8 will require to update `ARGS=--rm --init -v git:/workdir` to `ARGS=--rm --init -v git:/eos`
+  - ARGS=--rm --init -v git:/workdir
+  - PLATFORM_TYPE=pinned
+  - IMAGE_TAG=${_IMAGE_TAG}-pinned
+  - OS=${_OS}
+  - PKGTYPE=${_PKGTYPE}
+  # Supports for both <= 2.0.7 and >= 2.0.8
+  - IMAGE_NAME=gcr.io/${PROJECT_ID}/eosio-ci        # Used by <= 2.0.7
+  - MIRROR_REGISTRY=gcr.io/${PROJECT_ID}/eosio-ci   # Used by >= 2.0.8
+  args:
+  - '-cxe'
+  - |
+    env
+
+    cd /git
+    . .cicd/helpers/file-hash.sh .cicd/platforms/$$PLATFORM_TYPE/$$IMAGE_TAG.dockerfile
+
+    # The source mount volume must be the volume name not the path!
+    docker run --rm --init -v git:/workdir $$FULL_TAG cp /usr/local/lib/librdkafka.so.1 /workdir/build/packages
+  volumes:
+  - name: 'git'
+    path: '/git'
+
 - id: package distribution
   name: gcr.io/cloud-builders/docker
   entrypoint: 'bash'
@@ -123,6 +153,48 @@ steps:
   volumes:
   - name: 'git'
     path: '/git'
+
+##
+# Those are steps that leverage the `.devops` folder of Ultra repository to build the release. Since our old env
+# was able to actually to build when tweaked to only build `nodeos` and `cleos`, we prefer to use those for now.
+# Left the steps in there in case we are required to change in the future.
+#
+# - id: building source code
+#   name: gcr.io/${PROJECT_ID}/ultra-ci:${_IMAGE_TAG}-latest
+#   entrypoint: 'bash'
+#   args:
+#   - '-cxe'
+#   - |
+#     env
+
+#     cd /git
+
+#     # Remove check of minimal resource during build (7GB RAM and 5GB disk)
+#     cp -p .devops/eosio_build_ubuntu.sh scripts/
+#     chmod +x ./scripts/eosio_build_ubuntu.sh ./scripts/eosio_build.sh ./scripts/eosio_install.sh
+
+#     ./scripts/eosio_build.sh -o Release -s UOS -m -y -P
+#   volumes:
+#   - name: 'git'
+#     path: '/git'
+
+# - id: package distribution
+#   name: gcr.io/${PROJECT_ID}/ultra-ci:${_IMAGE_TAG}-latest
+#   entrypoint: 'bash'
+#   args:
+#   - '-cxe'
+#   - |
+#     env
+
+#     cd /git
+
+#     cp -p .devops/generate_package.sh .devops/generate_deb.sh build/packages/
+#     cd ./build/packages
+#     chmod +x ./generate_package.sh ./generate_deb.sh
+#     ./generate_package.sh deb
+#   volumes:
+#   - name: 'git'
+#     path: '/git'
 
 - id: docker-build-prod
   name: gcr.io/cloud-builders/docker
