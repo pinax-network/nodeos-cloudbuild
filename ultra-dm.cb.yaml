@@ -2,7 +2,7 @@
 substitutions:
   _REPOSITORY: "git@github.com:dfuse-io/eosio-eos-private.git"
   _BRANCH: release/ultra/2.0.x-dm # Can be either a tag or a branch, branch can be used when "testing" stuff out
-  _VERSION: v2.0.7-1.1.0-1-dm.12.0
+  _VERSION: v2.0.9-1.9.0-1-dm.12.0
   _IMAGE_TAG: ubuntu-18.04
   _OS: ubuntu-18.04
   _PKGTYPE: deb
@@ -84,8 +84,8 @@ steps:
   entrypoint: 'bash'
   env:
   # The ARGS is used for `docker run <ARGS>` part, and in CloudBuild, the source mount volume must be the volume name not the path! See `volumes`
-  # FIXME: Building 2.0.8 will require to update `ARGS=--rm --init -v git:/workdir` to `ARGS=--rm --init -v git:/eos`
-  - ARGS=--rm --init -v git:/workdir
+  # FIXME: Building <=2.0.7 will require to update `ARGS=--rm --init -v git:/eos` to `ARGS=--rm --init -v git:/workdir`
+  - ARGS=--rm --init -v git:/eos
   - JOBS=24
   - PLATFORM_TYPE=pinned
   - IMAGE_TAG=${_IMAGE_TAG}-pinned
@@ -107,8 +107,8 @@ steps:
   name: gcr.io/cloud-builders/docker
   entrypoint: 'bash'
   env:
-  # FIXME: Building 2.0.8 will require to update `ARGS=--rm --init -v git:/workdir` to `ARGS=--rm --init -v git:/eos`
-  - ARGS=--rm --init -v git:/workdir
+  # FIXME: Building <=2.0.7 will require to update `ARGS=--rm --init -v git:/eos` to `ARGS=--rm --init -v git:/workdir`
+  - ARGS=--rm --init -v git:/eos
   - PLATFORM_TYPE=pinned
   - IMAGE_TAG=${_IMAGE_TAG}-pinned
   - OS=${_OS}
@@ -125,7 +125,7 @@ steps:
     . .cicd/helpers/file-hash.sh .cicd/platforms/$$PLATFORM_TYPE/$$IMAGE_TAG.dockerfile
 
     # The source mount volume must be the volume name not the path!
-    docker run --rm --init -v git:/workdir $$FULL_TAG cp /usr/local/lib/librdkafka.so.1 /workdir/build/packages
+    docker run --rm --init -v git:/eos $$FULL_TAG cp /usr/local/lib/librdkafka.so.1 /eos/build/packages
   volumes:
   - name: 'git'
     path: '/git'
@@ -135,8 +135,8 @@ steps:
   entrypoint: 'bash'
   env:
   # The ARGS is used for `docker run <ARGS>` part, and in CloudBuild, the source mount volume must be the volume name not the path! See `volumes`
-  # FIXME: Building 2.0.8 will require to update `ARGS=--rm --init -v git:/workdir` to `ARGS=--rm --init -v git:/eos`
-  - ARGS=--rm --init -v git:/workdir
+  # FIXME: Building <=2.0.7 will require to update `ARGS=--rm --init -v git:/eos` to `ARGS=--rm --init -v git:/workdir`
+  - ARGS=--rm --init -v git:/eos
   - PLATFORM_TYPE=pinned
   - IMAGE_TAG=${_IMAGE_TAG}-pinned
   - OS=${_OS}
