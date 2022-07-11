@@ -210,7 +210,7 @@ func sanitizeBlock(block *pbcodec.Block) *pbcodec.Block {
 		sanitizeRLimitOp(rlimitOp)
 	}
 
-	for _, trxTrace := range block.TransactionTraces {
+	for _, trxTrace := range block.TransactionTraces() {
 		trxTrace.Elapsed = 888
 		sanitizeException(trxTrace.Exception)
 
