@@ -15,6 +15,7 @@
 .DS_Store
 .envrc
 .vscode
+.idea
 node_modules
 
 reversible/
