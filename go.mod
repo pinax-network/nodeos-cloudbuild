@@ -15,4 +15,4 @@ require (
 
 go 1.13
 
-replace github.com/dfuse-io/dfuse-eosio => github.com/pinax-network/dfuse-eosio v0.9.0-beta9.0.20220712130007-628a1ddbb59a
+replace github.com/dfuse-io/dfuse-eosio => github.com/pinax-network/dfuse-eosio v0.9.0-beta9.0.20220712132452-37a1353417a0
