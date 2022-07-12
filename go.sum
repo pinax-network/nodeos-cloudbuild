@@ -217,8 +217,6 @@ github.com/deckarep/golang-set v0.0.0-20180603214616-504e848d77ea/go.mod h1:93vs
 github.com/desertbit/timer v0.0.0-20180107155436-c41aec40b27f/go.mod h1:xH/i4TFMt8koVQZ6WFms69WAsDWr2XsYL3Hkl7jkoLE=
 github.com/dfuse-io/derr v0.0.0-20200406214256-c690655246a1/go.mod h1:JW/hUKChGd6ytDtvwx4JFo57m1pnFvMxaq9WbDAb2fQ=
 github.com/dfuse-io/derr v0.0.0-20200417132224-d333cfd0e9a0/go.mod h1:/DjjRCyTi/KIiI1E1hnhvfWwg+K06jo+qM4VcjHvHq4=
-github.com/dfuse-io/dfuse-eosio v0.9.0-beta9.0.20211112053129-2a99c68c949c h1:5QEXel1RJ2A67vDjgiTSFIAP2K4hCVgDuidfmqTNOBw=
-github.com/dfuse-io/dfuse-eosio v0.9.0-beta9.0.20211112053129-2a99c68c949c/go.mod h1:k1A6wDguQw+IRl/vE/KOD8abI+VOmuW/DgP/7jVTPnI=
 github.com/dfuse-io/dgrpc v0.0.0-20200406214416-6271093e544c/go.mod h1:n7pQV0mGBMBgJChGKp5gfRLkP2jSCkT+to7fPxKvQPA=
 github.com/dfuse-io/dtracing v0.0.0-20200406213603-4b0c0063b125/go.mod h1:SA/v5q2RIuah2W5uvVldEUwfFprEhGiw66Id0j68rtw=
 github.com/dfuse-io/eosio-boot v0.0.0-20201007140702-70b54b34c7a2/go.mod h1:D5ZOOlvI5OmSwfLHNMdVmQFIH3hDmnk/3N3WHQuxwPc=
@@ -254,8 +252,7 @@ github.com/eoscanada/eos-go v0.8.5/go.mod h1:RKrm2XzZEZWxSMTRqH5QOyJ1fb/qKEjs2ix
 github.com/eoscanada/eos-go v0.9.1-0.20200227221642-1b19518201a1/go.mod h1:6RuJFiRU1figWZ39M33o2cERU2MdL6VllElYLHTZNeo=
 github.com/eoscanada/eos-go v0.9.1-0.20200415144303-2adb25bcdeca/go.mod h1:exxz2Fyjqx23FIYF1QlhhhggYZxcbZMGp2H/4h7I34Y=
 github.com/eoscanada/eos-go v0.9.1-0.20200723180508-f68c7571db82/go.mod h1:exxz2Fyjqx23FIYF1QlhhhggYZxcbZMGp2H/4h7I34Y=
-github.com/eoscanada/eos-go v0.9.1-0.20210812015252-984fc96878b6 h1:A7WT4j/+oe+w2+z/L2q7EanNN1wdNNMuYLOjY2i17us=
-github.com/eoscanada/eos-go v0.9.1-0.20210812015252-984fc96878b6/go.mod h1:dKlu/HXNPI4I5yD7cITTwzfYLNfVaaFt9Y4VngtnhrY=
+github.com/eoscanada/eos-go v0.10.3-0.20220630190550-10b1d20dd3d8 h1:SdvAb1XropBuDJXoIuA4HCilgaxbQeMedc2iTU3UveA=
 github.com/eoscanada/eos-go v0.10.3-0.20220630190550-10b1d20dd3d8/go.mod h1:vjv+PhinarMNSdUyI9YcNgGIn5VMfCefMMy7ccux5W8=
 github.com/eoscanada/eosc v1.4.0/go.mod h1:0I+yYzRUTbIMgQsBjBYyNdE5idtbUMMkUQM4fN5A3P4=
 github.com/eoscanada/pitreos v1.1.1-0.20210811185752-fa06394508d0/go.mod h1:0HbaqGK5cygDBBm1RQf9J3TMrtr/vyDC6iDSXxOWMNk=
@@ -590,16 +587,6 @@ github.com/pelletier/go-toml v1.2.1-0.20180724185102-c2dbbc24a979/go.mod h1:5z9K
 github.com/peterh/liner v1.1.1-0.20190123174540-a2c9a5303de7/go.mod h1:CRroGNssyjTd/qIG2FyxByd2S8JEAZXBl4qUrZf8GS0=
 github.com/philhofer/fwd v1.0.0/go.mod h1:gk3iGcWd9+svBvR0sR+KPcfE+RNWozjowpeBVG3ZVNU=
 github.com/pierrec/lz4 v2.0.5+incompatible/go.mod h1:pdkljMzZIN41W+lC3N2tnIh5sFi+IEE17M5jbnwPHcY=
-github.com/pinax-network/dfuse-eosio v0.9.0-beta9.0.20220712091711-a7a1c6fed252 h1:EglRjRm5U+9KJyFB4whsBhTTz56komuyTWL4Cnn7XXM=
-github.com/pinax-network/dfuse-eosio v0.9.0-beta9.0.20220712091711-a7a1c6fed252/go.mod h1:k1A6wDguQw+IRl/vE/KOD8abI+VOmuW/DgP/7jVTPnI=
-github.com/pinax-network/dfuse-eosio v0.9.0-beta9.0.20220712125613-c481c7eb4a82 h1:1hFV+bvXT8K43A2s4BTpp74eAoqFoG/rX3TrytiuCb4=
-github.com/pinax-network/dfuse-eosio v0.9.0-beta9.0.20220712125613-c481c7eb4a82/go.mod h1:k1A6wDguQw+IRl/vE/KOD8abI+VOmuW/DgP/7jVTPnI=
-github.com/pinax-network/dfuse-eosio v0.9.0-beta9.0.20220712130007-628a1ddbb59a h1:6tzKHVd05jzG0+TPwnobzrD+njvEw8gZpGHGMXQcBWo=
-github.com/pinax-network/dfuse-eosio v0.9.0-beta9.0.20220712130007-628a1ddbb59a/go.mod h1:k1A6wDguQw+IRl/vE/KOD8abI+VOmuW/DgP/7jVTPnI=
-github.com/pinax-network/dfuse-eosio v0.9.0-beta9.0.20220712132452-37a1353417a0 h1:xOKJLSNTjBlZYyIiEjQgajgLLMphIMW9+f20RgHWVqY=
-github.com/pinax-network/dfuse-eosio v0.9.0-beta9.0.20220712132452-37a1353417a0/go.mod h1:k1A6wDguQw+IRl/vE/KOD8abI+VOmuW/DgP/7jVTPnI=
-github.com/pinax-network/dfuse-eosio v0.9.0-beta9.0.20220712133513-6ae62857eb6a h1:ZEsgfL5oh5umeCrA4y7TPJEHYBQZybHM0ekj2lNc4eA=
-github.com/pinax-network/dfuse-eosio v0.9.0-beta9.0.20220712133513-6ae62857eb6a/go.mod h1:k1A6wDguQw+IRl/vE/KOD8abI+VOmuW/DgP/7jVTPnI=
 github.com/pinax-network/dfuse-eosio v0.9.0-beta9.0.20220712141326-adab51406a3e h1:SEmbLU9CUYjNpfITEFwWfkRhTtLP70cac/bdBLOEUR0=
 github.com/pinax-network/dfuse-eosio v0.9.0-beta9.0.20220712141326-adab51406a3e/go.mod h1:WRkR7lmrtrED5+iasH4ugpP7yD60cqVyAp7KaxjQWQE=
 github.com/pingcap/check v0.0.0-20190102082844-67f458068fc8/go.mod h1:B1+S9LNcuMyLH/4HMTViQOJevkGiik3wW2AN9zb2fNQ=
@@ -1112,8 +1099,8 @@ golang.org/x/sys v0.0.0-20210603081109-ebe580a85c40/go.mod h1:oPkhp1MJrh7nUepCBc
 golang.org/x/sys v0.0.0-20210603125802-9665404d3644/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=
 golang.org/x/sys v0.0.0-20210616094352-59db8d763f22/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=
 golang.org/x/sys v0.0.0-20210630005230-0f9fa26af87c/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=
-golang.org/x/sys v0.0.0-20210806184541-e5e7981a1069 h1:siQdpVirKtzPhKl3lZWozZraCFObP8S1v6PRp0bLrtU=
 golang.org/x/sys v0.0.0-20210806184541-e5e7981a1069/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=
+golang.org/x/sys v0.0.0-20220627191245-f75cf1eec38b h1:2n253B2r0pYSmEV+UNCQoPfU/FiaizQEK5Gu4Bq4JE8=
 golang.org/x/sys v0.0.0-20220627191245-f75cf1eec38b/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=
 golang.org/x/term v0.0.0-20201126162022-7de9c90e9dd1/go.mod h1:bj7SfCRtBDWHUb9snDiAeCFNEtKQo2Wmx5Cou7ajbmo=
 golang.org/x/term v0.0.0-20201210144234-2321bbc49cbf h1:MZ2shdL+ZM/XzY3ZGOnh4Nlpnxz5GSOhOmtHo3iPU6M=
