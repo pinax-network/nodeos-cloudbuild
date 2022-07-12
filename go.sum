@@ -591,6 +591,10 @@ github.com/philhofer/fwd v1.0.0/go.mod h1:gk3iGcWd9+svBvR0sR+KPcfE+RNWozjowpeBVG
 github.com/pierrec/lz4 v2.0.5+incompatible/go.mod h1:pdkljMzZIN41W+lC3N2tnIh5sFi+IEE17M5jbnwPHcY=
 github.com/pinax-network/dfuse-eosio v0.9.0-beta9.0.20220712091711-a7a1c6fed252 h1:EglRjRm5U+9KJyFB4whsBhTTz56komuyTWL4Cnn7XXM=
 github.com/pinax-network/dfuse-eosio v0.9.0-beta9.0.20220712091711-a7a1c6fed252/go.mod h1:k1A6wDguQw+IRl/vE/KOD8abI+VOmuW/DgP/7jVTPnI=
+github.com/pinax-network/dfuse-eosio v0.9.0-beta9.0.20220712125613-c481c7eb4a82 h1:1hFV+bvXT8K43A2s4BTpp74eAoqFoG/rX3TrytiuCb4=
+github.com/pinax-network/dfuse-eosio v0.9.0-beta9.0.20220712125613-c481c7eb4a82/go.mod h1:k1A6wDguQw+IRl/vE/KOD8abI+VOmuW/DgP/7jVTPnI=
+github.com/pinax-network/dfuse-eosio v0.9.0-beta9.0.20220712130007-628a1ddbb59a h1:6tzKHVd05jzG0+TPwnobzrD+njvEw8gZpGHGMXQcBWo=
+github.com/pinax-network/dfuse-eosio v0.9.0-beta9.0.20220712130007-628a1ddbb59a/go.mod h1:k1A6wDguQw+IRl/vE/KOD8abI+VOmuW/DgP/7jVTPnI=
 github.com/pingcap/check v0.0.0-20190102082844-67f458068fc8/go.mod h1:B1+S9LNcuMyLH/4HMTViQOJevkGiik3wW2AN9zb2fNQ=
 github.com/pingcap/check v0.0.0-20200212061837-5e12011dc712/go.mod h1:PYMCGwN0JHjoqGr3HrZoD+b8Tgx8bKnArhSq8YVzUMc=
 github.com/pingcap/errors v0.11.0/go.mod h1:Oi8TUi2kEtXXLMJk9l1cGmz20kV3TaQ0usTwv5KuLY8=
