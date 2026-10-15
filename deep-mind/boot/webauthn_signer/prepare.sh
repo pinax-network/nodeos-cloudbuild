@@ -6,13 +6,13 @@ current_dir="`pwd`"
 trap "cd \"$current_dir\"" EXIT
 pushd "$ROOT" &> /dev/null
 
-yarn install
+bun install --frozen-lockfile
 rm -rf node_modules/eosjs
 mkdir -p external
 cd external
 git clone --branch="wa-experiment" https://github.com/EOSIO/eosjs.git
 cd eosjs
-yarn install
+bun install --frozen-lockfile
 
 cd ../..
-yarn add file:external/eosjs
+bun add file:external/eosjs
