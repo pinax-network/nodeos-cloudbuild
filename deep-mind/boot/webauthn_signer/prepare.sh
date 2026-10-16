@@ -12,8 +12,9 @@ cd external
 [ -d eosjs ] || git clone --branch="wa-experiment" https://github.com/EOSIO/eosjs.git
 cd eosjs
 # Upstream checkout with its own yarn.lock: Bun migrates it (same versions), so
-# this install cannot be --frozen-lockfile.
-bun install
+# this install cannot be --frozen-lockfile. The checkout has no bunfig.toml, so
+# the 5-day gate (in seconds) is passed here for anything the migration resolves.
+bun install --minimum-release-age=432000
 
 cd ../..
 bun install --frozen-lockfile
