@@ -16,10 +16,11 @@ not the case, you can re-generate everything with:
 
 ### Workflow
 
+Dependencies are installed with [Bun](https://bun.com) 1.4.3 or later.
 Start with the following calls
 
     ./prepare.sh
-    yarn generate
+    bun run generate
 
 This install all the required dependencies as well as opening a Browser that
 will generate a new valid EOSIO WebAuthN public key. The private key is kept
@@ -33,7 +34,7 @@ be aware of this key.
 
 When the boot sequence will the launch, it will run the script
 
-    yarn transfer
+    bun run transfer
 
 Which generates the required transaction data to sign, open a Browser
 with a given URL containing information about the transaction to sign,

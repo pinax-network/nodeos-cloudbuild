@@ -6,13 +6,15 @@ current_dir="`pwd`"
 trap "cd \"$current_dir\"" EXIT
 pushd "$ROOT" &> /dev/null
 
-yarn install
-rm -rf node_modules/eosjs
+# eosjs is a local file: dependency, so clone and build it before installing.
 mkdir -p external
 cd external
-git clone --branch="wa-experiment" https://github.com/EOSIO/eosjs.git
+[ -d eosjs ] || git clone --branch="wa-experiment" https://github.com/EOSIO/eosjs.git
 cd eosjs
-yarn install
+# Upstream checkout with its own yarn.lock: Bun migrates it (same versions), so
+# this install cannot be --frozen-lockfile. The checkout has no bunfig.toml, so
+# the 5-day gate (in seconds) is passed here for anything the migration resolves.
+bun install --minimum-release-age=432000
 
 cd ../..
-yarn add file:external/eosjs
+bun install --frozen-lockfile
