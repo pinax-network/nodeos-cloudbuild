@@ -6,13 +6,14 @@ current_dir="`pwd`"
 trap "cd \"$current_dir\"" EXIT
 pushd "$ROOT" &> /dev/null
 
-bun install --frozen-lockfile
-rm -rf node_modules/eosjs
+# eosjs is a local file: dependency, so clone and build it before installing.
 mkdir -p external
 cd external
-git clone --branch="wa-experiment" https://github.com/EOSIO/eosjs.git
+[ -d eosjs ] || git clone --branch="wa-experiment" https://github.com/EOSIO/eosjs.git
 cd eosjs
-bun install --frozen-lockfile
+# Upstream checkout with its own yarn.lock: Bun migrates it (same versions), so
+# this install cannot be --frozen-lockfile.
+bun install
 
 cd ../..
-bun add file:external/eosjs
+bun install --frozen-lockfile
