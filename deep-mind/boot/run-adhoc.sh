@@ -144,7 +144,7 @@ function main() {
   # echo ""
   # echo "About to push a WebAuthN signed tranasaction"
   # cd webauthn_signer
-  # yarn -s run transfer || true
+  # bun run --silent transfer || true
   # sleep 0.6
   # cd ..
 

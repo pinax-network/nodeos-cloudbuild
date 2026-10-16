@@ -157,7 +157,7 @@ function main() {
   # perform the general logic of getting a WebAuthN public/private key pair and signed and
   # hard-coded transaction for us.
   #
-  # This requires first to have call the `yarn generate` key to generate a key (you will
+  # This requires first to have call the `bun run generate` key to generate a key (you will
   # need your YubiKey also to generate the key material).
   #
   # Once you have your public key (it gets copied to the clipboard on the generation),
